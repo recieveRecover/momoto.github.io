@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Unix-like | momoto.github.io]]></title>
+  <link href="http://momoto.github.io/blog/categories/unix-like/atom.xml" rel="self"/>
+  <link href="http://momoto.github.io/"/>
+  <updated>2013-08-17T02:23:28+09:00</updated>
+  <id>http://momoto.github.io/</id>
+  <author>
+    <name><![CDATA[Seiji Momoto]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[ウィンドウマネージャawesomeの基本操作]]></title>
+    <link href="http://momoto.github.io/blog/2013/03/27/awesome-tutorials/"/>
+    <updated>2013-03-27T21:13:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/03/27/awesome-tutorials</id>
+    <content type="html"><![CDATA[<p>タイル型ウィンドウマネージャ「awesome」の特徴とショートカットキーを簡単にまとめています。</p>
+
+<h4>awesomeが提供しているレイアウトのスクリーンショット</h4>
+
+<ul>
+<li><p>タイル配置（awful.layout.suit.tile）</p>
+
+<p><img src="/blog/images/2013-03-27-awesome-tutorials/01.png" width="300">
+<img src="/blog/images/2013-03-27-awesome-tutorials/02.png" width="300"></p></li>
+</ul>
+
+
+<!-- more -->
+
+
+<ul>
+<li><p>均等配置（awful.layout.suit.fair）</p>
+
+<p><img src="/blog/images/2013-03-27-awesome-tutorials/03.png" width="300">
+<img src="/blog/images/2013-03-27-awesome-tutorials/04.png" width="300"></p></li>
+<li><p>螺旋配置（awful.layout.suit.spiral）</p>
+
+<p><img src="/blog/images/2013-03-27-awesome-tutorials/05.png" width="300"></p></li>
+</ul>
+
+
+<p>レイアウトはここで挙げているもの以外にも複数の種類が用意されています。</p>
+
+<h4>ショートカットキー</h4>
+
+<ul>
+<li>ウィンドウ操作
+
+<ul>
+<li><code>modkey + j</code> フォーカスを次のウィンドウへ移動する</li>
+<li><code>modkey + k</code> フォーカスを前のウィンドウへ移動する</li>
+<li><code>modkey + Tab</code> フォーカスを直前に使用していたウィンドウへ移動する</li>
+<li><code>modkey + Shift + c</code> ウィンドウを閉じる</li>
+<li><code>modkey + f</code> ウィンドウをフルスクリーン化する</li>
+<li><code>modkey + m</code> ウィンドウを最大化させる</li>
+<li><code>modkey + n</code> ウィンドウを最小化させる</li>
+<li><code>modkey + Control + n</code> 最小化したウィンドウを復元する</li>
+<li>レイアウト操作
+
+<ul>
+<li><code>modkey + Control + space</code> ウィンドウをフローティングウィンドウにする（またはフロート解除）</li>
+<li><code>modkey + Control + Return</code> ウィンドウをマスターウィンドウにする（レイアウトの中で最も目立つ配置へ移動する）</li>
+<li><code>modkey + space</code> 次のレイアウトへ切り替える</li>
+<li><code>modkey + Shift + space</code> 前のレイアウトへ切り替える</li>
+<li><code>modkey + Shift + j</code> ウィンドウの配置を前のウィンドウと入れ替える</li>
+<li><code>modkey + Shift + k</code> ウィンドウの配置を次のウィンドウと入れ替える</li>
+<li><code>modkey + l</code> ウィンドウを右方向へ伸縮させる</li>
+<li><code>modkey + h</code> ウィンドウを左方向へ伸縮させる</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>タグ操作
+
+<ul>
+<li><code>modkey + Left</code> 前のタグへ移動</li>
+<li><code>modkey + Right</code> 次のタグへ移動</li>
+<li><code>modkey + [1-9]</code> 焦点を指定のタグへ移動する</li>
+<li><code>modkey + "Shift" + [1-9]</code> ウィンドウを指定のタグへ移動する</li>
+<li><code>modkey + Escape</code> 直前に使用していたタグへ移動</li>
+</ul>
+</li>
+<li>ウインドウマネージャ機能
+
+<ul>
+<li><code>modkey + Return</code> ターミナルエミュレータを起動する</li>
+<li><code>modkey + r</code> コマンド実行プロンプトを起動する</li>
+<li><code>modkey + x</code> Luaコード実行プロンプトを起動する</li>
+<li><code>modkey + w</code> awesomeのメニューを開く</li>
+<li><code>modkey + Control + r</code> awesomeを再起動する</li>
+<li><code>modkey + Shift + q</code> awesomeを終了する</li>
+</ul>
+</li>
+</ul>
+
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="http://awesome.naquadah.org/wiki/Getting_started">Getting started &ndash; awesome</a></li>
+<li><a href="http://awesome.naquadah.org/doc/manpages/awesome.1.html">doc &ndash; awesome window manager</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

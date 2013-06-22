@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Git | momoto.github.io]]></title>
+  <link href="http://momoto.github.io/blog/categories/git/atom.xml" rel="self"/>
+  <link href="http://momoto.github.io/"/>
+  <updated>2013-08-17T02:23:28+09:00</updated>
+  <id>http://momoto.github.io/</id>
+  <author>
+    <name><![CDATA[Seiji Momoto]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[OctopressをGithub pagesにデプロイ]]></title>
+    <link href="http://momoto.github.io/blog/2012/07/31/deployment-octpress-on-github-pages/"/>
+    <updated>2012-07-31T10:14:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2012/07/31/deployment-octpress-on-github-pages</id>
+    <content type="html"><![CDATA[<h4>要件</h4>
+
+<ul>
+<li>github</li>
+<li>ruby-1.9.2-p290</li>
+<li>(rbenv and ruby-build) || rvm</li>
+</ul>
+
+
+<h4>Octopressのセットアップ</h4>
+
+<pre><code>$ git clone git://github.com/imathis/octopress.git octopress
+$ cd octopress/
+
+$ gem install bundler
+$ bundle install
+
+$ rake install
+$ rake setup_github_pages
+
+  Enter the read/write url for your repository
+  (For example, 'git@github.com:your_username/your_username.github.com)
+  Repository url: 
+
+$ rake generate
+$ rake deploy
+</code></pre>
+
+<h4>&ldquo;source"ブランチに、ブログのソースを残す</h4>
+
+<pre><code>$ git add .
+$ git commit -m 'your message'
+$ git push origin source
+</code></pre>
+
+<h4>記事を投稿</h4>
+
+<p>$ rake new_post[&ldquo;hello, world&rdquo;]
+$ vi source/_posts/YYYY-MM-DD-hello.world.markdown</p>
+
+<pre><code>---
+layout: post
+title: "hello, world"
+date: YYYY-MM-DD hh:mm
+comments: true
+categories:
+---
+
+hello, world 
+</code></pre>
+
+<p>$ rake generate
+$ rake deploy</p>
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="http://octopress.org/docs/setup/">Octopress Setup &ndash; Octopress</a></li>
+<li><a href="http://octopress.org/docs/deploying/github/">Deploying to Github Pages &ndash; Octopress</a></li>
+<li><a href="http://octopress.org/docs/blogging/">Blogging Basics &ndash; Octopress</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

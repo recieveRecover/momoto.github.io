@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 仮想化 | momoto.github.io]]></title>
+  <link href="http://momoto.github.io/blog/categories/jia-xiang-hua/atom.xml" rel="self"/>
+  <link href="http://momoto.github.io/"/>
+  <updated>2013-08-17T02:23:28+09:00</updated>
+  <id>http://momoto.github.io/</id>
+  <author>
+    <name><![CDATA[Seiji Momoto]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[QEMUをつかって仮想マシンを作成する]]></title>
+    <link href="http://momoto.github.io/blog/2013/08/11/guide-to-creating-virtual-machine-with-qemu/"/>
+    <updated>2013-08-11T14:54:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/08/11/guide-to-creating-virtual-machine-with-qemu</id>
+    <content type="html"><![CDATA[<p>　QEMUをつかって仮想マシンを作成する手引きです。ホスト側に仮想化機能が備わっていることを確かめたあと、QEMUをつかってゲストOSを構築します。<!-- more --></p>
+
+<h2>仮想化機能を確かめる</h2>
+
+<p>　ホストとなるGNU/Linuxシステムで、CPUのハードウェア仮想化支援機能とLinux KVMのサポートを確かめます。</p>
+
+<ol>
+<li><h3>ハードウェアサポートを確かめる</h3>
+
+<p>　lscpuの仮想化（Virtualization）の行、または/proc/cpuinfoのflagsの行から、ハードウェア仮想化支援機能（Hardware-Assisted Virtualization）を確認します。
+この機能はベンダーごとに実装が異なるので、インテル製品であればVT-xを、AMD製品であればAMD-Vを確かめます。</p>
+
+<pre><code>$ lscpu | grep -Ei "(vt-x|amd-v)"
+仮想化:             AMD-V
+</code></pre>
+
+<p>　/proc/cpuinfoでは、VT-xの動作モード VMX、または、AMD-VのSecure virtual machine（svm）を確かめます。</p>
+
+<pre><code>$ grep -E "(vmx|svm)" /proc/cpuinfo
+flags : ... svm ... svm_lock ...
+</code></pre></li>
+<li><h3>カーネルサポートを確かめる</h3>
+
+<p>Linux KVMカーネルモジュールが有効になっていることを確認します。/proc/config.gzまたはlsmodから確かめます。</p>
+
+<pre><code>$ zgrep -E "KVM|VIRTUALIZATION" /proc/config.gz
+CONFIG_KVM_GUEST=y
+CONFIG_HAVE_KVM=y
+CONFIG_HAVE_KVM_IRQCHIP=y
+CONFIG_HAVE_KVM_IRQ_ROUTING=y
+CONFIG_HAVE_KVM_EVENTFD=y
+CONFIG_KVM_APIC_ARCHITECTURE=y
+CONFIG_KVM_MMIO=y
+CONFIG_KVM_ASYNC_PF=y
+CONFIG_HAVE_KVM_MSI=y
+CONFIG_HAVE_KVM_CPU_RELAX_INTERCEPT=y
+CONFIG_VIRTUALIZATION=y
+CONFIG_KVM=m
+CONFIG_KVM_INTEL=m
+CONFIG_KVM_AMD=m
+CONFIG_KVM_MMU_AUDIT=y
+CONFIG_KVM_DEVICE_ASSIGNMENT=y
+
+$ lsmod | grep kvm
+kvm_amd                52151  0
+kvm                   376394  1 kvm_amd
+</code></pre>
+
+<p>　また、ユーザは/dev/kvmへアクセスできる権限が必要です。Arch Linuxではkvmグループが用意されているので、ハイパーバイザを利用するユーザをこのグループに追加します。</p>
+
+<pre><code>$ sudo gpasswd -a $(whoami) kvm
+</code></pre></li>
+</ol>
+
+
+<h2>ゲストOSを構築する</h2>
+
+<ol>
+<li><h3>仮想ディスクイメージを作る</h3>
+
+<p>　qemu-imgをつかって、ゲストOSのディスクイメージを作ります。
+オプションとして、ディスクイメージのファイル形式、ファイル名、サイズを指定します。qcow2はQEMUでつかわれるイメージファイル形式です。</p>
+
+<pre><code>$ qemu-img create -f qcow2 ~/Workspace/CentOS-6.4-x86_64-netinstall.qcow2 8G
+Formatting '/home/guest/Workspace/CentOS-6.4-x86_64-netinstall.qcow2', fmt=qcow2 size=8589934592 encryption=off cluster_size=65536 lazy_refcounts=off
+</code></pre></li>
+<li><h3>ゲストOSをインストールする</h3>
+
+<p>　ゲストOSをインストールするために、qemu-system-&lt;architecture&gt;をつかって仮想マシンを起動します。
+このときのオプションには、OSインストールの方法にしたがって適当なオプションを付ける必要があります。
+インストールメディアをCentOS-6.4-x86_64-netinstall.isoとして、光学ドライブから起動させる場合は<code>-boot order=d</code>と<code>-cdrom &lt;file&gt;</code>のオプションを付けます。</p>
+
+<pre><code>$ qemu-system-x86_64 \
+-enable-kvm \
+-m 512 \
+-boot order=d \
+-cdrom ~/Downloads/CentOS-6.4-x86_64-netinstall.iso \
+~/Workspace/CentOS-6.4-x86_64-netinstall.qcow2
+</code></pre>
+
+<p><a href="/blog/images/2013-08-11-guide-to-creating-virtual-machine-with-qemu/installing-centos-6-4-as-a-guest-os.png"><img src="/blog/images/2013-08-11-guide-to-creating-virtual-machine-with-qemu/installing-centos-6-4-as-a-guest-os.thumbnail.png" alt="Cent OS 6.4をゲストOSとしてインストールする" /></a></p>
+
+<ul>
+<li>　<code>failed to initialize KVM: Device or resource busy</code> とでて先にすすめない場合は、ホスト側で別のハイパーバイザが起動していないか確認してください。</li>
+<li>　ゲスト側で <code>Trying to unpack rootfs image as initramfs</code> とでるところで起動がとまってしまう場合は、ゲストOSに必要なメモリが足りていないようです。
+QEMUの<code>-m</code>オプションの値を引き上げて試してみてください。</li>
+</ul>
+
+
+<p>　インストール後はインストールメディアのオプションを外して仮想マシンを起動します。</p>
+
+<pre><code>$ qemu-system-x86_64 \
+-enable-kvm \
+-m 512 \
+~/Workspace/CentOS-6.4-x86_64-netinstall.qcow2
+</code></pre>
+
+<p><a href="/blog/images/2013-08-11-guide-to-creating-virtual-machine-with-qemu/booting-guest-os.png"><img src="/blog/images/2013-08-11-guide-to-creating-virtual-machine-with-qemu/booting-guest-os.thumbnail.png" alt="ゲストOSの起動" /></a></p></li>
+</ol>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="http://wiki.qemu.org/Main_Page">QEMU</a></li>
+<li><a href="https://people.gnome.org/~markmc/qcow-image-format.html">The QCOW2 Image Format</a></li>
+</ul>
+
+
+<h3>関連記事</h3>
+
+<ul>
+<li><a href="/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/">CentOS 6.4をインストールする</a></li>
+<li><a href="/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst/">Debian 7.1.0をインストールする</a></li>
+<li><a href="/blog/2013/03/16/install-x86-minimal-20121213/">Gentoo Linuxをインストールする</a></li>
+<li><a href="/blog/2013/01/05/install-arch-linux/">Arch Linux 2012.12.01をインストールする</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[libvirtを用いて仮想マシンを構築、インストールする]]></title>
+    <link href="http://momoto.github.io/blog/2012/08/04/build-and-install-libvirt-based-virtual-machine/"/>
+    <updated>2012-08-04T09:49:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2012/08/04/build-and-install-libvirt-based-virtual-machine</id>
+    <content type="html"><![CDATA[<p>virt-installを使って、CUIから仮想マシンのディスクイメージを作成する。</p>
+
+<p>動作要件として、ホストOSにハイパーバイザ（KVMやXen）とlibvirtがインストールされていて、libvirtdが起動している必要がある。
+virt-install自体は、RPMでは"python-virtinst"パッケージに含まれている。
+（参考：<a href="http://rpmfind.net/linux/rpm2html/search.php?query=virt-install">RPM resource virt-install</a>）</p>
+
+<!-- more -->
+
+
+<p>virt-installのオプションには仮想マシンに割り当てるリソースなどを指定する。
+例えば、仮想マシン名は「myvirtualmachine」、インストールイメージにはkddilabs.jpのミラーが配布しているCentOS6.3[x86_64]を
+指定した準仮想化ゲストOSを/var/lib/libvirt/images/myvirtualmachine.imgに作成する場合は下のようなオプションになる。</p>
+
+<p>```</p>
+
+<h1>virt-install \</h1>
+
+<p>&mdash;name=myvirtualmachine \
+&mdash;ram=512 \
+&mdash;vcpus=1 \
+&mdash;paravirt \
+&mdash;location=&lsquo;<a href="ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.3/os/x86_64/">ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.3/os/x86_64/</a>&rsquo; \
+&mdash;file=/var/lib/libvirt/images/myvirtualmachine.img \
+&mdash;file-size=8 \
+&mdash;nographics \
+&mdash;keymap=jp106
+```</p>
+
+<p>また、<code>--prompt</code>オプションを使うと対話的に各項目を指定することができる。</p>
+
+<p>```</p>
+
+<h1>virt-install &mdash;prompt</h1>
+
+<p>  Would you like a fully virtualized guest (yes or no)? This will allow you to run unmodified operating systems.
+  // 完全仮想化を行うかどうか（noで準仮想化）</p>
+
+<pre><code>no
+</code></pre>
+
+<p>  What is the name of your virtual machine?
+  // 仮想マシンの名称</p>
+
+<pre><code>myvirtualmachine
+</code></pre>
+
+<p>  How much RAM should be allocated (in megabytes)?
+  // 仮想マシンに割り当てるメインメモリの容量</p>
+
+<pre><code>512
+</code></pre>
+
+<p>  What would you like to use as the disk (file path)?
+  // イメージディスクのファイルパス</p>
+
+<pre><code>/var/lib/libvirt/images/myvirtualmachine.img
+</code></pre>
+
+<p>  How large would you like the disk (/var/lib/xen/images/centos-6.3-x86_64.img) to be (in gigabytes)?
+  // イメージディスクに割り当てる容量</p>
+
+<pre><code>8
+</code></pre>
+
+<p>  Would you like to enable graphics support? (yes or no)
+  // グラフィクスサポートを有効にするかどうか</p>
+
+<pre><code>no
+</code></pre>
+
+<p>  What is the install CD-ROM/ISO or URL?
+  // ISOイメージのファイルパス、または配布元のURL</p>
+
+<pre><code>ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.3/os/x86_64/
+</code></pre>
+
+<p>```</p>
+
+<p><code>--nographics</code>オプションを指定していれば、テキストユーザインタフェースでゲストOSのインストールが始まる。
+ゲストOSとのコンソール接続を終了する場合は、'Ctrl + ]&lsquo;でホストOSへ戻ることができる。</p>
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="http://www.ibm.com/developerworks/jp/linux/library/l-libvirt/">libvirt 仮想化ライブラリーの徹底調査</a></li>
+<li><a href="http://docs.redhat.com/docs/ja-JP/Red_Hat_Enterprise_Linux/5/html/Virtualization/chap-Virtualization-Virtualized_guest_installation_overview.html">第6章 仮想化ゲストインストールの概要</a></li>
+<li><a href="http://www.atmarkit.co.jp/flinux/rensai/linuxkvm03/03a.html">libvirt探訪（基礎編） － ＠IT</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

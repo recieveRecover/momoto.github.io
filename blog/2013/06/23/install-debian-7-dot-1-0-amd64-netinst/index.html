@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>Debian 7.1.0をインストールする - momoto.github.io</title>
+<meta name="author" content="Seiji Momoto">
+
+<meta name="description" content="Debian 7.1.0インストールの手引きです。">
+<meta name="keywords" content="GNU/Linux, Debian, Wheezy, debian-7.1.0-amd64-netinst">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="canonical" href="http://momoto.github.io/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst/">
+<link href="/favicon.png" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="momoto.github.io" type="application/atom+xml">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29340465-5']);
+  _gaq.push(['_setDomainName', 'github.io']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+<body>
+<div id="header-container">
+  <div id="header">
+    <div class="wrapper">
+      <header role="banner"><hgroup><h1><a href="/">momoto.github.io</a></h1></hgroup></header>
+      <nav role="navigation">
+        <form action="http://google.com/search" method="get"><fieldset role="search"><input type="hidden" name="q" value="site:momoto.github.io" /><input class="search" type="text" name="q" results="0" placeholder="Search"/></fieldset></form>
+        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<div id="body" class="collapse-sidebar sidebar-footer">
+  <div id="main"><div id="content"><div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Debian 7.1.0をインストールする</h1>
+    
+    
+      <p class="meta">
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-06-23T05:54:00+09:00" pubdate data-updated="true" class="updated">Jun 23<span>rd</span>, 2013</time></p>
+    
+  </header>
+
+
+<div class="entry-content"><p>　Debian 7.1.0をインストールした手順の記録です。インストールメディアはdebian-7.1.0-amd64-netinst.isoを使用しています。インターネットへ接続できる環境を前提にしています。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/01.png" width="400" title="インストーラの起動" ><!-- more --></p>
+
+<ol>
+<li><h3>言語、地域、キーボードの選択</h3>
+
+<ol>
+<li><p>　インストーラで使用される言語とベースシステムに含める言語パッケージを選択します。この記事では日本語を選択してインストールをすすめます。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/02-01.png" width="400" title="言語の選択" ></p></li>
+<li><p>　次に、地域を選択します。先に選択した言語に関連する地域にあらかじめ焦点があてられています。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/02-02.png" width="400" title="場所の選択" ></p></li>
+<li><p>　続いて、キーボード配列を選択します。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/02-03.png" width="400" title="キーボードの設定" ></p></li>
+</ol>
+</li>
+<li><h3>ネットワークの設定</h3>
+
+<ol>
+<li><p>ホスト名を入力します。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/03-01.png" width="400" title="ホスト名の入力" ></p></li>
+<li><p>ドメイン名を入力します。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/03-02.png" width="400" title="ドメイン名の入力" ></p></li>
+</ol>
+</li>
+<li><h3>ユーザとパスワードのセットアップ</h3>
+
+<ol>
+<li><p>rootのパスワードを入力します。確認のため入力は二度、必要です。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-01.png" width="400" title="rootのパスワードを設定" ></p></li>
+<li><p>一般ユーザの名前を入力します。名前は次の画面でも入力しますが、ここで入力する名前はGUIのログイン画面等で表示されます。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-02.png" width="400" title="非管理者権限ユーザの名前（本名）を入力" ></p></li>
+<li><p>続いて、ホームディレクトリのディレクトリ名にもなるユーザ名を入力します。前の画面で入力した名前よりも、使用出来る文字は制限されます。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-03.png" width="400" title="非管理者権限ユーザの名前（ログイン名）を入力" ></p></li>
+<li><p>一般ユーザのパスワードを入力します。rootのときと同様に入力は二度、必要です。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-04.png" width="400" title="非管理者権限ユーザのパスワードを設定" ></p></li>
+</ol>
+</li>
+<li><h3>ディスクのパーティショニング</h3>
+
+<ol>
+<li><p>　パーティショニングを「ガイド」（自動）で行うか、「手動」で行うかを選択します。パーティション構成を詳しく指定する必要がある場合には「手動」を選択します。この記事では「ガイド &ndash; ディスク全体を使う」でインストールを進めます。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-01.png" width="400"></p></li>
+<li><p>　パーティショニングの対象となるストレージデバイスを選択します。デバイスを正しく認識していれば、この画面の選択肢に現れているはずです。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-02.png" width="400"></p></li>
+<li><p>　ガイドに従ってパーティション構成を選択します。ここで選択できるものより複雑なパーティショニングが必要な場合は手動で設定しなければなりません。この記事では「すべてのファイルを１つのパーティションに」を選択してインストールをすすめます。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-03.png" width="400"></p></li>
+<li><p>　ここまでのパーティション設定を確認します。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-04.png" width="400"></p></li>
+<li><p>　ストレージデバイスに対する書込みの最後の確認です。書込みを行うとそれまで記録されていた情報は削除されますので、対象デバイスとパーティションをよく確かめて画面をすすめてください。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-05.png" width="400"></p></li>
+</ol>
+</li>
+<li><h3>パッケージマネージャの設定</h3>
+
+<ul>
+<li><p>　Debianアーカイブミラーをホストしている地域を選択します。「自国でさえ最適の選択とは限らない」とありますが、国内で利用する場合においては「日本」を選択するのが最も適当です。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-01.png" width="400" title="Debianアーカイブミラーをホストしている地域を選択する" ></p></li>
+<li><p>　選択した地域からミラーサーバを選択します。<a href="ftp://ftp.jp.debian.org/">ftp.jp.debian.org</a>と<a href="ftp://ftp.jaist.ac.jp/">ftp.jaist.ac.jp</a>については、管理者のブログが公開されています（<a href="http://debiancdn.wordpress.com/">debiancdn | AWS, Content Delivery Network and Debian</a>、<a href="http://ftp-admin.blogspot.jp/">ftp-adminの憂鬱</a>）。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-02.png" width="400" title="Debianアーカイブミラーサーバを選択する" ></p></li>
+<li><p>　任意で、HTTPプロキシ情報を入力します。とくに必要でなければ、空のまま画面をすすめてください。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-03.png" width="400" title="HTTPプロキシ情報を入力する" ></p></li>
+<li><p>　Debianパッケージ利用調査へ参加するかどうかを選択します。この調査結果は<a href="http://popcon.debian.org/">Debian Popularity Contest</a>で公開されています。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-04.png" width="400" title="Debianパッケージ利用調査への参加" ></p></li>
+</ul>
+</li>
+<li><h3>ソフトウェアの選択</h3>
+
+<p>　ベースシステムと同時にインストールするソフトウェアスイートを選択します。ここで表示されるリストは<a href="http://wiki.debian.org/tasksel">tasksel</a>によって抽象化された「タスク」です。どのパッケージをインストールするか、自分で具体的に指定する必要がある場合（インストールしたいのはmysql-serverではなくpostgresqlである等）は、ここでは選択せずに、ベースシステムのインストール後に改めてインストールするべきです。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/07.png" width="400" title="ソフトウェアの選択" ></p></li>
+<li><h3>GRUBブートローダのインストール</h3>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/08.png" width="400" title="ブートローダのインストール" ></p></li>
+<li><h3>インストールの完了</h3>
+
+<p>　ベースシステムのインストールが完了したら、システムを再起動します。</p>
+
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/09.png" width="400" title="インストールの完了" ></p></li>
+</ol>
+
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://www.debian.org/releases/stable/installmanual">Debian wheezy &mdash; インストールガイド</a></li>
+</ul>
+
+
+<h3>関連記事</h3>
+
+<ul>
+<li><a href="/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/">CentOS 6.4をインストールする</a></li>
+<li><a href="/blog/2013/03/16/install-x86-minimal-20121213/">Gentoo Linuxをインストールする</a></li>
+<li><a href="/blog/2013/01/05/install-arch-linux/">Arch Linux 2012.12.01をインストールする</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <a href="https://plus.google.com/101153525943529592041?rel=author" class="fn">Seiji Momoto</a></span>
+
+      
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-06-23T05:54:00+09:00" pubdate data-updated="true" class="updated">Jun 23<span>rd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gnu-slash-linux/'>GNU/Linux</a>
+  
+</span>
+
+
+    </p>
+    <div class="sharing">
+<a href="https://coderwall.com/momoto"><img alt="Endorse momoto on Coderwall" src="http://api.coderwall.com/momoto/endorsecount.png" /></a>
+<g:plusone size="medium" annotation="none"></g:plusone>
+<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-url="http://momoto.github.io/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst/" data-text="Debian 7.1.0をインストールする - momoto.github.io" data-count="none">Tweet</a>
+<a href="http://b.hatena.ne.jp/entry/http://momoto.github.io/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst/" data-hatena-bookmark-title="Debian 7.1.0をインストールする - momoto.github.io" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-noballoon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+<fb:like data-href="http://momoto.github.io/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst/" layout="button_count"></fb:like>
+</div>
+<div class="sharing">
+<br>
+<div id="disqus_thread" aria-live="polite"></div>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku/" title="Previous Post: HerokuにRedmine 2.3.1を展開する">&laquo; HerokuにRedmine 2.3.1を展開する</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/07/31/guide-to-compiling-and-installing-apache-http-server-2-dot-4-6/" title="Next Post: Apache HTTP Server 2.4.6をインストールする（ソースからビルドする方法）">Apache HTTP Server 2.4.6をインストールする（ソースからビルドする方法） &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+</div>
+<aside class="sidebar"><section class="vcard">
+<h1>About Me</h1>
+<p>A little something about me.</p>
+<p><a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>
+ | <a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>
+ | <a href="https://github.com/momoto">GitHub</a>
+ | <a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
+</section>
+</aside></div></div>
+  <footer role="contentinfo"><p>Copyright &copy; 2013 - <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a> - <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>. Design by <a href="http://octopressthemes.com">Octopress Themes</a>.</span></p></footer>
+</div>
+<script src="/javascripts/modernizr-2.0.js"></script>
+<script src="/javascripts/ender.js"></script>
+<script src="/javascripts/octopress.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'momotogithubio';
+
+    var disqus_identifier = 'http://momoto.github.io/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst/';
+    var disqus_url = 'http://momoto.github.io/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst/';
+    var disqus_script = 'embed.js';
+
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+<script type="text/javascript">
+  (function() {
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+  })();
+</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1&appId=561979160531119";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+<script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+
+</body>
+</html>

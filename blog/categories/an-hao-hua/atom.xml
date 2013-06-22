@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 暗号化 | momoto.github.io]]></title>
+  <link href="http://momoto.github.io/blog/categories/an-hao-hua/atom.xml" rel="self"/>
+  <link href="http://momoto.github.io/"/>
+  <updated>2013-08-17T02:23:28+09:00</updated>
+  <id>http://momoto.github.io/</id>
+  <author>
+    <name><![CDATA[Seiji Momoto]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[OpenSSLを使用してファイルをRSA暗号化する]]></title>
+    <link href="http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption/"/>
+    <updated>2012-10-14T17:45:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption</id>
+    <content type="html"><![CDATA[<p>OpenSSLは様々な暗号方式での暗号化、復号化をサポートするセキュリティライブラリ。
+使用できる暗号方式は<code>openssl ciphers</code>で確認できる。</p>
+
+<p>RSA暗号方式の暗号化、復号、署名、検証を利用する場合は<code>openssl rsautl</code>を使う。</p>
+
+<!-- more -->
+
+
+<h3>暗号化</h3>
+
+<p>ファイルをRSA暗号方式で暗号化するには、秘密鍵または公開鍵のいずれかが必要。</p>
+
+<h4>ファイル<em>&ldquo;plain.txt&rdquo;</em>を、秘密鍵<em>&ldquo;private_key&rdquo;</em>を使用して暗号化する</h4>
+
+<pre><code>$ openssl rsautl -encrypt -inkey private_key -in plain.txt -out encrypted
+Enter pass phrase for private_key:
+</code></pre>
+
+<p>秘密鍵にパスフレーズが設定されていれば入力が必要。</p>
+
+<h4>ファイル<em>&ldquo;plain.txt&rdquo;</em>を、公開鍵<em>&ldquo;public_key&rdquo;</em>を使用して暗号化する</h4>
+
+<pre><code>$ openssl rsautl -encrypt -pubin -inkey public_key -in plain.txt -out encrypted
+</code></pre>
+
+<p><em>-pubin</em>のオプションを加えることに注意。</p>
+
+<p>上のコマンドで暗号化した場合、<em>encrypted</em>という名前でバイナリファイルとして出力される。
+使用できる公開鍵は下のような形式になる。</p>
+
+<pre><code>-----BEGIN PUBLIC KEY-----
+MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAM2twTjVLOYMK2Y7uKQ03CeSc8B+0GjJ
+xy0ir28fIfGb523ogDyWKDjMDx5pTBUpOgDYUgSpP/I6SzER1ArhcnMCAwEAAQ==
+-----END PUBLIC KEY-----
+</code></pre>
+
+<p><code>unable to load Public Key</code>とエラーが出る場合は、鍵の形式が無効。</p>
+
+<h3>復号</h3>
+
+<p>暗号化されたファイルを復号するには、秘密鍵が必要。</p>
+
+<h4>暗号化されたファイル<em>&ldquo;encrypted&rdquo;</em>を、秘密鍵<em>&ldquo;private_key&rdquo;</em>を使用して復号する</h4>
+
+<pre><code>$ openssl rsautl -decrypt -inkey private_key -in encrypted -out decrypted.txt
+Enter pass phrase for private_key:
+</code></pre>
+
+<p>復号に成功すると、<em>&ldquo;decrypted.txt&rdquo;</em>にその内容が出力される。</p>
+]]></content>
+  </entry>
+  
+</feed>

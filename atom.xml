@@ -1,0 +1,2578 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[momoto.github.io]]></title>
+  <link href="http://momoto.github.io/atom.xml" rel="self"/>
+  <link href="http://momoto.github.io/"/>
+  <updated>2013-08-17T02:23:28+09:00</updated>
+  <id>http://momoto.github.io/</id>
+  <author>
+    <name><![CDATA[Seiji Momoto]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[QEMUをつかって仮想マシンを作成する]]></title>
+    <link href="http://momoto.github.io/blog/2013/08/11/guide-to-creating-virtual-machine-with-qemu/"/>
+    <updated>2013-08-11T14:54:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/08/11/guide-to-creating-virtual-machine-with-qemu</id>
+    <content type="html"><![CDATA[<p>　QEMUをつかって仮想マシンを作成する手引きです。ホスト側に仮想化機能が備わっていることを確かめたあと、QEMUをつかってゲストOSを構築します。<!-- more --></p>
+
+<h2>仮想化機能を確かめる</h2>
+
+<p>　ホストとなるGNU/Linuxシステムで、CPUのハードウェア仮想化支援機能とLinux KVMのサポートを確かめます。</p>
+
+<ol>
+<li><h3>ハードウェアサポートを確かめる</h3>
+
+<p>　lscpuの仮想化（Virtualization）の行、または/proc/cpuinfoのflagsの行から、ハードウェア仮想化支援機能（Hardware-Assisted Virtualization）を確認します。
+この機能はベンダーごとに実装が異なるので、インテル製品であればVT-xを、AMD製品であればAMD-Vを確かめます。</p>
+
+<pre><code>$ lscpu | grep -Ei "(vt-x|amd-v)"
+仮想化:             AMD-V
+</code></pre>
+
+<p>　/proc/cpuinfoでは、VT-xの動作モード VMX、または、AMD-VのSecure virtual machine（svm）を確かめます。</p>
+
+<pre><code>$ grep -E "(vmx|svm)" /proc/cpuinfo
+flags : ... svm ... svm_lock ...
+</code></pre></li>
+<li><h3>カーネルサポートを確かめる</h3>
+
+<p>Linux KVMカーネルモジュールが有効になっていることを確認します。/proc/config.gzまたはlsmodから確かめます。</p>
+
+<pre><code>$ zgrep -E "KVM|VIRTUALIZATION" /proc/config.gz
+CONFIG_KVM_GUEST=y
+CONFIG_HAVE_KVM=y
+CONFIG_HAVE_KVM_IRQCHIP=y
+CONFIG_HAVE_KVM_IRQ_ROUTING=y
+CONFIG_HAVE_KVM_EVENTFD=y
+CONFIG_KVM_APIC_ARCHITECTURE=y
+CONFIG_KVM_MMIO=y
+CONFIG_KVM_ASYNC_PF=y
+CONFIG_HAVE_KVM_MSI=y
+CONFIG_HAVE_KVM_CPU_RELAX_INTERCEPT=y
+CONFIG_VIRTUALIZATION=y
+CONFIG_KVM=m
+CONFIG_KVM_INTEL=m
+CONFIG_KVM_AMD=m
+CONFIG_KVM_MMU_AUDIT=y
+CONFIG_KVM_DEVICE_ASSIGNMENT=y
+
+$ lsmod | grep kvm
+kvm_amd                52151  0
+kvm                   376394  1 kvm_amd
+</code></pre>
+
+<p>　また、ユーザは/dev/kvmへアクセスできる権限が必要です。Arch Linuxではkvmグループが用意されているので、ハイパーバイザを利用するユーザをこのグループに追加します。</p>
+
+<pre><code>$ sudo gpasswd -a $(whoami) kvm
+</code></pre></li>
+</ol>
+
+
+<h2>ゲストOSを構築する</h2>
+
+<ol>
+<li><h3>仮想ディスクイメージを作る</h3>
+
+<p>　qemu-imgをつかって、ゲストOSのディスクイメージを作ります。
+オプションとして、ディスクイメージのファイル形式、ファイル名、サイズを指定します。qcow2はQEMUでつかわれるイメージファイル形式です。</p>
+
+<pre><code>$ qemu-img create -f qcow2 ~/Workspace/CentOS-6.4-x86_64-netinstall.qcow2 8G
+Formatting '/home/guest/Workspace/CentOS-6.4-x86_64-netinstall.qcow2', fmt=qcow2 size=8589934592 encryption=off cluster_size=65536 lazy_refcounts=off
+</code></pre></li>
+<li><h3>ゲストOSをインストールする</h3>
+
+<p>　ゲストOSをインストールするために、qemu-system-&lt;architecture&gt;をつかって仮想マシンを起動します。
+このときのオプションには、OSインストールの方法にしたがって適当なオプションを付ける必要があります。
+インストールメディアをCentOS-6.4-x86_64-netinstall.isoとして、光学ドライブから起動させる場合は<code>-boot order=d</code>と<code>-cdrom &lt;file&gt;</code>のオプションを付けます。</p>
+
+<pre><code>$ qemu-system-x86_64 \
+-enable-kvm \
+-m 512 \
+-boot order=d \
+-cdrom ~/Downloads/CentOS-6.4-x86_64-netinstall.iso \
+~/Workspace/CentOS-6.4-x86_64-netinstall.qcow2
+</code></pre>
+
+<p><a href="http://momoto.github.io/blog/images/2013-08-11-guide-to-creating-virtual-machine-with-qemu/installing-centos-6-4-as-a-guest-os.png"><img src="http://momoto.github.io/blog/images/2013-08-11-guide-to-creating-virtual-machine-with-qemu/installing-centos-6-4-as-a-guest-os.thumbnail.png" alt="Cent OS 6.4をゲストOSとしてインストールする" /></a></p>
+
+<ul>
+<li>　<code>failed to initialize KVM: Device or resource busy</code> とでて先にすすめない場合は、ホスト側で別のハイパーバイザが起動していないか確認してください。</li>
+<li>　ゲスト側で <code>Trying to unpack rootfs image as initramfs</code> とでるところで起動がとまってしまう場合は、ゲストOSに必要なメモリが足りていないようです。
+QEMUの<code>-m</code>オプションの値を引き上げて試してみてください。</li>
+</ul>
+
+
+<p>　インストール後はインストールメディアのオプションを外して仮想マシンを起動します。</p>
+
+<pre><code>$ qemu-system-x86_64 \
+-enable-kvm \
+-m 512 \
+~/Workspace/CentOS-6.4-x86_64-netinstall.qcow2
+</code></pre>
+
+<p><a href="http://momoto.github.io/blog/images/2013-08-11-guide-to-creating-virtual-machine-with-qemu/booting-guest-os.png"><img src="http://momoto.github.io/blog/images/2013-08-11-guide-to-creating-virtual-machine-with-qemu/booting-guest-os.thumbnail.png" alt="ゲストOSの起動" /></a></p></li>
+</ol>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="http://wiki.qemu.org/Main_Page">QEMU</a></li>
+<li><a href="https://people.gnome.org/~markmc/qcow-image-format.html">The QCOW2 Image Format</a></li>
+</ul>
+
+
+<h3>関連記事</h3>
+
+<ul>
+<li><a href="http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/">CentOS 6.4をインストールする</a></li>
+<li><a href="http://momoto.github.io/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst/">Debian 7.1.0をインストールする</a></li>
+<li><a href="http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213/">Gentoo Linuxをインストールする</a></li>
+<li><a href="http://momoto.github.io/blog/2013/01/05/install-arch-linux/">Arch Linux 2012.12.01をインストールする</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[PHP 5.5.1をインストールする（ソースからビルドする方法）]]></title>
+    <link href="http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-php-5-dot-5-1/"/>
+    <updated>2013-07-31T23:03:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-php-5-dot-5-1</id>
+    <content type="html"><![CDATA[<p>　PHP 5.5.1をソースコードからビルドして、Unix系システムへインストールする手引きです。
+この記事ではCentOS 6.4環境でインストールの例を示しますが、自身でソースからビルドする方法は特定のLinuxディストリビューションに依りません。<!-- more -->
+インストールを行うユーザは、インストール先ディレクトリに対して書込み権限をもっている必要があります。/usr/local/* にインストールする場合、通常、root権限が必要です。</p>
+
+<ol>
+<li><h3>ソースコードを取得する</h3>
+
+<p>　ソースコードをインストールするマシンに用意します。
+インターネットからダウンロードする場合、<a href="http://www.php.net/downloads.php">php.net</a>にソースコードのURLが示されています。
+bzip2、gzip、xzのアーカイブが用意されていますので、マシンで解凍・展開できる形式を選択してください。</p>
+
+<p>　ダウンロードにはcURLやGNU Wgetなどのダウンロードマネージャやウェブブラウザを使用します。
+次の例では、cURLをつかってphp-5.5.1.tar.gzをダウンロードします。</p>
+
+<pre><code>[root@localhost ~]# curl -Lso php-5.5.1.tar.gz http://jp2.php.net/get/php-5.5.1.tar.gz/from/jp1.php.net/mirror
+</code></pre>
+
+<p>　取得したアーカイブファイルは適宜、解凍・展開して、ワーキングディレクトリを移動させます。
+<a href="http://www.pathname.com/fhs/pub/fhs-2.3.html#USRLOCALLOCALHIERARCHY" title="Filesystem Hierarchy Standard 2.3">FHS</a>に従うシステムであれば、独自にインストールするソフトウェアのためのディレクトリ /usr/local が予め用意されていますので、この記事ではソースコードを /usr/local/src に配置してインストールをすすめます。</p>
+
+<pre><code>[root@localhost ~]# tar xfz php-5.5.1.tar.gz -C /usr/local/src/
+[root@localhost ~]# cd /usr/local/src/php-5.5.1
+[root@localhost php-5.5.1]#
+</code></pre></li>
+<li><h3>インストール要件を満たす</h3>
+
+<p>　マシンがインストールの要件を満たしている必要があります。
+また、必要な拡張モジュールがある場合は、そのモジュールの要件も満たす必要があります。</p>
+
+<ul>
+<li><p>Cコンパイラ</p>
+
+<pre><code>[root@localhost ~]# yum install gcc
+</code></pre></li>
+<li><p>Make</p>
+
+<pre><code>[root@localhost ~]# yum install make
+</code></pre></li>
+</ul>
+</li>
+<li><h3>ビルドファイルを作成する</h3>
+
+<p>　configureをつかってビルドファイルを作成します。configureにオプションを与えることで、インストール先のディレクトリや有効にするモジュールを調整できます。
+指定できるオプションについては<code>configure --help</code>や<a href="http://php.net/manual/ja/configure.about.php">Manual</a>を参照してください。
+ビルドの要件を満たしていない場合、configureの処理は中断されます。</p>
+
+<p>　例えば、インストール先のディレクトリを /usr/local/php-5.5.1 として、
+<a href="http://www.php.net/manual/ja/book.apache.php">Apacheモジュール</a>、<a href="http://www.php.net/manual/ja/book.mysqli.php">MySQLiモジュール</a>、
+<a href="http://www.php.net/manual/ja/ref.pdo-mysql.php">PDO MySQLモジュール</a>、<a href="http://www.php.net/manual/ja/book.openssl.php">OpenSSLモジュール</a>を有効にする場合は次のようにconfigureを実行します。</p>
+
+<pre><code>[root@localhost php-5.5.1]# ./configure \
+--prefix=/usr/local/php-5.5.1 \
+--with-apxs2=/usr/local/httpd-2.4.6/bin/apxs \
+--with-mysql=mysqlnd \
+--with-mysqli=mysqlnd \
+--with-pdo-mysql=mysqlnd \
+--with-openssl
+</code></pre>
+
+<p>　次に、configureのエラー例をいくつか示します。</p>
+
+<ul>
+<li><h4>xml2-config not found.</h4>
+
+<pre><code>checking for xml2-config path...
+configure: error: xml2-config not found. Please check your libxml2 installation.
+</code></pre>
+
+<p>　<a href="http://www.php.net/manual/ja/book.libxml.php">libxmlモジュール</a>（デフォルトで有効）の要件であるlibxmlが必要です。</p>
+
+<pre><code>[root@localhost php-5.5.1]# yum install libxml2-devel
+</code></pre></li>
+<li><h4>configure: error: Cannot find OpenSSL&rsquo;s &lt;evp.h></h4>
+
+<pre><code>configure: error: Cannot find OpenSSL's &lt;evp.h&gt;
+</code></pre>
+
+<p>　<a href="http://www.php.net/manual/ja/book.openssl.php">OpenSSLモジュール</a>の要件であるOpenSSLが必要です。</p>
+
+<pre><code>[root@localhost php-5.5.1]# yum search install openssl-devel
+</code></pre></li>
+</ul>
+
+
+<p>　configureの処理が終了してMakefileが作成されていれば、ビルドの段階へすすみます。</p></li>
+<li><h3>ビルドとインストール</h3>
+
+<p>　ビルドとインストールにはmakeを使います。ディスクの容量が充分足りていることを確認してください。</p>
+
+<pre><code>[root@localhost php-5.5.1]# make &amp;&amp; make install
+</code></pre>
+
+<p>　makeの処理が無事に終了したらインストールは完了です。
+configureの<code>--prefix</code>に指定した位置にファイルが展開されているはずです。</p>
+
+<pre><code>[root@localhost php-5.5.1]# /usr/local/php-5.5.1/bin/php -v
+PHP 5.5.1 (cli)
+Copyright (c) 1997-2013 The PHP Group
+Zend Engine v2.5.0, Copyright (c) 1998-2013 Zend Technologies
+</code></pre></li>
+</ol>
+
+
+<h2>インストール後</h2>
+
+<p>　必要に応じて、php.iniの設定、実行バイナリへのパスの設定を行なってください。
+ソースコードのアーカイブには標準のphp.iniが、開発環境向けと製品向けの２通り用意されています。</p>
+
+<pre><code>[root@localhost php-5.5.1]# cp /usr/local/src/php-5.5.1/php.ini-development /usr/local/php-5.5.1/lib/php.ini
+</code></pre>
+
+<p>　新しく設置したphp.iniが正常に認識されているかどうかは<code>--ini</code>オプションで出力される Loaded Configuration File などで確認できます。</p>
+
+<pre><code>[root@localhost php-5.5.1]# ./bin/php --ini
+Configuration File (php.ini) Path: /usr/local/php-5.5.1/lib
+Loaded Configuration File:         /usr/local/php-5.5.1/lib/php.ini
+Scan for additional .ini files in: (none)
+Additional .ini files parsed:      (none)
+</code></pre>
+
+<p>　標準のままの状態ではタイムゾーン未設定の警告がでますが、date.timezoneディレクティブにタイムゾーンを設定するとこの警告は出なくなります。その他のディレクティブも用途にあわせて設定してください。</p>
+
+<pre><code>PHP Warning:  Unknown: It is not safe to rely on the system's timezone settings. You are *required* to use the date.timezone setting or the date_default_timezone_set() function. In case you used any of those methods and you are still getting this warning, you most likely misspelled the timezone identifier. We selected the timezone 'UTC' for now, but please set date.timezone to select your timezone. in Unknown on line 0
+
+[Date]
+; Defines the default timezone used by the date functions
+; http://php.net/date.timezone
+date.timezone = Asia/Tokyo
+</code></pre>
+
+<h3>動作を確認する</h3>
+
+<p>　最後に、PHP 5.5.1の動作を少し確認してみます。
+ここではPHPの拡張モジュールが正常に機能しているかどうかを中心に確かめていきます。</p>
+
+<ul>
+<li><h4>apache2.x</h4>
+
+<p>　Apacheの設定ファイル（httpd.confなど）に LoadModuleディレクティブを正しく記述していることを確認します。</p>
+
+<pre><code>LoadModule php5_module        modules/libphp5.so
+</code></pre>
+
+<p>　また、PHPファイルをApacheハンドラに指定するため、SetHandlerやAddHandlerなどのディレクティブも必要です。</p>
+
+<pre><code>&lt;FilesMatch \.php$&gt;
+    SetHandler application/x-httpd-php
+&lt;/FilesMatch&gt;
+</code></pre>
+
+<p>　libphp5.soは、configureの<code>--with-apxs2=FILE</code>オプションを指定していれば、PHPのインストール時に作成されているはずです。</p>
+
+<pre><code>[root@localhost httpd-2.4.6]# file modules/libphp5.so
+modules/libphp5.so: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, not stripped
+</code></pre>
+
+<p>　apachectlの<code>-M</code>オプションをつかって、読み込まれているモジュールを確認することもできます。</p>
+
+<pre><code>[root@localhost httpd-2.4.6]# apachectl -M | grep php5_module
+ php5_module (shared)
+</code></pre></li>
+<li><h4>MySQLiモジュール</h4>
+
+<p>　mysqliモジュールを確認します。
+<code>PHP Warning:  PHP Startup: Unable to load dynamic library 'php_mysqli.dll'</code>と出る場合はモジュールがうまく読み込まれていません。</p>
+
+<pre><code>[root@localhost php-5.5.1]# php -m | grep mysqli
+mysqli
+
+[root@localhost php-5.5.1]# php -r "var_dump(class_exists('mysqli'));"
+bool(true)
+</code></pre></li>
+<li><h4>PDO MySQLモジュール</h4>
+
+<p>　pdo_mysqlモジュールを確認します。
+<code>PHP Warning:  PHP Startup: Unable to load dynamic library 'php_pdo_mysql.dll'</code>と出る場合はモジュールがうまく読み込まれていません。</p>
+
+<pre><code>[root@localhost php-5.5.1]# php -m | grep -i pdo
+PDO
+pdo_mysql
+pdo_sqlite
+
+[root@localhost php-5.5.1]# php -r 'print_r(PDO::getAvailableDrivers());'
+Array
+(
+    [0] =&gt; mysql
+    [1] =&gt; sqlite
+)
+</code></pre></li>
+</ul>
+
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://www.php.net/manual/ja/">PHP: PHP マニュアル &ndash; Manual</a></li>
+</ul>
+
+
+<h3>関連記事</h3>
+
+<ul>
+<li><a href="http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-apache-http-server-2-dot-4-6/">Apache HTTP Server 2.4.6をインストールする（ソースからビルドする方法）</a></li>
+<li><a href="http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-mysql-community-server-5-dot-6-13/">MySQL Community Server 5.6.13をインストールする（ソースからビルドする方法）</a></li>
+<li><a href="http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/">CentOS 6.4をインストールする</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[MySQL Community Server 5.6.13をインストールする（ソースからビルドする方法）]]></title>
+    <link href="http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-mysql-community-server-5-dot-6-13/"/>
+    <updated>2013-07-31T22:15:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-mysql-community-server-5-dot-6-13</id>
+    <content type="html"><![CDATA[<p>　MySQL Community Server 5.6.13をソースコードからビルドして、Unix系システムへインストールする手引きです。
+この記事ではCentOS 6.4環境でインストールの例を示しますが、自身でソースからビルドする方法は特定のLinuxディストリビューションに依りません。<!-- more -->
+インストールを行うユーザは、インストール先ディレクトリに対して書込み権限をもっている必要があります。/usr/local/* にインストールする場合、通常、root権限が必要です。</p>
+
+<ol>
+<li><h3>ソースコードを取得する</h3>
+
+<p>　ソースコードをインストールするマシンに用意します。
+インターネットからダウンロードする場合、<a href="http://dev.mysql.com/">dev.mysql.com</a>にソースコードのURLが示されています。
+<a href="http://dev.mysql.com/downloads/">MySQL Downloads</a>から<a href="http://dev.mysql.com/downloads/mysql/">Download MySQL Community Server</a>へとすすみ、Select Platform&hellip; では Source Code を選択して、<a href="http://dev.mysql.com/downloads/mirror.php?id=413981">Generic Linux (Architecture Independent), Compressed TAR Archive (mysql-5.6.13.tar.gz)</a>をダウンロードします。ダウンロードの際、Oracleウェブアカウントの登録を促されますが、インストールに必要なものではありません。</p>
+
+<p>　ダウンロードにはcURLやGNU Wgetなどのダウンロードマネージャやウェブブラウザを使用します。
+次の例では、cURLをつかってmysql-5.6.13.tar.gzをダウンロードします。</p>
+
+<pre><code>[root@localhost ~]# curl -Lso mysql-5.6.13.tar.gz http://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.13.tar.gz/from/http://cdn.mysql.com/
+</code></pre>
+
+<p>　取得したアーカイブファイルは適宜、解凍・展開して、ワーキングディレクトリを移動させます。
+<a href="http://www.pathname.com/fhs/pub/fhs-2.3.html#USRLOCALLOCALHIERARCHY" title="Filesystem Hierarchy Standard 2.3">FHS</a>に従うシステムであれば、独自にインストールするソフトウェアのためのディレクトリ /usr/local が予め用意されていますので、この記事ではソースコードを /usr/local/src に配置してインストールをすすめます。</p>
+
+<pre><code>[root@localhost ~]# tar xfz mysql-5.6.13.tzr.gz -C /usr/local/src/
+[root@localhost ~]# cd /usr/local/src/mysql-5.6.13
+[root@localhost mysql-5.6.13]#
+</code></pre></li>
+<li><h3>インストール要件を満たす</h3>
+
+<p>　マシンがインストールの要件を満たしている必要があります。
+要件については<a href="http://dev.mysql.com/doc/refman/5.6/en/source-installation.html">Reference Manual</a>に詳しい説明があります。</p>
+
+<ul>
+<li><p>C++コンパイラ</p>
+
+<pre><code>[root@localhost ~]# yum install gcc-c++
+</code></pre></li>
+<li><p>Make</p>
+
+<pre><code>[root@localhost ~]# yum install make
+</code></pre></li>
+<li><p>CMake &ndash; <a href="http://www.cmake.org/cmake/resources/software.html">www.cmake.org</a>や各種ディストリビューションで配布されています。</p>
+
+<pre><code>[root@localhost ~]# yum install cmake
+</code></pre></li>
+<li><p>Cursesライブラリ</p>
+
+<pre><code>[root@localhost ~]# yum install ncurses-devel
+</code></pre></li>
+<li><p>Perl</p>
+
+<pre><code>[root@localhost ~]# yum install perl
+</code></pre></li>
+</ul>
+
+
+<p>　インストール要件ではありませんが、mysqlサーバのためのグループとユーザを用意しておきます。UIDとGIDは<a href="https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/4/html/Reference_Guide/s1-users-groups-standard-users.html">Red Hat Enterprise Linux 4 Reference Guide 6.2. 標準ユーザ</a>に従って27としています。</p>
+
+<pre><code>[root@localhost ~]# groupadd -g 27 mysql
+[root@localhost ~]# useradd -u 27 -r -g 27 mysql
+</code></pre></li>
+<li><h3>ビルドファイルを作成する</h3>
+
+<p>　cmakeをつかってビルドファイルを作成します。cmakeにオプションを与えることで、インストール先のディレクトリなどを調整することができます。
+指定できるオプションについては<code>cmake . -LH</code>や<a href="http://dev.mysql.com/doc/refman/5.6/en/source-configuration-options.html">Reference Manual</a>を参照してください。
+ビルドの要件を満たしていない場合、cmakeの処理は中断されます。</p>
+
+<p>　例えば、インストール先のディレクトリを /usr/local/mysql-5.6.13 として、
+デフォルトの文字セットをUTF-8、
+照合順序をutf8_general_ciと指定する場合は次のようにcmakeを実行します。</p>
+
+<pre><code>[root@localhost mysql-5.6.13]# cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql-5.6.13 -DDEFAULT_CHARSET=utf8 -DDEFAULT_COLLATION=utf8_general_ci
+</code></pre>
+
+<p>　次に、cmakeのエラー例をいくつか示します。</p>
+
+<ul>
+<li><h4>&ldquo;CMAKE_CXX_COMPILER-NOTFOUND&rdquo; was not found.</h4>
+
+<pre><code>CMake Error: your CXX compiler: "CMAKE_CXX_COMPILER-NOTFOUND" was not found.   Please set CMAKE_CXX_COMPILER to a valid compiler path or name.
+</code></pre>
+
+<p>　C++コンパイラが正しくインストールされているか確認してください。</p></li>
+<li><h4>Curses library not found.</h4>
+
+<pre><code>-- Could NOT find Curses  (missing:  CURSES_LIBRARY CURSES_INCLUDE_PATH)
+CMake Error at cmake/readline.cmake:85 (MESSAGE):
+  Curses library not found.  Please install appropriate package,
+
+      remove CMakeCache.txt and rerun cmake.On Debian/Ubuntu, package name is libncurses5-dev, on Redhat and derivates it is ncurses-devel.
+</code></pre>
+
+<p>　Cursesライブラリが正しくインストールされているか確認してください。</p></li>
+</ul>
+
+
+<p>　cmakeの処理が終了してMakefileが作成されていれば、ビルドの段階へすすみます。</p></li>
+<li><h3>ビルドとインストール</h3>
+
+<p>　ビルドとインストールにはmakeを使います。ディスクの容量が充分足りていることを確認してください。</p>
+
+<pre><code>[root@localhost mysql-5.6.13]# make &amp;&amp; make install
+</code></pre>
+
+<p>　makeの処理が無事に終了したらインストールは完了です。
+cmakeの<code>-DCMAKE_INSTALL_PREFIX</code>に指定した位置にファイルが展開されているはずです。PREFIXを指定していなかった場合は&#8221;/usr/local/mysql&#8221;になります。</p>
+
+<pre><code>[root@localhost mysql-5.6.13]# /usr/local/mysql-5.6.13/bin/mysqld --version
+/usr/local/mysql-5.6.13/bin/mysqld  Ver 5.6.13 for Linux on x86_64 (Source distribution)
+</code></pre></li>
+</ol>
+
+
+<h2>インストール後</h2>
+
+<p>　データディレクトリの初期化、MySQLユーザの設定などを行なっていきます。</p>
+
+<ul>
+<li><h3>データディレクトリを初期化する（scripts/mysql_install_db）</h3>
+
+<p>　<code>PREFIX/scripts/mysql_install_db</code>をつかってデータディレクトリを初期化します。
+Perlスクリプトであるため実行するにはPerlがインストールされている必要があります。
+オプションとしてMySQLサーバの実行ユーザ、MySQLをインストールしているディレクトリ、データディレクトリを指定できます。
+その他使用できるオプションは<a href="http://dev.mysql.com/doc/refman/5.6/en/mysql-install-db.html">Reference Manualの4.4.3</a>を参照してください。</p>
+
+<pre><code>[root@localhost mysql-5.6.13]# cd /usr/local/mysql-5.6.13/
+[root@localhost mysql-5.6.13]# chown -R mysql:mysql .
+[root@localhost mysql-5.6.13]# ./scripts/mysql_install_db \
+&gt; --user=mysql \
+&gt; --basedir=/usr/local/mysql-5.6.13/ \
+&gt; --datadir=/usr/local/mysql-5.6.13/data/
+
+  Installing MySQL system tables...
+  ...
+  OK
+
+  Filling help tables...
+  ...
+  OK
+
+[root@localhost mysql-5.6.13]# chown -R root:root .
+[root@localhost mysql-5.6.13]# chown -R mysql:mysql data/
+</code></pre>
+
+<p>　データディレクトリやソケットファイルの格納ディレクトリなどが、実行ユーザにとって適当な権限設定になっていることを確認してください。
+Reference Manualには<a href="http://dev.mysql.com/doc/refman/5.6/en/mysql-install-db-problems.html">Problems Running mysql_install_db</a>というページも用意されています。</p>
+
+<p>　続いて、<code>PREFIX/bin/mysqld_safe</code>をつかってMySQLサーバの起動を試します。</p>
+
+<pre><code>[root@localhost mysql-5.6.13]# ./bin/mysqld_safe --user=mysql &amp;
+
+  130806 19:18:40 mysqld_safe Logging to '/usr/local/mysql-5.6.13/data/localhost.localdomain.err'.
+  130806 19:18:40 mysqld_safe Starting mysqld daemon with databases from /usr/local/mysql-5.6.13/data
+</code></pre></li>
+<li><h3>rootパスワードの設定（bin/mysql_secure_installation）</h3>
+
+<p>　<code>PREFIX/bin/mysql_secure_installation</code>をつかってrootパスワードを設定します。
+パスワード設定の他、匿名ユーザの削除やリモートからログインできるrootの削除などの操作を対話形式で指示できます。</p>
+
+<pre><code>[root@localhost mysql-5.6.13]# ./bin/mysql_secure_installation
+
+NOTE: RUNNING ALL PARTS OF THIS SCRIPT IS RECOMMENDED FOR ALL MySQL
+      SERVERS IN PRODUCTION USE!  PLEASE READ EACH STEP CAREFULLY!
+</code></pre>
+
+<p>　現時点のMySQL rootユーザのパスワードを入力して対話を開始します。
+初期化して直後の状態であれば、まだパスワードは設定されていないので、そのままEnterをおします。</p>
+
+<pre><code>In order to log into MySQL to secure it, we'll need the current
+password for the root user.  If you've just installed MySQL, and
+you haven't set the root password yet, the password will be blank,
+so you should just press enter here.
+
+Enter current password for root (enter for none):
+OK, successfully used password, moving on...
+</code></pre>
+
+<p>　MySQL rootユーザのパスワードを設定します。</p>
+
+<pre><code>Setting the root password ensures that nobody can log into the MySQL
+root user without the proper authorisation.
+
+Set root password? [Y/n] y
+New password:
+Re-enter new password:
+Password updated successfully!
+Reloading privilege tables..
+ ... Success!
+</code></pre>
+
+<p>　匿名ユーザを削除するかどうかを選択します。</p>
+
+<pre><code>By default, a MySQL installation has an anonymous user, allowing anyone
+to log into MySQL without having to have a user account created for
+them.  This is intended only for testing, and to make the installation
+go a bit smoother.  You should remove them before moving into a
+production environment.
+
+Remove anonymous users? [Y/n] y
+ ... Success!
+</code></pre>
+
+<p>　外部のホストからrootへのログインを禁止するかどうかを選択します。</p>
+
+<pre><code>Normally, root should only be allowed to connect from 'localhost'.  This
+ensures that someone cannot guess at the root password from the network.
+
+Disallow root login remotely? [Y/n] y
+ ... Success!
+</code></pre>
+
+<p>　初期化の時点で作成されたtestデータベースを削除するかどうかを選択します。通常、使用しないデータベースです。</p>
+
+<pre><code>By default, MySQL comes with a database named 'test' that anyone can
+access.  This is also intended only for testing, and should be removed
+before moving into a production environment.
+
+Remove test database and access to it? [Y/n] y
+ - Dropping test database...
+  ... Success!
+   - Removing privileges on test database...
+    ... Success!
+</code></pre>
+
+<p>　ここまでのユーザ権限に対する変更を直ちに適用するかどうかを選択します。</p>
+
+<pre><code>Reloading the privilege tables will ensure that all changes made so far
+will take effect immediately.
+
+Reload privilege tables now? [Y/n] y
+ ... Success!
+
+All done!  If you've completed all of the above steps, your MySQL
+installation should now be secure.
+
+Thanks for using MySQL!
+
+Cleaning up...
+</code></pre></li>
+</ul>
+
+
+<p>　そのほか、必要に応じて、my.cnfの設定、起動スクリプトの設置、自動起動の設定、実行バイナリへのパスの設定を行なってください。
+ソースコードのアーカイブには、標準のLSB起動スクリプトが用意されています。</p>
+
+<pre><code>  [root@localhost mysql-5.6.13]# cp support-files/mysql.server /etc/init.d/mysqld
+</code></pre>
+
+<h3>動作を確認する</h3>
+
+<p>  MySQLクライアントからMySQLサーバへアクセスして動作を確認してみます。</p>
+
+<pre><code>[root@localhost mysql-5.6.13]# ./bin/mysql -u root -p -h localhost
+
+  Enter password:
+  Welcome to the MySQL monitor.  Commands end with ; or \g.
+  Your MySQL connection id is 1
+  Server version: 5.6.13 Source distribution
+
+  Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
+
+  Oracle is a registered trademark of Oracle Corporation and/or its
+  affiliates. Other names may be trademarks of their respective
+  owners.
+
+  Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql&gt; SELECT version();
+
+  +-----------+
+  | version() |
+  +-----------+
+  | 5.6.13    |
+  +-----------+
+  1 row in set (0.00 sec)
+</code></pre>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://dev.mysql.com/doc/refman/5.6/en/index.html">MySQL :: MySQL 5.6 Reference Manual</a></li>
+</ul>
+
+
+<h3>関連記事</h3>
+
+<ul>
+<li><a href="http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-apache-http-server-2-dot-4-6/">Apache HTTP Server 2.4.6をインストールする（ソースからビルドする方法）</a></li>
+<li><a href="http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-php-5-dot-5-1/">PHP 5.5.1をインストールする（ソースからビルドする方法）</a></li>
+<li><a href="http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/">CentOS 6.4をインストールする</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Apache HTTP Server 2.4.6をインストールする（ソースからビルドする方法）]]></title>
+    <link href="http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-apache-http-server-2-dot-4-6/"/>
+    <updated>2013-07-31T22:10:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-apache-http-server-2-dot-4-6</id>
+    <content type="html"><![CDATA[<p>　Apache HTTP Server 2.4.6をソースコードからビルドして、Unix系システムへインストールする手引きです。
+この記事ではCentOS 6.4環境でインストールの例を示しますが、自身でソースからビルドする方法は特定のLinuxディストリビューションに依りません。<!-- more -->
+インストールを行うユーザは、インストール先ディレクトリに対して書込み権限をもっている必要があります。/usr/local/* にインストールする場合、通常、root権限が必要です。</p>
+
+<ol>
+<li><h3>ソースコードを取得する</h3>
+
+<p>　ソースコードをインストールするマシンに用意します。
+インターネットからダウンロードする場合、<a href="http://httpd.apache.org/download.cgi#apache24" title="Download - The Apache HTTP Server Project">httpd.apache.org</a>にソースコードのURLが示されています。
+bzip2、gzipのアーカイブが用意されていますので、マシンで解凍・展開できる形式を選択してください。</p>
+
+<p>　ダウンロードにはcURLやGNU Wgetなどのダウンロードマネージャやウェブブラウザを使用します。
+次の例では、cURLをつかって<a href="http://ftp.riken.jp/net/apache/" title="Software archives at ftp.riken.jp">理化学研究所</a>のミラーからhttpd-2.4.6.tar.gzをダウンロードします。</p>
+
+<pre><code>[root@localhost ~]# curl -LsO http://ftp.riken.jp/net/apache//httpd/httpd-2.4.6.tar.gz
+</code></pre>
+
+<p>　取得したアーカイブファイルは適宜、解凍・展開して、ワーキングディレクトリを移動させます。
+<a href="http://www.pathname.com/fhs/pub/fhs-2.3.html#USRLOCALLOCALHIERARCHY" title="Filesystem Hierarchy Standard 2.3">FHS</a>に従うシステムであれば、独自にインストールするソフトウェアのためのディレクトリ /usr/local が予め用意されていますので、この記事ではソースコードを /usr/local/src に配置してインストールをすすめます。</p>
+
+<pre><code>[root@localhost ~]# tar xfz httpd-2.4.6.tar.gz -C /usr/local/src/
+[root@localhost ~]# cd /usr/local/src/httpd-2.4.6/
+[root@localhost httpd-2.4.6]# 
+</code></pre></li>
+<li><h3>インストール要件を満たす</h3>
+
+<p>　マシンがインストールの要件を満たしている必要があります。
+要件については<a href="http://httpd.apache.org/docs/2.4/en/install.html" title="Compiling and Installing - Apache HTTP Server">Documentation</a>に詳しい説明があります。</p>
+
+<ul>
+<li><p>Cコンパイラ</p>
+
+<pre><code>[root@localhost ~]# yum install gcc
+</code></pre></li>
+<li><p>Make</p>
+
+<pre><code>[root@localhost ~]# yum install make
+</code></pre></li>
+<li><p><a href="http://apr.apache.org/" title="The Apache Portable Runtime Project">APR</a> &ndash; 予めシステムに備わっていない場合（またはシステムが提供するバージョンを使用したくない場合）は<a href="http://apr.apache.org/download.cgi" title="Download - The Apache Portable Runtime Project">apr.apache.org</a>から取得してhttpdに含めてビルドします。取得したAPRとAPR-Utilはバージョン番号を取り除いて&#8221;./srclib/apr&#8221;と&#8221;./srclib/apt-util&#8221;に展開します。</p>
+
+<pre><code>[root@localhost httpd-2.4.6]# cd srclib/
+[root@localhost srclib]# curl -Lso apr-1.4.8.tar.gz http://ftp.jaist.ac.jp/pub/apache//apr/apr-1.4.8.tar.gz
+[root@localhost srclib]# tar xfz apr-1.4.8.tar.gz
+[root@localhost srclib]# mv apr-1.4.8/ apr
+[root@localhost srclib]# curl -Lso apr-util-1.5.2.tar.gz http://ftp.jaist.ac.jp/pub/apache//apr/apr-util-1.5.2.tar.gz
+[root@localhost srclib]# tar xfz apr-util-1.5.2.tar.gz
+[root@localhost srclib]# mv apr-util-1.5.2/ apr-util
+</code></pre></li>
+<li><p>PCREライブラリ &ndash; <a href="http://www.pcre.org/" title="PCRE - Perl Compatible Regular Expressions">www.pcre.org</a>やディストリビューションからインストールします。</p>
+
+<pre><code>[root@localhost httpd-2.4.6]# yum install pcre-devel
+</code></pre></li>
+</ul>
+</li>
+<li><h3>ビルドファイルを作成する</h3>
+
+<p>　configureをつかってビルドファイルを作成します。configureにオプションを与えることで、インストール先のディレクトリや有効にするモジュールを調整できます。
+指定できるオプションについては<code>configure --help</code>や<a href="http://httpd.apache.org/docs/2.4/en/programs/configure.html">Documentation</a>を参照してください。
+ビルドの要件を満たしていない場合、configureの処理は中断されます。</p>
+
+<p>　例えば、インストール先のディレクトリを /usr/local/httpd-2.4.6 として、
+<a href="http://httpd.apache.org/docs/2.4/en/dso.html" title="Dynamic Shared Object (DSO) Support - Apache HTTP Server">DSOサポート</a>を有効、<a href="http://httpd.apache.org/docs/2.4/en/mpm.html" title="Multi-Processing Modules (MPMs) - Apache HTTP Server">MPM</a>を<a href="http://httpd.apache.org/docs/2.4/en/mod/prefork.html" title="prefork - Apache HTTP Server">prefork</a>と明示して、
+新たに取得したAPRを使用する場合は次のようにconfigureを実行します。</p>
+
+<pre><code>[root@localhost httpd-2.4.6]# ./configure --prefix=/usr/local/httpd-2.4.6 --enable-so --with-mpm=prefork --with-included-apr
+</code></pre>
+
+<p>　次に、configureのエラー例をいくつか示します。</p>
+
+<ul>
+<li><h4>APR not found.</h4>
+
+<pre><code>checking for APR... no
+configure: error: APR not found.  Please read the documentation.
+</code></pre>
+
+<p>　APRが正しくインストールされているか確認してください。</p></li>
+<li><h4>no acceptable C compiler found in $PATH</h4>
+
+<pre><code>checking for gcc... no
+checking for cc... no
+checking for cl.exe... no
+configure: error: in `/usr/local/src/httpd-2.4.6/srclib/apr':
+configure: error: no acceptable C compiler found in $PATH
+</code></pre>
+
+<p>　Cコンパイラが正しくインストールされているか確認してください。</p></li>
+<li><h4>pcre-config for libpcre not found.</h4>
+
+<pre><code>checking for pcre-config... false
+configure: error: pcre-config for libpcre not found. PCRE is required and available from http://pcre.org/
+</code></pre>
+
+<p>　PCREライブラリが正しくインストールされているか確認してください。</p></li>
+</ul>
+
+
+<p>　configureの処理が終了してMakefileが作成されていれば、ビルドの段階へすすみます。</p></li>
+<li><h3>ビルドとインストール</h3>
+
+<p>　ビルドとインストールにはmakeを使います。ディスクの容量が充分足りていることを確認してください。</p>
+
+<pre><code>[root@localhost httpd-2.4.6]# make &amp;&amp; make install
+</code></pre>
+
+<p>　makeの処理が無事に終了したらインストールは完了です。
+configureの<code>--prefix</code>に指定した位置にファイルが展開されているはずです。PREFIXを指定していなかった場合は&#8221;/usr/local/apache2&#8221;になります。</p>
+
+<pre><code>[root@localhost httpd-2.4.6]# /usr/local/httpd-2.4.6/bin/httpd -v
+Server version: Apache/2.4.6 (Unix)
+</code></pre></li>
+</ol>
+
+
+<h2>インストール後</h2>
+
+<p>　必要に応じて、httpd.confの設定、起動スクリプトの設置、自動起動の設定、実行バイナリへのパスの設定を行なってください。
+ソースコードのアーカイブには、標準のLSB起動スクリプトが用意されています。</p>
+
+<pre><code>[root@localhost httpd-2.4.6]# cp /usr/local/src/httpd-2.4.6/build/rpm/httpd.init /etc/init.d/httpd
+</code></pre>
+
+<h3>動作を確認する</h3>
+
+<p>　最後に、ウェブサーバの動作を少し確認してみます。
+ウェブサーバにとって外部のホストから動作を確認する場合はファイアウォール等の制限を受けやすいので、まずはインストールを行ったマシンからループバックで確認するとネットワークアクセスの問題と区別できます。</p>
+
+<p>　FirefoxやLynxなどのブラウザや、GNU WgetやcURLをつかって、自身に対してHTTPリクエストを送信します（Wget、cURLを使う場合、HTMLの描写はされません）。
+うまく動作していればドキュメントルートに予め用意されているHTMLファイルを応答するはずです。</p>
+
+<pre><code>[root@localhost ~]# lynx localhost
+</code></pre>
+
+<p><img src="http://momoto.github.io/blog/images/2013-07-31-guide-to-compiling-and-installing-apache-http-server-2-dot-4-6/apache-http-server-works.png" title="LynxでApache HTTP Server 2.4.6の動作を確認する" ></p>
+
+<p>　ネットワークアクセスを介すると動作が確認できなくなる場合、様々な原因が考えられますが、GNU/LinuxのシステムでよくあるのはiptablesやSELinuxなどのセキュリティによるものです。
+外部からのアクセスを受け入れようとする場合はHTTPのネットワーク通信を許可する必要がありますが、これらの作業は実質、セキュリティ強度を緩和しているので、マシンが接続しているネットワークや記録しているコンテンツをよく確かめて設定するべきです。
+Apache HTTP Serverの領域から少し外れますが、iptablesとSELinuxの設定の確認方法を示します。</p>
+
+<ul>
+<li><p>　iptablesを使用している場合、パケットフィルタのルールを確認します。
+例えばCentOS 6.4の初期状態では下記のように、ポート80の受信の許可を明示していないため、外部のクライアントからのリクエストに応答できません。</p>
+
+<pre><code>[root@localhost ~]# iptables --list-rules
+-P INPUT ACCEPT
+-P FORWARD ACCEPT
+-P OUTPUT ACCEPT
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+</code></pre>
+
+<p>　上記のようなルールの場合、<code>-A INPUT -j REJECT --reject-with icmp-host-prohibited</code>の上に、<code>-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT</code>というルールを新しく追加する等の変更が必要になります。
+変更の方法も様々ですが、CentOS 6.4であれば/etc/sysconfig/iptablesを書き換えた後にiptablesを再起動するとルールが再設定されます。</p></li>
+<li><p>　SELinuxを使用している場合、<code>httpd_can_network_connect</code>の値を確認します。</p>
+
+<pre><code>[root@localhost ~]# getsebool httpd_can_network_connect
+httpd_can_network_connect --&gt; off
+</code></pre>
+
+<p>　ネットワークを通してウェブサーバを使用する場合は、この値にonを設定します。</p>
+
+<pre><code>[root@localhost ~]# setsebool -P httpd_can_network_connect on
+</code></pre>
+
+<p>　<code>httpd_can_network_connect</code>の他、CGIやDBを制限する項目もあるので、用途に応じて適当なポリシーを設定する必要があります。</p></li>
+</ul>
+
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://httpd.apache.org/docs/2.4/" title="Apache HTTP Server Version 2.4 Documentation - Apache HTTP Server">Apache HTTP Server Version 2.4 Documentation &ndash; Apache HTTP Server</a></li>
+<li><a href="http://apr.apache.org/" title="The Apache Portable Runtime Project">The Apache Portable Runtime Project</a></li>
+</ul>
+
+
+<h3>関連記事</h3>
+
+<ul>
+<li><a href="http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-mysql-community-server-5-dot-6-13/">MySQL Community Server 5.6.13をインストールする（ソースからビルドする方法）</a></li>
+<li><a href="http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-php-5-dot-5-1/">PHP 5.5.1をインストールする（ソースからビルドする方法）</a></li>
+<li><a href="http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/">CentOS 6.4をインストールする</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Debian 7.1.0をインストールする]]></title>
+    <link href="http://momoto.github.io/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst/"/>
+    <updated>2013-06-23T05:54:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst</id>
+    <content type="html"><![CDATA[<p>　Debian 7.1.0をインストールした手順の記録です。インストールメディアはdebian-7.1.0-amd64-netinst.isoを使用しています。インターネットへ接続できる環境を前提にしています。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/01.png" width="400" title="インストーラの起動" ><!-- more --></p>
+
+<ol>
+<li><h3>言語、地域、キーボードの選択</h3>
+
+<ol>
+<li><p>　インストーラで使用される言語とベースシステムに含める言語パッケージを選択します。この記事では日本語を選択してインストールをすすめます。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/02-01.png" width="400" title="言語の選択" ></p></li>
+<li><p>　次に、地域を選択します。先に選択した言語に関連する地域にあらかじめ焦点があてられています。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/02-02.png" width="400" title="場所の選択" ></p></li>
+<li><p>　続いて、キーボード配列を選択します。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/02-03.png" width="400" title="キーボードの設定" ></p></li>
+</ol>
+</li>
+<li><h3>ネットワークの設定</h3>
+
+<ol>
+<li><p>ホスト名を入力します。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/03-01.png" width="400" title="ホスト名の入力" ></p></li>
+<li><p>ドメイン名を入力します。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/03-02.png" width="400" title="ドメイン名の入力" ></p></li>
+</ol>
+</li>
+<li><h3>ユーザとパスワードのセットアップ</h3>
+
+<ol>
+<li><p>rootのパスワードを入力します。確認のため入力は二度、必要です。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-01.png" width="400" title="rootのパスワードを設定" ></p></li>
+<li><p>一般ユーザの名前を入力します。名前は次の画面でも入力しますが、ここで入力する名前はGUIのログイン画面等で表示されます。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-02.png" width="400" title="非管理者権限ユーザの名前（本名）を入力" ></p></li>
+<li><p>続いて、ホームディレクトリのディレクトリ名にもなるユーザ名を入力します。前の画面で入力した名前よりも、使用出来る文字は制限されます。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-03.png" width="400" title="非管理者権限ユーザの名前（ログイン名）を入力" ></p></li>
+<li><p>一般ユーザのパスワードを入力します。rootのときと同様に入力は二度、必要です。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-04.png" width="400" title="非管理者権限ユーザのパスワードを設定" ></p></li>
+</ol>
+</li>
+<li><h3>ディスクのパーティショニング</h3>
+
+<ol>
+<li><p>　パーティショニングを「ガイド」（自動）で行うか、「手動」で行うかを選択します。パーティション構成を詳しく指定する必要がある場合には「手動」を選択します。この記事では「ガイド &ndash; ディスク全体を使う」でインストールを進めます。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-01.png" width="400"></p></li>
+<li><p>　パーティショニングの対象となるストレージデバイスを選択します。デバイスを正しく認識していれば、この画面の選択肢に現れているはずです。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-02.png" width="400"></p></li>
+<li><p>　ガイドに従ってパーティション構成を選択します。ここで選択できるものより複雑なパーティショニングが必要な場合は手動で設定しなければなりません。この記事では「すべてのファイルを１つのパーティションに」を選択してインストールをすすめます。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-03.png" width="400"></p></li>
+<li><p>　ここまでのパーティション設定を確認します。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-04.png" width="400"></p></li>
+<li><p>　ストレージデバイスに対する書込みの最後の確認です。書込みを行うとそれまで記録されていた情報は削除されますので、対象デバイスとパーティションをよく確かめて画面をすすめてください。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-05.png" width="400"></p></li>
+</ol>
+</li>
+<li><h3>パッケージマネージャの設定</h3>
+
+<ul>
+<li><p>　Debianアーカイブミラーをホストしている地域を選択します。「自国でさえ最適の選択とは限らない」とありますが、国内で利用する場合においては「日本」を選択するのが最も適当です。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-01.png" width="400" title="Debianアーカイブミラーをホストしている地域を選択する" ></p></li>
+<li><p>　選択した地域からミラーサーバを選択します。<a href="ftp://ftp.jp.debian.org/">ftp.jp.debian.org</a>と<a href="ftp://ftp.jaist.ac.jp/">ftp.jaist.ac.jp</a>については、管理者のブログが公開されています（<a href="http://debiancdn.wordpress.com/">debiancdn | AWS, Content Delivery Network and Debian</a>、<a href="http://ftp-admin.blogspot.jp/">ftp-adminの憂鬱</a>）。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-02.png" width="400" title="Debianアーカイブミラーサーバを選択する" ></p></li>
+<li><p>　任意で、HTTPプロキシ情報を入力します。とくに必要でなければ、空のまま画面をすすめてください。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-03.png" width="400" title="HTTPプロキシ情報を入力する" ></p></li>
+<li><p>　Debianパッケージ利用調査へ参加するかどうかを選択します。この調査結果は<a href="http://popcon.debian.org/">Debian Popularity Contest</a>で公開されています。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-04.png" width="400" title="Debianパッケージ利用調査への参加" ></p></li>
+</ul>
+</li>
+<li><h3>ソフトウェアの選択</h3>
+
+<p>　ベースシステムと同時にインストールするソフトウェアスイートを選択します。ここで表示されるリストは<a href="http://wiki.debian.org/tasksel">tasksel</a>によって抽象化された「タスク」です。どのパッケージをインストールするか、自分で具体的に指定する必要がある場合（インストールしたいのはmysql-serverではなくpostgresqlである等）は、ここでは選択せずに、ベースシステムのインストール後に改めてインストールするべきです。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/07.png" width="400" title="ソフトウェアの選択" ></p></li>
+<li><h3>GRUBブートローダのインストール</h3>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/08.png" width="400" title="ブートローダのインストール" ></p></li>
+<li><h3>インストールの完了</h3>
+
+<p>　ベースシステムのインストールが完了したら、システムを再起動します。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/09.png" width="400" title="インストールの完了" ></p></li>
+</ol>
+
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://www.debian.org/releases/stable/installmanual">Debian wheezy &mdash; インストールガイド</a></li>
+</ul>
+
+
+<h3>関連記事</h3>
+
+<ul>
+<li><a href="http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/">CentOS 6.4をインストールする</a></li>
+<li><a href="http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213/">Gentoo Linuxをインストールする</a></li>
+<li><a href="http://momoto.github.io/blog/2013/01/05/install-arch-linux/">Arch Linux 2012.12.01をインストールする</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[HerokuにRedmine 2.3.1を展開する]]></title>
+    <link href="http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku/"/>
+    <updated>2013-05-31T23:19:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku</id>
+    <content type="html"><![CDATA[<p>　Herokuが提供するPaaSに、プロジェクト管理ソフトウェア Redmine 2.3.1を展開します。Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、<a href="https://aur.archlinux.org/packages/heroku-client/">heroku-toolbelt</a>は2.39.4を使用しました。<!-- more --></p>
+
+<h4>Redmine 2.3.1のダウンロード</h4>
+
+<p>2013.05.31の時点で最新版である2.3.1をGitでクローンします。また、productionというブランチを作成し、チェックアウトします。</p>
+
+<pre><code>$ git clone git://github.com/redmine/redmine.git
+
+  Cloning into 'redmine'...
+  remote: Counting objects: 101645, done.
+  remote: Compressing objects: 100% (23821/23821), done.
+  remote: Total 101645 (delta 79311), reused 98395 (delta 76195)
+  Receiving objects: 100% (101645/101645), 25.39 MiB | 256.00 KiB/s, done.
+  Resolving deltas: 100% (79311/79311), done.
+
+$ cd redmine
+$ git checkout -b production
+
+  Switched to a new branch 'production'
+</code></pre>
+
+<h4>Rubyの確認</h4>
+
+<p>ここではRubyのバージョン管理にrbenvを使用しています。また、インストールの過程でBundlerが必要になります。</p>
+
+<pre><code>$ rbenv local 1.9.2-p320
+$ ruby --version
+
+  ruby 1.9.2p320 (2012-04-20 revision 35421) [x86_64-linux]
+
+$ gem install bundler
+
+  Successfully installed bundler-1.3.5
+  1 gem installed
+  Installing ri documentation for bundler-1.3.5...
+  Building YARD (yri) index for bundler-1.3.5...
+  Installing RDoc documentation for bundler-1.3.5...
+</code></pre>
+
+<h4>.gitignoreの編集</h4>
+
+<p>次の記述を削除します。</p>
+
+<pre><code>-/config/configuration.yml
+-/config/email.yml
+-/config/initializers/session_store.rb
+-/config/initializers/secret_token.r
+
+-/public/plugin_assets
+
+-/Gemfile.lock
+-/Gemfile.local
+</code></pre>
+
+<h4>Gemfileの編集</h4>
+
+<p>次のように書き換えました。</p>
+
+<pre><code>source 'https://rubygems.org'
+
+gem "rails", "3.2.13"
+gem "jquery-rails", "~&gt; 2.0.2"
+gem "i18n", "~&gt; 0.6.0"
+gem "coderay", "~&gt; 1.0.6"
+gem "fastercsv", "~&gt; 1.5.0", :platforms =&gt; [:mri_18, :mingw_18, :jruby]
+gem "builder", "3.0.0"
+
+group :ldap do
+  gem "net-ldap", "~&gt; 0.3.1"
+end
+
+group :openid do
+  gem "ruby-openid", "~&gt; 2.1.4", :require =&gt; "openid"
+  gem "rack-openid"
+end
+
+platforms :mri, :mingw do
+  group :rmagick do
+    gem "rmagick", "&gt;= 2.0.0"
+  end
+end
+
+platforms :mri, :mingw do  
+  group :postgresql do  
+    gem "pg", "&gt;= 0.11.0"  
+  end  
+end  
+
+platforms :jruby do  
+  gem "jruby-openssl"  
+
+  group :postgresql do  
+    gem "activerecord-jdbcpostgresql-adapter"  
+  end  
+end
+
+group :development do
+  gem "rdoc", "&gt;= 2.4.2"
+  gem "yard"
+end
+
+group :test do
+  gem "shoulda", "~&gt; 3.3.2"
+  gem "mocha", "&gt;= 0.14", :require =&gt; 'mocha/api'
+  if RUBY_VERSION &gt;= '1.9.3'
+    gem "capybara", "~&gt; 2.1.0"
+    gem "selenium-webdriver"
+  end
+end
+
+local_gemfile = File.join(File.dirname(__FILE__), "Gemfile.local")
+if File.exists?(local_gemfile)
+  puts "Loading Gemfile.local ..." if $DEBUG # `ruby -d` or `bundle -v`
+  instance_eval File.read(local_gemfile)
+end
+
+# Load plugins' Gemfiles
+Dir.glob File.expand_path("../plugins/*/Gemfile", __FILE__) do |file|
+  puts "Loading #{file} ..." if $DEBUG # `ruby -d` or `bundle -v`
+  #TODO: switch to "eval_gemfile file" when bundler &gt;= 1.2.0 will be required (rails 4)
+  instance_eval File.read(file), file
+end
+</code></pre>
+
+<h4>config/application.rbの編集</h4>
+
+<p>次の記述を追記しました。</p>
+
+<pre><code>+    config.assets.initialize_on_precompile = false
+</code></pre>
+
+<h4>config/environment.rbの編集</h4>
+
+<p>次の記述をコメントアウトします。</p>
+
+<pre><code>-vendor_plugins_dir = File.join(Rails.root, "vendor", "plugins")
+-if Dir.glob(File.join(vendor_plugins_dir, "*")).any?
+-  $stderr.puts "Plugins in vendor/plugins (#{vendor_plugins_dir}) are no longer allowed. " +
+-    "Please, put your Redmine plugins in the `plugins` directory at the root of your " +
+-    "Redmine directory (#{File.join(Rails.root, "plugins")})"
+-  exit 1
+-end
++#vendor_plugins_dir = File.join(Rails.root, "vendor", "plugins")
++#if Dir.glob(File.join(vendor_plugins_dir, "*")).any?
++#  $stderr.puts "Plugins in vendor/plugins (#{vendor_plugins_dir}) are no longer allowed. " +
++#    "Please, put your Redmine plugins in the `plugins` directory at the root of your " +
++#    "Redmine directory (#{File.join(Rails.root, "plugins")})"
++#  exit 1
++#end
+</code></pre>
+
+<h4>Gemパッケージのインストール</h4>
+
+<p>必要なGemパッケージをインストールします。config/database.ymlの設定を促されていますが、現時点では設定しません。</p>
+
+<pre><code>$ bundle install
+
+  Please configure your config/database.yml first
+  Fetching gem metadata from https://rubygems.org/.........
+  Resolving dependencies...
+  ...
+  Your bundle is complete!
+</code></pre>
+
+<p>セッションストアを生成します。</p>
+
+<pre><code>$ bundle exec rake generate_secret_token
+
+  Please configure your config/database.yml first
+  Please configure your config/database.yml first
+</code></pre>
+
+<h4>アプリケーションの作成</h4>
+
+<p>Herokuツールベルトを使用して、アプリケーションを作成します。ツールベルトと同様に、Herokuアカウントの登録が必要です。</p>
+
+<pre><code>$ heroku login
+
+  Enter your Heroku credentials.
+  Email: ********
+  Password (typing will be hidden): 
+  Authentication successful.
+
+$ heroku create [NAME]
+
+  Creating [NAME]... done, stack is cedar
+  http://[NAME].herokuapp.com/ | git@heroku.com:[NAME].git
+  Git remote heroku added
+</code></pre>
+
+<h4>Herokuへ配置</h4>
+
+<p>Gitを使用します。Pushの時点でconfig/database.ymlが自動的に作られるようです。</p>
+
+<pre><code>$ git add .
+$ git commit -m "init"
+$ git push heroku production:master
+
+  -----&gt; Ruby/Rails app detected
+  -----&gt; Installing dependencies using Bundler version 1.3.2
+  -----&gt; Writing config/database.yml to read from DATABASE_URL
+  -----&gt; Preparing app for Rails asset pipeline
+
+  -----&gt; Launching... done, v8
+</code></pre>
+
+<h4>テーブルやデフォルトデータの用意</h4>
+
+<p>言語を選択するプロンプトが現れます。</p>
+
+<pre><code>$ heroku run rake db:migrate
+
+  Connecting to database specified by DATABASE_URL
+  Creating scope :system. Overwriting existing method Enumeration.system.
+  ...
+
+$ heroku run rake redmine:load_default_data
+
+  Connecting to database specified by DATABASE_URL
+  Creating scope :system. Overwriting existing method Enumeration.system.
+
+  Select language: ar, az, bg, bs, ca, cs, da, de, el, en, en-GB, es, et, eu, fa, fi, fr, gl, he, hr, hu, id, it, ja, ko, lt, lv, mk, mn, nl, no, pl, pt, pt-BR, ro, ru, sk, sl, sq, sr, sr-YU, sv, th, tr, uk, vi, zh, zh-TW [en] ja
+  ====================================
+  Default configuration data loaded.
+</code></pre>
+
+<h4>動作確認</h4>
+
+<p>HerokuのアプリケーションURLへアクセスして、動作を確認します。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-05-31-deploy-redmine-2-dot-3-1-on-heroku/01.png" width="500"></p>
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="https://github.com/redmine/redmine">Redmine</a></li>
+<li><a href="http://redmine.jp/guide/RedmineInstall/">Redmineのインストール &mdash; Redmine Guide 日本語訳</a></li>
+<li><a href="https://devcenter.heroku.com/articles/rails3">Getting Started with Rails 3.x on Heroku | Heroku Dev Center</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[GUIDパーティションテーブルでのSyslinuxのインストール]]></title>
+    <link href="http://momoto.github.io/blog/2013/04/08/install-syslinux-on-gpt-partition-styled-disk/"/>
+    <updated>2013-04-08T20:46:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/04/08/install-syslinux-on-gpt-partition-styled-disk</id>
+    <content type="html"><![CDATA[<p>　GUIDパーティションテーブル（GPT）規格のディスクにSyslinuxをインストールした手順の記録です。OSはArch Linux、パーティショニングにはgptfdisk（gdisk）を使用しています。GPTの利点は2TiBを超える記憶容量を管理できることにありますが、ここでは練習のため8GBの仮想ディスクを使用します。パーティションは以下のようにrootとbootだけに分割します。</p>
+
+<pre><code>Number  Start (sector)    End (sector)  Size       Code  Name
+   1            2048          206847   100.0 MiB   EF02  BIOS boot partition
+   2          206848        16777182   7.9 GiB     8300  Linux filesystem
+</code></pre>
+
+<!-- more -->
+
+
+<h3>1. gdiskを使用してパーティションを区切る</h3>
+
+<p>　対象のストレージデバイスを指定してgdiskを起動します。本稿では/dev/sdaに対してパーティションを区切っていきます。</p>
+
+<pre><code>root@archiso ~ # gdisk /dev/sda
+GPT fdisk (gdisk) version 0.8.5
+
+Partition table scan:
+  MBR: not present
+  BSD: not present
+  APM: not present
+  GPT: not present
+
+Creating new GPT entries.
+
+Command (? for help): 
+</code></pre>
+
+<p>　<code>o</code>で空のパーティションテーブルを作成します。このときデバイスのすべてのパーティションが削除されることに注意してください。</p>
+
+<pre><code>Command (? for help): o
+This option deletes all partitions and creates a new protective MBR.
+Proceed? (Y/N): Y
+</code></pre>
+
+<p>　<code>n</code>で新しいパーティションを作成します。前述の構成のとおり、２つのパーティションを作成します。</p>
+
+<pre><code>Command (? for help): n
+Partition number (1-128, default 1): 
+First sector (34-16777182, default = 2048) or {+-}size{KMGTP}: 
+Last sector (2048-16777182, default = 16777182) or {+-}size{KMGTP}: +100M
+Current type is 'Linux filesystem'
+Hex code or GUID (L to show codes, Enter = 8300): ef02
+Changed type of partition to 'BIOS boot partition'
+
+Command (? for help): n
+Partition number (2-128, default 2): 
+First sector (34-16777182, default = 206848) or {+-}size{KMGTP}: 
+Last sector (206848-16777182, default = 16777182) or {+-}size{KMGTP}: 
+Current type is 'Linux filesystem'
+Hex code or GUID (L to show codes, Enter = 8300): 
+Changed type of partition to 'Linux filesystem'
+</code></pre>
+
+<p>　<code>p</code>で現時点のパーティションを表示し、構成を確認します。</p>
+
+<pre><code>Command (? for help): p
+Disk /dev/sda: 16777216 sectors, 8.0 GiB
+Logical sector size: 512 bytes
+Disk identifier (GUID): ********-****-****-****-************
+Partition table holds up to 128 entries
+First usable sector is 34, last usable sector is 16777182
+Partitions will be aligned on 2048-sector boundaries
+Total free space is 2014 sectors (1007.0 KiB)
+
+Number  Start (sector)    End (sector)  Size       Code  Name
+   1            2048          206847   100.0 MiB   EF02  BIOS boot partition
+   2          206848        16777182   7.9 GiB     8300  Linux filesystem
+</code></pre>
+
+<p>　<code>w</code>でテーブルをストレージデバイスに書き込みます。</p>
+
+<pre><code>Command (? for help): w
+
+Final checks complete. About to write GPT data. THIS WILL OVERWRITE EXISTING
+PARTITIONS!!
+
+Do you want to proceed? (Y/N): Y
+OK; writing new GUID partition table (GPT) to /dev/sda.
+The operation has completed successfully.
+</code></pre>
+
+<p>　ファイルシステムまで作成したらストレージデバイスの用意は完了です。</p>
+
+<pre><code># mkfs.ext4 /dev/sda1
+# mkfs.ext4 /dev/sda2
+</code></pre>
+
+<h3>2. ブートローダのインストール</h3>
+
+<p>　ディストリビューション等で配布されているSyslinuxをインストールします。また、Arch Linuxのようにchroot環境でブートローダをインストールする場合、sgdiskが含まれているgptfdiskパッケージも同時にインストールします。syslinux.cfgではルートのファイルシステム（前述の構成では/dev/sda2）が正しく指定されている必要があります。</p>
+
+<pre><code># pacman -S gptfdisk syslinux
+
+    ...
+    Optional dependencies for syslinux
+        gptfdisk: For GPT support [installed]
+        util-linux: For isohybrid [installed]
+
+# vi /boot/syslinux/syslinux.cfg
+
+    ...
+    LABEL arch
+            MENU LABEL Arch Linux
+            LINUX ../vmlinuz-linux
+            APPEND root=/dev/sda2 ro
+            INITRD ../initramfs-linux.img
+    ...
+
+# syslinux-install_update -i -a
+
+    Syslinux install successful
+    Attribute Legacy Bios Bootable Set - /dev/sda1
+</code></pre>
+
+<p>　sgdiskでパーティション属性を指定した後、ブートコード（gptmbr.bin）を設置します。</p>
+
+<pre><code># sgdisk /dev/sda --attributes=1:set:2
+
+    Warning: The kernel is still using the old partition table.
+    The new table will be used at the next reboot.
+    The operation has completed successfully.
+
+# sgdisk /dev/sda --attributes=1:show
+
+    1:2:1 (legacy BIOS bootable)
+
+# dd bs=440 conv=notrunc count=1 if=/usr/lib/syslinux/gptmbr.bin of=/dev/sda
+
+    1+0 records in
+    1+0 records out
+    440 bytes (440 B) copied, 0.00221059 s, 199 kB/s
+</code></pre>
+
+<h3>関連</h3>
+
+<ul>
+<li><a href="http://momoto.github.io/blog/2013/01/05/install-arch-linux/">Arch Linux 2012.12.01のインストール</a></li>
+</ul>
+
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="https://wiki.archlinux.org/index.php/Partitioning">Partitioning &ndash; ArchWiki</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/GUID_Partition_Table">GUID Partition Table &ndash; ArchWiki</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/Syslinux">Syslinux &ndash; ArchWiki</a></li>
+<li><a href="http://www.syslinux.org/wiki/index.php/Mbr">Mbr &ndash; Syslinux Wiki</a></li>
+<li><a href="http://www.syslinux.org/wiki/index.php/Common_Problems#Missing_OS_.28gptmbr.bin.29">Common Problems &ndash; Syslinux Wiki</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CentOS 6.4をインストールする]]></title>
+    <link href="http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/"/>
+    <updated>2013-04-06T01:37:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall</id>
+    <content type="html"><![CDATA[<p>　CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。インターネットへ接続できる環境を前提にしています。</p>
+
+<ol>
+<li><h3>Anacondaの起動</h3>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/01.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/01_thumbnail.png" title="Anacondaの起動" ></a></p>
+
+<p>　インストールメディアからCentOSのインストーラ&#8221;Anaconda&#8221;を起動します。このとき、インストールメディア（光学ドライブやUSB、あるいはISOイメージファイル）が優先的に起動されるようにコンピュータ側（BIOSや仮想化環境）で正しく設定されている必要があります。</p>
+
+<p>　インストールを開始するために、&#8221;Install or upgrade an existing system&#8221;を選択します。<!-- more --></p></li>
+<li><h3>インストールメディアのチェック</h3>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02_thumbnail.png" title="インストールメディアのチェック" ></a></p>
+
+<p>　必要に応じてメディアチェックを行います。このチェックはインストールに必ずしも必要ではありません。チェックを行う場合は「OK」を、チェックを省略してインストールを開始する場合は「Skip」を選択します。</p></li>
+<li><h3>言語の選択</h3>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/03.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/03_thumbnail.png" title="言語の選択" ></a></p>
+
+<p>　インストーラで使用される言語とベースシステムに含める言語パッケージを選択します。日本語も用意されていますが、翻訳が未対応の箇所では原文が表示されます。この記事では英語を選択してインストールを進めます。</p></li>
+<li><h3>キーボード配列の選択</h3>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/04.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/04_thumbnail.png" title="キーボード配列の選択" ></a></p>
+
+<p>使用しているキーボードにあわせて、キーボード配列を選択します。日本語キーボードであれば&#8221;jp106&#8221;を選択します。</p></li>
+<li><h3>インストール方法の選択</h3>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/05.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/05_thumbnail.png" title="インストール方法の選択" ></a></p>
+
+<p>ネットワークインストールの場合、&#8221;URL&#8221;を選択します。</p>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/06.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/06_thumbnail.png" title="TCP&frasl;IPの設定" ></a></p>
+
+<p>　続いて、TCP/IPを設定します。IPv4、IPv6サポートの有無と、それぞれのプロトコルにおいて動的IP（DHCP）を使用するかどうかを選択します。この記事ではIPv4のみ有効化し、動的IPを使用するように設定してインストールを進めます。</p>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/07.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/07_thumbnail.png" title="ネットワークインストールのURLの設定" ></a></p>
+
+<p>　<a href="http://www.centos.org/modules/tinycontent/index.php?id=32">CentOS Mirrors</a>にあるミラー等を参考に、対象アーキテクチャの&#8221;images/install.img&#8221;のURLを入力します。例えば、アーキテクチャが&#8221;i386&#8221;で、<a href="http://www.riken.jp/">理研</a>のミラーを使用する場合のURLは <a href="http://ftp.riken.jp/Linux/centos/6.4/os/i386/images/install.img">http://ftp.riken.jp/Linux/centos/6.4/os/i386/images/install.img</a> になります。</p>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/08.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/08_thumbnail.png" title="ネットワークインストールのURLの入力" ></a></p>
+
+<p>　<code>OSError: /lib64/libudev.so.0: wrong ELF class: ELFCLASS64</code>と表示されて処理が止まった場合は、install.imgのアーキテクチャが正しいかどうか確認してください。</p></li>
+<li><h3>グラフィカルインストールの開始</h3>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/09.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/09_thumbnail.png" title="Anacondaのグラフィカルユーザインタフェース" ></a></p>
+
+<p>　続いて、AnacondaのGUIにしたがってインストールを進めていきます。ブートメニューに指定するオプション（<code>boot: linux text</code>）によって、テキストモードインストールを使用することも可能ですが、テキストモードでは設定できない項目もあるため、通常はグラフィカルモードを使用します。</p></li>
+<li><h3>ストレージ形式の選択</h3>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/10.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/10_thumbnail.png" title="ストレージ形式の選択" ></a></p>
+
+<p>特殊なストレージを使用する必要がなければ&#8221;Basic Storage Devices&#8221;を選択します。</p></li>
+<li><h3>ホスト名の入力</h3>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/11.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/11_thumbnail.png" title="ホスト名の入力" ></a></p>
+
+<p>ホスト名を入力します。</p></li>
+<li><h3>タイムゾーンの指定</h3>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/12.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/12_thumbnail.png" title="タイムゾーンの指定" ></a></p>
+
+<p>タイムゾーンの指定と、システムクロックにUTCを使用するかどうかを選択します。</p></li>
+<li><h3>rootパスワードの設定</h3>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/13.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/13_thumbnail.png" title="rootパスワードの設定" ></a></p></li>
+<li><h3>パーティションの設定</h3>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/14.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/14_thumbnail.png" title="パーティションの設定" ></a></p>
+
+<p>　ストレージデバイスのパーティション設定を行います。上４つの選択肢を選んだ場合、自動的にデフォルトのパーティションが構成されます。手動でパーティション構成を設定する場合は一番下の&#8221;Create Custom Layout&#8221;を選択します。
+また、LUKS（Linux Unified Key Setup）による暗号化を行うかどうかを、この画面で指定出来ます。</p>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/15.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/15_thumbnail.png" title="ストレージへの書き込みに対する警告" ></a></p>
+
+<p>　この画面以降、ストレージデバイスへの書込みが行われます。この時点で接続しているストレージデバイスや上書きが行われる記憶領域をよく確かめて、次の画面へ進んでください。</p></li>
+<li><h3>パッケージグループの選択</h3>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/16.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/16_thumbnail.png" title="パッケージグループの選択" ></a></p>
+
+<p>　用途にあわせてパッケージグループを選択します。パッケージはOSインストール後にも当然、インストールすることができます。単一目的サーバーの土台として、最小限のパッケージのみをインストールする場合は&#8221;Minimal&#8221;を選択します。</p>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/17.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/17_thumbnail.png" title="ベースシステムのインストール" ></a></p></li>
+<li><h3>再起動</h3>
+
+<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/18.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/18_thumbnail.png" title="インストールの完了" ></a></p>
+
+<p>　インストールが完了し、システムを再起動します。</p></li>
+</ol>
+
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Installation_Guide/index.html">Red Hat Enterprise Linux 6 インストールガイド</a></li>
+<li><a href="http://www.centos.org/modules/tinycontent/index.php?id=31">CentOS Asian Mirrors</a></li>
+</ul>
+
+
+<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&npa=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774145017" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&npa=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4789840875" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ウィンドウマネージャawesomeの基本操作]]></title>
+    <link href="http://momoto.github.io/blog/2013/03/27/awesome-tutorials/"/>
+    <updated>2013-03-27T21:13:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/03/27/awesome-tutorials</id>
+    <content type="html"><![CDATA[<p>タイル型ウィンドウマネージャ「awesome」の特徴とショートカットキーを簡単にまとめています。</p>
+
+<h4>awesomeが提供しているレイアウトのスクリーンショット</h4>
+
+<ul>
+<li><p>タイル配置（awful.layout.suit.tile）</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/01.png" width="300">
+<img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/02.png" width="300"></p></li>
+</ul>
+
+
+<!-- more -->
+
+
+<ul>
+<li><p>均等配置（awful.layout.suit.fair）</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/03.png" width="300">
+<img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/04.png" width="300"></p></li>
+<li><p>螺旋配置（awful.layout.suit.spiral）</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/05.png" width="300"></p></li>
+</ul>
+
+
+<p>レイアウトはここで挙げているもの以外にも複数の種類が用意されています。</p>
+
+<h4>ショートカットキー</h4>
+
+<ul>
+<li>ウィンドウ操作
+
+<ul>
+<li><code>modkey + j</code> フォーカスを次のウィンドウへ移動する</li>
+<li><code>modkey + k</code> フォーカスを前のウィンドウへ移動する</li>
+<li><code>modkey + Tab</code> フォーカスを直前に使用していたウィンドウへ移動する</li>
+<li><code>modkey + Shift + c</code> ウィンドウを閉じる</li>
+<li><code>modkey + f</code> ウィンドウをフルスクリーン化する</li>
+<li><code>modkey + m</code> ウィンドウを最大化させる</li>
+<li><code>modkey + n</code> ウィンドウを最小化させる</li>
+<li><code>modkey + Control + n</code> 最小化したウィンドウを復元する</li>
+<li>レイアウト操作
+
+<ul>
+<li><code>modkey + Control + space</code> ウィンドウをフローティングウィンドウにする（またはフロート解除）</li>
+<li><code>modkey + Control + Return</code> ウィンドウをマスターウィンドウにする（レイアウトの中で最も目立つ配置へ移動する）</li>
+<li><code>modkey + space</code> 次のレイアウトへ切り替える</li>
+<li><code>modkey + Shift + space</code> 前のレイアウトへ切り替える</li>
+<li><code>modkey + Shift + j</code> ウィンドウの配置を前のウィンドウと入れ替える</li>
+<li><code>modkey + Shift + k</code> ウィンドウの配置を次のウィンドウと入れ替える</li>
+<li><code>modkey + l</code> ウィンドウを右方向へ伸縮させる</li>
+<li><code>modkey + h</code> ウィンドウを左方向へ伸縮させる</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>タグ操作
+
+<ul>
+<li><code>modkey + Left</code> 前のタグへ移動</li>
+<li><code>modkey + Right</code> 次のタグへ移動</li>
+<li><code>modkey + [1-9]</code> 焦点を指定のタグへ移動する</li>
+<li><code>modkey + "Shift" + [1-9]</code> ウィンドウを指定のタグへ移動する</li>
+<li><code>modkey + Escape</code> 直前に使用していたタグへ移動</li>
+</ul>
+</li>
+<li>ウインドウマネージャ機能
+
+<ul>
+<li><code>modkey + Return</code> ターミナルエミュレータを起動する</li>
+<li><code>modkey + r</code> コマンド実行プロンプトを起動する</li>
+<li><code>modkey + x</code> Luaコード実行プロンプトを起動する</li>
+<li><code>modkey + w</code> awesomeのメニューを開く</li>
+<li><code>modkey + Control + r</code> awesomeを再起動する</li>
+<li><code>modkey + Shift + q</code> awesomeを終了する</li>
+</ul>
+</li>
+</ul>
+
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="http://awesome.naquadah.org/wiki/Getting_started">Getting started &ndash; awesome</a></li>
+<li><a href="http://awesome.naquadah.org/doc/manpages/awesome.1.html">doc &ndash; awesome window manager</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Gentoo Linux (20121213)をインストールする]]></title>
+    <link href="http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213/"/>
+    <updated>2013-03-16T09:00:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213</id>
+    <content type="html"><![CDATA[<p>　Gentoo Linux (20121213)をインストールした手順の記録です。命令セットはx86、インストールメディアはinstall-x86-minimal-20121213.isoを使用しています。DHCPによりネットワークは既に接続できる状態を前提にしています。</p>
+
+<!-- more -->
+
+
+<h3>1. 起動</h3>
+
+<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/01.png" width="600"></p>
+
+<p>　カーネルとブートオプションの指定画面では、特に何も指定しないままEnterキーを押してインストールを始める。すぐにキーボード配列の選択画面が現れるので、日本語配列のキーボードを使用している場合は「22」と入力する。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/02.png" width="600"></p>
+
+<p>　起動が完了しrootにログインできたら、pingコマンド等でネットワークへの接続を確認する。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/03.png" width="600"></p>
+
+<h3>2. ストレージデバイスの準備</h3>
+
+<p>　Gentoo Linuxをインストールするストレージデバイスを用意していく。SCSIまたはシリアルATAで接続されているデバイスは<code>lsscsi</code>コマンドで一覧できるので、システムを記録するブロックデバイス（/dev/sdaなど）を確認する。この記事では<code>parted</code>を使用して、単純なブートパーティションとルートパーティションを<code>/dev/sda</code>に作成する。</p>
+
+<pre><code>livecd ~ # lsscsi
+[0:0:0:0]    disk    ATA      VBOX HARDDISK    1.0   /dev/sda
+[2:0:0:0]    cd/dvd  VBOX     CD-ROM           1.0   /dev/sr0
+</code></pre>
+
+<p>　partedで使用できるコマンドはhelpで確認することができる。mklabelでパーティションラベルを指定し、mkpartでパーティションを区切っていく。</p>
+
+<pre><code>livecd ~ # parted /dev/sda
+GNU Parted 3.1
+Using /dev/sda
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted)
+(parted) mklabel msdos
+(parted)
+(parted) mkpart primary ext2 0 32mb
+Warning: The resulting partition is not properly aligned for best performance.
+Ignore/Cancel? i
+(parted)
+(parted) mkpart primary ext4 32mb -1s
+Warning: The resulting partition is not properly aligned for best performance.
+Ignore/Cancel? i
+(parted)
+(parted) print
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sda: 8590MB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+ 1      512B    32.0MB  32.0MB  primary
+ 2      32.0MB  8590MB  8558MB  primary
+
+(parted)
+(parted) quit
+Information: You may need to update /etc/fstab.
+
+livecd ~ #
+</code></pre>
+
+<p>　次に、上で作成したパーティションにファイルシステムを適用する。上の例では、mkpartでも指定しているとおり/dev/sda1にext2を、/dev/sda2にext4を適用する。</p>
+
+<pre><code>livecd ~ # mkfs.ext2 /dev/sda1
+mke2fs 1.42 (29-Nov-2011)
+Filesystem label=
+OS type: Linux
+...
+Allocating group tables: done
+Writing inode tables: done
+Writing superblocks and filesystem accounting information: done
+
+livecd ~ # mkfs.ext4 /dev/sda2
+mke2fs 1.42 (29-Nov-2011)
+Filesystem label=
+OS type: Linux
+...
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+livecd ~ #
+</code></pre>
+
+<p>　パーティションとファイルシステムが用意できたら、ルートパーティションは/mnt/gentooへ、ブートパーティションは/mnt/gentoo/bootへ、それぞれのディレクトリへマウントする。</p>
+
+<pre><code>livecd ~ # mount /dev/sda2 /mnt/gentoo/
+livecd ~ # mkdir /mnt/gentoo/boot
+livecd ~ # mount /dev/sda1 /mnt/gentoo/boot/
+</code></pre>
+
+<h3>3. システムのインストール</h3>
+
+<h4>3-1. stage3 tarballとportageのダウンロード</h4>
+
+<p>　まず、システムをインストールしようとしているマウントポイント<code>/mnt/gentoo</code>へ移動し、<code>links</code>コマンドでGentooミラーリストへアクセスする。</p>
+
+<pre><code>livecd ~ # cd /mnt/gentoo/
+livecd gentoo # links http://www.gentoo.org/main/en/mirrors.xml
+</code></pre>
+
+<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/04.png" width="600" title="links初期起動の画面" ></p>
+
+<p>　linksが起動したらミラーリストから国内のミラーへ移り、stage3-&lt;architecture&gt;&ndash;&lt;release&gt;.tar.bz2とportage-latest.tar.bz2をダウンロードする。<a href="http://ftp.jaist.ac.jp/">JAIST（北陸先端科学技術大学院大学）</a>のミラーであれば、<a href="http://ftp.jaist.ac.jp/pub/Linux/Gentoo/releases/x86/current-stage3/">releases/x86/current-stage3/</a>と<a href="http://ftp.jaist.ac.jp/pub/Linux/Gentoo/snapshots/">snapshots/</a>のディレクトリに配置されている。ダウンロードが済んだら、それぞれのtarballを次のオプションで展開する。</p>
+
+<pre><code>livecd gentoo # tar xvjpf stage3-*.tar.bz2
+livecd gentoo # tar xvjf /mnt/gentoo/portage-latest.tar.bz2 -C /mnt/gentoo/usr
+</code></pre>
+
+<h4>3-2. Portageの設定</h4>
+
+<p>　続いて、/etc/make.confにPortageの変数を設定する。最低限、必要な変数である<code>-march</code>には命令セットアーキテクチャを指定する。環境やプログラムによって最適な設定は異なるものであるし、Portageの設定はシステムに広く影響しうるので、この記事では<a href="http://www.gentoo.org/doc/ja/handbook/handbook-x86.xml?part=1&amp;chap=5">Gentoo Linuxドキュメント</a>で一般的と紹介されている例を使用する。</p>
+
+<pre><code>livecd gentoo # touch /mnt/gentoo/etc/make.conf
+livecd gentoo # nano -w /mnt/gentoo/etc/make.conf
+
+  ---
+  CFLAGS="-O2 -march=i686 -pipe"
+  CXXFLAGS="${CFLAGS}"
+  MAKEOPT="-j2"
+</code></pre>
+
+<p>　<code>mirrorselect</code>コマンドでミラーを選択する。選択したミラーの情報は/etc/make.confに記録される。</p>
+
+<pre><code>livecd gentoo # mirrorselect -i -o &gt;&gt; /mnt/gentoo/etc/make.conf
+* Downloading a list of mirrors... Got 222 mirrors.
+</code></pre>
+
+<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/05.png" width="600"></p>
+
+<h4>3-3. /procと/devのマウント、chroot、ロケールとタイムゾーンの設定</h4>
+
+<p>/procと/devをマウントする。</p>
+
+<pre><code>livecd gentoo # mount -t proc none /mnt/gentoo/proc/
+livecd gentoo # mount --rbind /dev/ /mnt/gentoo/dev/
+</code></pre>
+
+<p>新しくインストールした環境へchrootする。</p>
+
+<pre><code>livecd gentoo # chroot /mnt/gentoo/ /bin/bash
+livecd / # env-update
+&gt;&gt;&gt; Regenerating /etc/ld.so.cache...
+livecd / # source  /etc/profile
+livecd / # export PS1="(chroot) $PS1"
+</code></pre>
+
+<p><code>/etc/locale.gen</code>から指定するロケールの行（ja_JP.UTF-8 UTF-8）をアンコメントして<code>locele-gen</code>コマンドを実行する。</p>
+
+<pre><code>(chroot) livecd / # nano -w /etc/locale.gen
+(chroot) livecd / # locale-gen
+ * Generating 1 locales (this might take a while) with 1 jobs
+ *  (1/1) Generating ja_JP.UTF-8 ... [ ok ]
+ * Generation complete
+(chroot) livecd / #
+</code></pre>
+
+<p>タイムゾーンを設定する。</p>
+
+<pre><code>(chroot) livecd / # cp /usr/share/zoneinfo/Japan /etc/localtime
+</code></pre>
+
+<h4>3-4. Portageによるインストール</h4>
+
+<p>まず、Portageツリーを最新状態に更新する。</p>
+
+<pre><code>(chroot) livecd / # emerge --sync
+
+ ...
+ * An update to portage is available. It is _highly_ recommended
+ * that you update portage now, before any other packages are updated.
+
+ * To update portage, run 'emerge portage' now.
+
+
+ * IMPORTANT: 7 news items need reading for repository 'gentoo'.
+ * Use eselect news to read news items.
+
+(chroot) livecd / #
+</code></pre>
+
+<p>サポートされているプロファイルの一覧を確認し、選択する。</p>
+
+<pre><code>(chroot) livecd / # eselect profile list
+Available profile symlink targets:
+  [1]   default/linux/x86/13.0
+  [2]   default/linux/x86/13.0/selinux
+  [3]   default/linux/x86/13.0/desktop
+  [4]   default/linux/x86/13.0/desktop/gnome
+  [5]   default/linux/x86/13.0/desktop/kde
+  [6]   default/linux/x86/13.0/developer
+  [7]   hardened/linux/x86
+  [8]   hardened/linux/x86/selinux
+  [9]   hardened/linux/uclibc/x86
+(chroot) livecd / #
+(chroot) livecd / # eselect profile set 1
+</code></pre>
+
+<p>gentoo-sourcesをインストールする。このパッケージにはLinuxカーネルが含まれている。</p>
+
+<pre><code>(chroot) livecd / # emerge gentoo-sources
+</code></pre>
+
+<p>カーネルソースのコンフィギュレーションとコンパイルする。ここではマニュアル（手動）ではなく<code>genkernel</code>を使用する。</p>
+
+<pre><code>(chroot) livecd / # emerge genkernel
+(chroot) livecd / # genkernel all
+</code></pre>
+
+<h3>4. 再起動</h3>
+
+<p>　再機動をする前にシステムで使用するパーティションを/etc/fstabへ記述する。上述の例であれば/dev/sda1と/dev/sda2のふたつを記述する。</p>
+
+<pre><code>(chroot) livecd / # nano -w /etc/fstab
+
+  ---
+  /dev/sda1               /boot           ext2            noauto,noatime  1 2
+  /dev/sda2               /               ext4            noatime         0 1
+  #/dev/cdrom              /mnt/cdrom      auto            noauto,ro       0 0
+</code></pre>
+
+<p>　次にブートローダをインストールする。GRUBを使用する場合、emergeでインストールし、/boot/grub/grub.confを書き換えた後、<code>grub-install</code>を実行する。</p>
+
+<pre><code>(chroot) livecd / # emerge grub
+(chroot) livecd / # nano -w /boot/grub/grub.conf
+
+  ---
+  default 0
+  timeout 30
+  splashimage=(hd0,0)/boot/grub/splash.xpm.gz
+
+  title Gentoo Linux 3.7.10
+  root (hd0,0)
+  kernel /boot/kernel-genkernel-x86-3.7.10-gentoo root=/dev/ram0 real_root=/dev/sda2
+  initrd /boot/initramfs-genkernel-x86-3.7.10-gentoo
+  ---
+
+(chroot) livecd / # grep -v rootfs /proc/mounts &gt; /etc/mtab
+(chroot) livecd / # grub-install --no-floppy /dev/sda
+</code></pre>
+
+<p>　最後にchroot環境を抜けて、マウントしたパーティションをアンマウントし、再起動する。</p>
+
+<pre><code>(chroot) livecd / # exit
+livecd gentoo # cd
+livecd ~ # umount -l /mnt/gentoo/dev{/shm,/pts,}
+livecd ~ # umount -l /mnt/gentoo{/boot,/proc,}
+livecd ~ # reboot
+</code></pre>
+
+<p>　再起動の後、ブートローダが動作してシステムが起動されたらインストールが完了する。インストールの後は、上述の手順からは省いていたシステム設定（ユーザーの追加、パスワード変更）を行なっていく。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/07.png" width="600"></p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/08.png" width="600"></p>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://www.gentoo.org/doc/ja/handbook/">Gentooハンドブック（日本語）</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[FuelPHP Restコントローラの使い方]]></title>
+    <link href="http://momoto.github.io/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp/"/>
+    <updated>2013-03-03T23:38:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp</id>
+    <content type="html"><![CDATA[<p>　FuelPHPのRestコントローラを試用してみます。クラスファイルは、通常のコントローラと同様に<code>fuel/app/classes/controller</code>へ設置して使用します。まずは次のような内容でapi.phpを作成し、ブラウザから出力を確認してみます。Restコントローラを使用する場合、継承するクラスはControllerではなく<code>Controller_Rest</code>になります。</p>
+
+<pre><code>&lt;?php
+class Controller_Api extends Controller_Rest {
+  public function action_range() {
+    $this-&gt;response(array(1,2,3));
+  }
+}
+</code></pre>
+
+<!-- more -->
+
+
+<p>　ブラウザから<code>http://localhost/api/range</code>へアクセスをしてみると、responseメソッドへ引数として渡した配列がPHPが整形する形式（Content-type:text/html）で出力されます。</p>
+
+<pre><code>array(3) {
+  [0]=&gt;
+  string(1) "1"
+  [1]=&gt;
+  string(1) "2"
+  [2]=&gt;
+  string(1) "3"
+}
+</code></pre>
+
+<p>　このままでは他のプログラムからデータを読み込めんでもらえないので、JSONやXMLなどの一般的な形式で出力するため、次のプロパティを加えて出力形式を指定します。</p>
+
+<pre><code>&lt;?php
+class Controller_Api extends Controller_Rest {
+  protected $format = 'json';
+  public function post_q() {
+    $this-&gt;response(array(1,2,3));
+  }
+}
+---
+Content-Type:application/json
+
+[1,2,3]
+</code></pre>
+
+<p>　そうするとHTTP応答ヘッダが変わり、出力もJSON形式へと変換されます。PHPの定義済み変数である$_SERVERを、XML形式で出力してみると次のようになります。</p>
+
+<pre><code>&lt;?php
+class Controller_Api extends Controller_Rest {
+  protected $format = 'xml';
+  public function action_server() {
+    $this-&gt;response($_SERVER);
+  }
+}
+---
+Content-Type:application/xml
+
+&lt;xml&gt;
+&lt;SERVER_SOFTWARE&gt;PHP 5.4.12 Development Server&lt;/SERVER_SOFTWARE&gt;
+&lt;SERVER_PROTOCOL&gt;HTTP/1.1&lt;/SERVER_PROTOCOL&gt;
+&lt;SERVER_NAME&gt;localhost&lt;/SERVER_NAME&gt;
+&lt;SERVER_PORT&gt;8000&lt;/SERVER_PORT&gt;
+&lt;REQUEST_URI&gt;/api/server&lt;/REQUEST_URI&gt;
+&lt;REQUEST_METHOD&gt;GET&lt;/REQUEST_METHOD&gt;
+&lt;HTTP_HOST&gt;localhost:8000&lt;/HTTP_HOST&gt;
+&lt;HTTP_USER_AGENT&gt;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.97 Safari/537.22&lt;/HTTP_USER_AGENT&gt;
+...(略)
+</code></pre>
+
+<p>　FuelPHP 1.4で対応されている形式については<code>fuel/core/classes/controller/rest.php</code>の<code>$_supported_formats</code>変数に設定されています。</p>
+
+<pre><code>protected $_supported_formats = array(
+        'xml' =&gt; 'application/xml',
+        'rawxml' =&gt; 'application/xml',
+        'json' =&gt; 'application/json',
+        'jsonp'=&gt; 'text/javascript',
+        'serialized' =&gt; 'application/vnd.php.serialized',
+        'php' =&gt; 'text/plain',
+        'html' =&gt; 'text/html',
+        'csv' =&gt; 'application/csv',
+);
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Arch Linux extra/emacs 24.2-4で日本語を入力する]]></title>
+    <link href="http://momoto.github.io/blog/2013/02/24/input-japanese-on-emacs-24-dot-2-4/"/>
+    <updated>2013-02-24T14:44:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/02/24/input-japanese-on-emacs-24-dot-2-4</id>
+    <content type="html"><![CDATA[<p>　Arch LinuxのEmacsで日本語を入力するための設定の記録です。この方法では、Emacsの他、UIM等の入力メソッドフレームワークと、AnthyやMozc等の入力メソッドがインストールされている必要があります。
+<img src="http://momoto.github.io/blog/images/2013-02-24-input-japanese-on-emacs-24-dot-2-4/01.png" title="Mozcを使用して、Emacsで日本語を入力する" ></p>
+
+<!-- more -->
+
+
+<h6>UIMとAnthy (UTF-8)を使用する場合</h6>
+
+<pre><code>extra/anthy 9100h-3
+    Hiragana text to Kana Kanji mixed text Japanese input method
+extra/uim 1.8.4-2
+    Multilingual input method library
+</code></pre>
+
+<p>上記のパッケージをインストールした状態で、下記の設定をEmacs設定用ファイルに追記します。</p>
+
+<pre><code>;; uim /usr/share/emacs/site-lisp/uim-el/uim-leim.el
+(require 'uim-leim)
+(setq default-input-method "japanese-anthy-utf8-uim") ; Anthy (UTF-8)
+;(setq default-input-method "japanese-mozc-uim")      ; Mozc
+</code></pre>
+
+<h6>Mozcを使用する場合に必要</h6>
+
+<pre><code>pnsft-pur/emacs-mozc 1.6.1187.102-4 (mozc-im)
+    Mozc for Emacs
+pnsft-pur/ibus-mozc 1.6.1187.102-4 (mozc-im)
+    IBus engine module for Mozc
+pnsft-pur/mozc 1.6.1187.102-4 (mozc-im)
+    A Japanese Input Method for Chromium OS, Windows, Mac and Linux (the Open Source Edition of Google Japanese Input)
+</code></pre>
+
+<p>上記のパッケージをインストールした状態で、下記の設定をEmacs設定用ファイルに追記します。</p>
+
+<pre><code>;; emacs-mozc /usr/share/emacs/site-lisp/emacs-mozc/mozc.el
+(require 'mozc)
+(setq default-input-method "japanese-mozc")
+(setq mozc-candidate-style 'overlay) ; Mozc overlayモード
+</code></pre>
+
+<h6>参考</h6>
+
+<ul>
+<li><a href="https://wiki.archlinux.org/index.php/Input_Japanese_using_uim_%28%E6%97%A5%E6%9C%AC%E8%AA%9E%29#Emacs_.E3.81.A7_.E6.97.A5.E6.9C.AC.E8.AA.9E.E3.82.92.E5.85.A5.E5.8A.9B.E3.81.99.E3.82.8B">Input Japanese using uim (日本語) &ndash; ArchWiki</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/Mozc_%28%E6%97%A5%E6%9C%AC%E8%AA%9E%29">Mozc (日本語) &ndash; ArchWiki</a></li>
+</ul>
+
+
+<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&npa=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=487311277X" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&npa=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774150029" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Arch Linux 2012.12.01をインストールする]]></title>
+    <link href="http://momoto.github.io/blog/2013/01/05/install-arch-linux/"/>
+    <updated>2013-01-05T00:00:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/01/05/install-arch-linux</id>
+    <content type="html"><![CDATA[<p>　Arch Linux 2012.12.01をインストールした際の記録です。
+<a href="https://wiki.archlinux.org/index.php/Installation_Guide_%28%E6%97%A5%E6%9C%AC%E8%AA%9E%29">Installation Guide (日本語) &ndash; ArchWiki</a>の内容と重なる部分が多いですが、自分なりに注釈を加えて記録します。</p>
+
+<p>　インストールにはインターネットに接続できる環境が必要です。
+また、パーティションの構成やインストールするブートローダをあらかじめ決めておく必要があります。
+次の手順ではパーティションテーブルにGPTを使用し、ブートローダにはGRUB2をインストールしています。</p>
+
+<!-- more -->
+
+
+<h3>1. キーボード配列の指定</h3>
+
+<p>使用しているキーボード配列を指定する。ここで行う設定は一時的なものであるため、インストール後には改めて設定する必要がある。</p>
+
+<pre><code>root@archiso ~ # loadkeys jp106
+</code></pre>
+
+<h3>2. ストレージデバイスの設定</h3>
+
+<p>接続しているストレージデバイスのパーティショニング、フォーマット、マウントを行う。</p>
+
+<p>パーティショニングはインストールメディアに含まれているパーティショニングツールを使用して行う。その際、パーティションテーブルの規格（MBR、GPT）によって使用するツールは異なる。</p>
+
+<pre><code>root@archiso ~ # gdisk /dev/sdx
+</code></pre>
+
+<p>フォーマットはmkfsを使用して行う。ここでフォーマット対象のパーティションとファイルシステムを指定する。</p>
+
+<pre><code>root@archiso ~ # mkfs.ext4 /dev/sdx1
+</code></pre>
+
+<p>マウントは/mntにrootパーティションが対応するようにして行う。bootパーティションであれば/mnt/bootへマウントする。</p>
+
+<pre><code>root@archiso ~ # mount /dev/sdx1 /mnt
+</code></pre>
+
+<h3>3. システムのインストール</h3>
+
+<p>　Arch Linuxのシステムをインストールする。インストール後に行える設定（ホスト名やタイムゾーンの設定）については省略する。</p>
+
+<p>　pacstrapを使用して、<a href="https://www.archlinux.org/groups/i686/base/">base</a>と<a href="https://www.archlinux.org/groups/i686/base-devel/">base-devel</a>のパッケージをインストールする。
+その際、国内のミラーサーバーからパッケージをダウンロードするようにmirrorlistを編集する。
+日本のミラーサーバーには<a href="http://ftp.tsukuba.wide.ad.jp/Linux/archlinux/">tsukuba.wide.ad.jp</a>と<a href="http://ftp.jaist.ac.jp/pub/Linux/ArchLinux/">jaist.ac.jp</a>がある。</p>
+
+<pre><code>root@archiso ~ # vi /etc/pacman.d/mirrorlist
+root@archiso ~ # pacstrap /mnt base base-devel
+</code></pre>
+
+<p>genfstabを使用して、fstabを生成する。</p>
+
+<pre><code>root@archiso ~ # genfstab -U -p /mnt &gt;&gt; /mnt/etc/fstab
+</code></pre>
+
+<p>arch-chrootを使用して、新しいシステムの環境へ移動する。移動後には再度、使用しているキーボード配列を指定する。</p>
+
+<pre><code>root@archiso ~ # arch-chroot /mnt
+</code></pre>
+
+<p>ブートローダのインストールと設定を行う。ここでの手順はブートローダによって異なる。</p>
+
+<h4>GRUB2</h4>
+
+<pre><code>sh-4.2# pacman -S grub2-bios
+sh-4.2# grub-install /dev/sda
+sh-4.2# grub-mkconfig -o /boot/grub/grub.cfg
+</code></pre>
+
+<h4>Syslinux</h4>
+
+<pre><code>sh-4.2# pacman -S syslinux gptfdisk
+sh-4.2# vi /boot/syslinux/syslinux.cfg
+sh-4.2# syslinux-install_update -i -a -m
+</code></pre>
+
+<h3>4. アンマウントと再起動</h3>
+
+<p>chroot環境を終了させて、上の手順でマウントしたパーティションをアンマウントする。その後、システムを再起動してインストールが完了する。</p>
+
+<pre><code>sh-4.2# exit
+root@archiso ~ # umount /mnt
+root@archiso ~ # reboot
+</code></pre>
+
+<h3>システムの設定</h3>
+
+<p>再起動の後、インストール時に省略した設定を行う。</p>
+
+<h4>ホスト名の設定</h4>
+
+<pre><code>echo myarchlinux &gt; /etc/hostname
+</code></pre>
+
+<h4>タイムゾーンとハードウェアクロックの設定</h4>
+
+<pre><code>ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+hwclock --systohc --utc
+</code></pre>
+
+<h4>新しいユーザーの追加とそのパスワードの設定</h4>
+
+<pre><code># useradd -m -g users -G wheel -s /bin/bash guest
+# passwd guest
+</code></pre>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="https://wiki.archlinux.org/index.php/Installation_Guide_%28%E6%97%A5%E6%9C%AC%E8%AA%9E%29">Installation Guide (日本語) &ndash; ArchWiki</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/Beginners%27_Guide_%28%E6%97%A5%E6%9C%AC%E8%AA%9E%29">Beginners&#8217; Guide (日本語) &ndash; ArchWiki</a></li>
+<li>パーティション
+
+<ul>
+<li><a href="https://wiki.archlinux.org/index.php/Master_Boot_Record_%28%E6%97%A5%E6%9C%AC%E8%AA%9E%29">Master Boot Record (日本語) &ndash; ArchWiki</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/GUID_Partition_Table">GUID Partition Table &ndash; ArchWiki</a></li>
+</ul>
+</li>
+<li>ブートローダ
+
+<ul>
+<li><a href="https://wiki.archlinux.org/index.php/Syslinux">Syslinux &ndash; ArchWiki</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/GRUB2">GRUB2 &ndash; ArchWiki</a></li>
+</ul>
+</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Amazon EC2インスタンスを作成し、SSH接続する]]></title>
+    <link href="http://momoto.github.io/blog/2012/12/06/create-and-ssh-to-ec2-instance/"/>
+    <updated>2012-12-06T00:00:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2012/12/06/create-and-ssh-to-ec2-instance</id>
+    <content type="html"><![CDATA[<p>　Amazon EC2インスタンスを作成し、SSH接続するまでの手順の記録です。</p>
+
+<!-- more -->
+
+
+<ol>
+<li><p>　Amazon EC2 Console Dashboardから「Launch Instance」を選択する。
+必要な操作はすべてウェブインタフェースから行うので、ブラウザさえあればEC2インスタンスを作成することができる。</p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-12-06/01.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/01.png" width="600"></a></p></li>
+<li><p>　インスタンス作成ウィザードの種類を選択する。
+2012年12月現在、選択できる種類はClassic、Quick Launch、AWS Marketplaceの三通り。
+以下、Classic Wizardでインスタンスの作成を行う。</p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-12-06/02.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/02.png" width="600"></a></p></li>
+<li><p>　AMI（Amazon Machine Image）を選択する。
+選択できる主なOSにはRed Hat Enterprise、Ubuntu、Microsoft Windowsなどがある。</p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-12-06/03.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/03.png" width="600"></a></p></li>
+<li><p>　インスタンスの詳細を設定する。
+設定できる項目は、インスタンスタイプ、カーネルID、RAMディスク、ストレージデバイスなど。</p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-12-06/04-01.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/04-01.png" width="300"></a></p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-12-06/04-02.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/04-02.png" width="300"></a></p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-12-06/04-03.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/04-03.png" width="300"></a></p>
+
+<p>　インスタンスタイプは、その種類によって性能（CPUやI/O）や発生する費用が異なってくるため、稼働させるアプリケーションや予算にあわせて選択する。</p></li>
+<li><p>　公開鍵暗号の鍵のペアを作成する。
+ウィザードには鍵の名前を入力するだけでRSA暗号方式の鍵のペアが生成され、pemファイルをダウンロードできる。
+このpemファイルがSSH接続に必要な秘密鍵になる。</p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-12-06/05.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/05.png" width="600"></a></p></li>
+<li><p>　EC2のファイアウォール「Security Groups」を設定する。
+グループごとにプロトコル（HTTPやSMTP）、ポート番号、IPアドレスを指定してインバウンドルールを設定することができる。</p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-12-06/06.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/06.png" width="600"></a></p></li>
+<li><p>　EC2インスタンスが完成。ダッシュボードの&#8221;Instances&#8221;から起動状態や公開ドメイン名などを確認できる。</p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-12-06/07-01.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/07-01.png" width="600"></a></p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-12-06/07-02.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/07-02.png" width="600"></a></p></li>
+</ol>
+
+
+<h3>SSH接続</h3>
+
+<p>　SSHクライアントからEC2インスタンスへSSH接続を行う。
+接続先に公開ドメイン名（Public DNS : ec2-***&ndash;***&ndash;***&ndash;***.compute-1.amazonaws.com）と、秘密鍵には先に取得したpemファイルを指定して、EC2インスタンスへ接続する。</p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-12-06/08.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/08.png" width="600"></a></p>
+
+<h3>EC2インスタンスの終了</h3>
+
+<p>　EC2インスタンスの利用を終える場合は、終了（Terminate）を指定する。停止（Stop）ではインスタンスは削除されない。
+逆に、利用を一時的に停止するだけであればTerminateではなくStopを指定する。</p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-12-06/09.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/09.png" width="600"></a></p>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://aws.amazon.com/jp/ec2/">Amazon EC2 (仮想サーバー Amazon Elastic Compute Cloud) | アマゾン ウェブ サービス（AWS 日本語）</a></li>
+</ul>
+
+
+<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4822211983" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4873115817" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Windows 7にIIS 7.5をインストール]]></title>
+    <link href="http://momoto.github.io/blog/2012/11/30/install-iis-7-dot-5-on-windows-7/"/>
+    <updated>2012-11-30T20:56:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2012/11/30/install-iis-7-dot-5-on-windows-7</id>
+    <content type="html"><![CDATA[<p>　MicrosoftのWebサーバーソフトウェア&#8221;Internet Information Services (IIS)&ldquo;をWindows 7 Home Premiumにインストールした際の手順の記録です。</p>
+
+<!-- more -->
+
+
+<h3>IISのインストール</h3>
+
+<ol>
+<li><p>スタートメニュー等から「コントロールパネル」へ</p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-11-30/01.png"><img src="http://momoto.github.io/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/01.png"></a></p></li>
+<li><p>コントロールパネルから「プログラム」の画面へ</p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-11-30/02.png"><img src="http://momoto.github.io/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/02.png" width="600"></a></p></li>
+<li><p>プログラムから「Windowsの機能の有効化または無効化」の画面へ</p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-11-30/03.png"><img src="http://momoto.github.io/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/03.png" width="600"></a></p></li>
+<li><p>　Windowsの機能から「インターネット インフォメーション サービス」のチェックボックスをオンにする。
+サブフォルダのチェックボックスからはIISの追加機能（FTPサーバーやアプリケーション開発機能など）を指定できる。</p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-11-30/04.png"><img src="http://momoto.github.io/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/04.png" width="600"></a></p>
+
+<p>　必要な機能を選択した後は「OK」を押下するとIISのインストールがはじまる。
+インストールの完了後、ブラウザで自身のアドレス（<a href="http://localhost%EF%BC%89%E3%81%B8%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%81%99%E3%82%8B%E3%81%A8IIS%E3%81%8C%E5%8B%95%E4%BD%9C%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%81%93%E3%81%A8%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%A7%E3%81%8D%E3%82%8B%E3%80%82">http://localhost%EF%BC%89%E3%81%B8%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%81%99%E3%82%8B%E3%81%A8IIS%E3%81%8C%E5%8B%95%E4%BD%9C%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%81%93%E3%81%A8%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%A7%E3%81%8D%E3%82%8B%E3%80%82</a></p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-11-30/05.png"><img src="http://momoto.github.io/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/05.png" width="600"></a></p></li>
+</ol>
+
+
+<h3>IISマネージャーの起動</h3>
+
+<ol>
+<li><p>Webサーバーの状態の確認や、起動/停止を操作できるIISマネージャーは、「ファイル名を指定して実行」から「InetMgr.exe」を指定して起動することができる</p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-11-30/06.png"><img src="http://momoto.github.io/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/06.png" title="&#34;InetMgr.exeを開始する&#34;" alt="&#34;InetMgr.exeを開始する&#34;"></a></p></li>
+<li><a href="http://momoto.github.io/blog/images/2012-11-30/07.png"><img src="http://momoto.github.io/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/07.png" width="600" title="&#34;IISマネージャーの起動画面&#34;" alt="&#34;IISマネージャーの起動画面&#34;"></a></li>
+</ol>
+
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://technet.microsoft.com/ja-jp/library/cc753433%28v=ws.10%29.aspx">technet.microsoft.com &ndash; Web サーバー (IIS)</a></li>
+</ul>
+
+
+<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4891006129" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=489100570X" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Ubuntu 12.10にrbenvとruby-buildをインストール]]></title>
+    <link href="http://momoto.github.io/blog/2012/11/23/install-rbenv-and-ruby-build-on-ubuntu-12-dot-10/"/>
+    <updated>2012-11-23T20:23:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2012/11/23/install-rbenv-and-ruby-build-on-ubuntu-12-dot-10</id>
+    <content type="html"><![CDATA[<p>rbenvとruby-buildを使用して、Ubuntu 12.10にRuby 1.9.3をインストールしたときの記録です。
+rbenvとruby-buildはディストリビューションが配布するパッケージに含まれているため、Ubuntuのバージョン管理システム（APT）からインストールすることもできますが、次の記録はgithub.comからクローンする方法によるものです。</p>
+
+<p>(* <em><a href="http://packages.ubuntu.com/quantal/rbenv" title="Ubuntu -- quantal の rbenv パッケージに関する詳細">rbenv</a>はprecise (12.04)以降、<a href="http://packages.ubuntu.com/quantal/ruby-build" title="Ubuntu -- quantal の ruby-build パッケージに関する詳細">ruby-build</a>はquantal (12.10)以降にuniverseに追加されたようです</em> )</p>
+
+<!-- more -->
+
+
+<h3>rbenvのインストール</h3>
+
+<pre><code>$ git clone git://github.com/sstephenson/rbenv.git .rbenv
+  Cloning into '.rbenv'...
+  remote: Counting objects: 1040, done.
+  remote: Compressing objects: 100% (413/413), done.
+  remote: Total 1040 (delta 649), reused 962 (delta 599)
+  Receiving objects: 100% (1040/1040), 138.43 KiB | 115 KiB/s, done.
+  Resolving deltas: 100% (649/649), done.
+
+$ echo 'export PATH="$HOME/.rbenv/bin:$PATH"' &gt;&gt; ~/.bashrc
+$ echo 'eval "$(rbenv init -)"' &gt;&gt; ~/.bashrc
+</code></pre>
+
+<h3>ruby-installのインストール</h3>
+
+<pre><code>$ mkdir -p ~/.rbenv/plugins
+$ cd ~/.rbenv/plugins
+$ git clone git://github.com/sstephenson/ruby-build.git
+  Cloning into 'ruby-build'...
+  remote: Counting objects: 1329, done.
+  remote: Compressing objects: 100% (631/631), done.
+  remote: Total 1329 (delta 691), reused 1183 (delta 555)
+  Receiving objects: 100% (1329/1329), 146.68 KiB | 150 KiB/s, done.
+  Resolving deltas: 100% (691/691), done.
+
+$ cd ruby-build
+$ sudo bash ./install.sh
+  Installed ruby-build at /usr/local
+</code></pre>
+
+<h3>Rubyの特定のバージョンをインストール（1.9.3-p327の場合）</h3>
+
+<pre><code>## インストールが可能なバージョンのリストから"1.9.3"のバージョンを抽出
+$ rbenv install --list | grep "1.9.3"
+  1.9.3-dev
+  1.9.3-p0
+  1.9.3-p125
+  1.9.3-p194
+  1.9.3-p286
+  1.9.3-p327
+  1.9.3-preview1
+  1.9.3-rc1
+
+## 1.9.3-p327を指定して、目的のバージョンをインストール
+$ rbenv install 1.9.3-p327
+  Downloading yaml-0.1.4.tar.gz...
+  -&gt; http://cloud.github.com/downloads/sstephenson/ruby-build-download-mirror/36c852831d02cf90508c29852361d01b
+  Installing yaml-0.1.4...
+  Installed yaml-0.1.4 to $HOME/.rbenv/versions/1.9.3-p327
+
+  Downloading ruby-1.9.3-p327.tar.gz...
+  -&gt; http://cloud.github.com/downloads/sstephenson/ruby-build-download-mirror/96118e856b502b5d7b3a4398e6c6e98c
+  Installing ruby-1.9.3-p327...
+  Installed ruby-1.9.3-p327 to $HOME/.rbenv/versions/1.9.3-p327
+</code></pre>
+
+<h3>Rubyの特定のバージョンを使用するように設定する（1.9.3-p194の場合）</h3>
+
+<pre><code>## 既にインストールしたRubyのバージョンのリストを取得する
+$ rbenv versions
+  1.9.3-p194
+  1.9.3-p327
+
+## 1.9.3-p194を指定して、目的のバージョンを設定する（.rbenv-versionが作成されます）
+~/workspace$ rbenv local 1.9.3-p194
+
+## 設定されているRubyのバージョンの確認（この場合`rbenv local`でも同じ結果が得られます）
+~/workspace$ rbenv version
+  1.9.3-p194 (set by $HOME/workspace/.rbenv-version)
+
+## カレントディレクトリで設定されているRubyのバージョンを解除
+~/workspace$ rbenv local --unset
+</code></pre>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://packages.ubuntu.com/quantal/rbenv" title="Ubuntu -- quantal の rbenv パッケージに関する詳細">packages.ubuntu.com/quantal/rbenv</a></li>
+<li><a href="http://packages.ubuntu.com/quantal/ruby-build" title="Ubuntu -- quantal の ruby-build パッケージに関する詳細">packages.ubuntu.com/quantal/ruby-build</a></li>
+<li><a href="https://github.com/sstephenson/rbenv" title="sstephenson/rbenv">github.com/sstephenson/rbenv</a></li>
+<li><a href="https://github.com/sstephenson/ruby-build" title="sstephenson/ruby-build">github.com/sstephenson/ruby-build</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[OpenSSLを使用してファイルをRSA暗号化する]]></title>
+    <link href="http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption/"/>
+    <updated>2012-10-14T17:45:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption</id>
+    <content type="html"><![CDATA[<p>OpenSSLは様々な暗号方式での暗号化、復号化をサポートするセキュリティライブラリ。
+使用できる暗号方式は<code>openssl ciphers</code>で確認できる。</p>
+
+<p>RSA暗号方式の暗号化、復号、署名、検証を利用する場合は<code>openssl rsautl</code>を使う。</p>
+
+<!-- more -->
+
+
+<h3>暗号化</h3>
+
+<p>ファイルをRSA暗号方式で暗号化するには、秘密鍵または公開鍵のいずれかが必要。</p>
+
+<h4>ファイル<em>&ldquo;plain.txt&rdquo;</em>を、秘密鍵<em>&ldquo;private_key&rdquo;</em>を使用して暗号化する</h4>
+
+<pre><code>$ openssl rsautl -encrypt -inkey private_key -in plain.txt -out encrypted
+Enter pass phrase for private_key:
+</code></pre>
+
+<p>秘密鍵にパスフレーズが設定されていれば入力が必要。</p>
+
+<h4>ファイル<em>&ldquo;plain.txt&rdquo;</em>を、公開鍵<em>&ldquo;public_key&rdquo;</em>を使用して暗号化する</h4>
+
+<pre><code>$ openssl rsautl -encrypt -pubin -inkey public_key -in plain.txt -out encrypted
+</code></pre>
+
+<p><em>-pubin</em>のオプションを加えることに注意。</p>
+
+<p>上のコマンドで暗号化した場合、<em>encrypted</em>という名前でバイナリファイルとして出力される。
+使用できる公開鍵は下のような形式になる。</p>
+
+<pre><code>-----BEGIN PUBLIC KEY-----
+MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAM2twTjVLOYMK2Y7uKQ03CeSc8B+0GjJ
+xy0ir28fIfGb523ogDyWKDjMDx5pTBUpOgDYUgSpP/I6SzER1ArhcnMCAwEAAQ==
+-----END PUBLIC KEY-----
+</code></pre>
+
+<p><code>unable to load Public Key</code>とエラーが出る場合は、鍵の形式が無効。</p>
+
+<h3>復号</h3>
+
+<p>暗号化されたファイルを復号するには、秘密鍵が必要。</p>
+
+<h4>暗号化されたファイル<em>&ldquo;encrypted&rdquo;</em>を、秘密鍵<em>&ldquo;private_key&rdquo;</em>を使用して復号する</h4>
+
+<pre><code>$ openssl rsautl -decrypt -inkey private_key -in encrypted -out decrypted.txt
+Enter pass phrase for private_key:
+</code></pre>
+
+<p>復号に成功すると、<em>&ldquo;decrypted.txt&rdquo;</em>にその内容が出力される。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iconvで文字コードを変換する]]></title>
+    <link href="http://momoto.github.io/blog/2012/10/08/encoding-conversion-with-iconv/"/>
+    <updated>2012-10-08T00:00:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2012/10/08/encoding-conversion-with-iconv</id>
+    <content type="html"><![CDATA[<p>　文字コードの変換は、変換前の文字コードを<code>--from-code (-f)</code>に、変換後の文字コードを<code>--to-code (-t)</code>を指定して、さらに入力ファイルと出力ファイルを指定して使用する。</p>
+
+<!-- more -->
+
+
+<p>　例えば、Windowsで作成したテキストファイル（SJIS-WIN）をUTF-8に変換したい場合は次のようなコマンドになる。</p>
+
+<pre><code>$ iconv -f SJIS-WIN -t UTF-8 coded_in_sjiswin.txt &gt; coded_in_utf8.txt
+</code></pre>
+
+<p>　扱える文字コードについては<code>iconv --list</code>で一覧が出力される。日本語に関連しそうな行に見当をつけて、一覧を制限してみると次のような出力だった。</p>
+
+<pre><code>$ iconv --list | grep -iP "ja|jp"
+
+  CSEUCPKDFMTJAPANESE//
+  CSISO2022JP//
+  CSISO2022JP2//
+  EBCDIC-JP-E//
+  EBCDIC-JP-KANA//
+  EUC-JP-MS//
+  EUC-JP//
+  EUCJP-MS//
+  EUCJP-OPEN//
+  EUCJP-WIN//
+  EUCJP//
+  ISO-2022-JP-2//
+  ISO-2022-JP-3//
+  ISO-2022-JP//
+  ISO646-JP-OCR-B//
+  ISO646-JP//
+  ISO2022JP//
+  ISO2022JP2//
+  JP-OCR-B//
+  JP//
+</code></pre>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="https://wiki.ubuntulinux.jp/UbuntuTips/FileHandling/ConvertTextfileCharacterEncoding">テキストファイルの文字コードを変換するには &ndash; Ubuntu Japanese Wiki</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[IdeaPad S205のメインメモリとストレージデバイスの換装]]></title>
+    <link href="http://momoto.github.io/blog/2012/08/12/install-ram-and-ssd-in-lenovo-ideapad-s205/"/>
+    <updated>2012-08-12T10:30:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2012/08/12/install-ram-and-ssd-in-lenovo-ideapad-s205</id>
+    <content type="html"><![CDATA[<p>　レノボ社のノートパソコン「<a href="http://www.amazon.co.jp/gp/product/BiB004XWLKDC/ref=as_li_ss_tl?ie=UTF8&camp=247&creative=7399&creativeASIN=B004XWLKDC&linkCode=as2&tag=alqet049-22">IdeaPad S205</a><img src="http://www.assoc-amazon.jp/e/ir?t=alqet049-22&l=as2&o=9&a=B004XWLKDC" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />」（2011年4月）のメインメモリとストレージデバイスを換装した。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2012-08-12-install-ram-and-ssd-in-lenovo-ideapad-s205/01.png"></p>
+
+<p>換装する前後の&#8221;ディスクユーティリティ&#8221;ベンチマーク結果</p>
+
+<p>換装前</p>
+
+<p><a href="http://momoto.github.io/blog/images/2012-08-12-install-ram-and-ssd-in-lenovo-ideapad-s205/02.png"><img src="http://momoto.github.io/blog/images/2012-08-12-install-ram-and-ssd-in-lenovo-ideapad-s205/02.png" width="600" title="換装前のベンチマーク結果" ></a></p>
+
+<p>換装後</p>
+
+<!-- more -->
+
+
+<p>　メモリは、トランセンド社の<a href="http://www.amazon.co.jp/gp/product/B0057K0DVE/ref=as_li_ss_tl?ie=UTF8&camp=247&creative=7399&creativeASIN=B0057K0DVE&linkCode=as2&tag=alqet049-22">JM1333KSN-8GK</a><img src="http://www.assoc-amazon.jp/e/ir?t=alqet049-22&l=as2&o=9&a=B0057K0DVE" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />（チップ規格とモジュール規格がPC3-10600とDDR3-1333）。ストレージは、シリコンパワー社の <a href="http://www.amazon.co.jp/gp/product/B0086EUZMK/ref=as_li_ss_tl?ie=UTF8&camp=247&creative=7399&creativeASIN=B0086EUZMK&linkCode=as2&tag=alqet049-22">SP032GBSS2T10S25</a><img src="http://www.assoc-amazon.jp/e/ir?t=alqet049-22&l=as2&o=9&a=B0086EUZMK" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />（2.5インチ SSD）。2012年8月現在、どちらも3,000円を下回る価格だった。</p>
+
+<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=B004XWLKDC" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=B0057K0DVE" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=B0086EUZMK" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="http://shopap.lenovo.com/jp/products/laptops/ideapad/s-series/s205/index.html">ノートパソコン &ndash; IdeaPad &ndash; Sシリーズ &ndash; S205 | 製品 | Lenovo | (JP)</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[テキストを文字参照記述へ変換する]]></title>
+    <link href="http://momoto.github.io/blog/2012/08/11/converting-text-to-character-references/"/>
+    <updated>2012-08-11T00:00:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2012/08/11/converting-text-to-character-references</id>
+    <content type="html"><![CDATA[<p>　入力された文字列の符号位置（Unicode）を出力します。テキストをHTML数値文字参照に変換するように動作します。</p>
+
+<p><form id="convert-text-to-character-references">
+<label>形式 <select><option>HTML文字参照（10進数）</option><option>HTML文字参照（16進数）</option><option>符号位置のみ（10進数）</option><option>符号位置のみ（16進数）</option></select></label><br>
+<label>入力 <textarea rows="4" style="width: 100%;"></textarea></label>
+<label>出力 <output><textarea rows="4" style="width: 100%;" readonly=True></textarea></output></label></p>
+
+<script> (function(){
+function decimal_form(codepoint) { return "&#" + codepoint.toString(10) + ";"; }
+function hexadecimal_form(codepoint) { return "&#x" + codepoint.toString(16) + ";"; }
+function decimal_delimit_space(codepoint) { return codepoint.toString(10) + " "; }
+function hexadecimal_delimit_space(codepoint) { return codepoint.toString(16) + " "; }
+function convert_text_to_character_references(text) {
+  for (var encoded="", i=0; i<text.length; i++)
+    if (s.selectedIndex === 0) encoded += decimal_form(text.charCodeAt(i));
+    else if (s.selectedIndex === 1) encoded += hexadecimal_form(text.charCodeAt(i));
+    else if (s.selectedIndex === 2) encoded += decimal_delimit_space(text.charCodeAt(i));
+    else if (s.selectedIndex === 3) encoded += hexadecimal_delimit_space(text.charCodeAt(i));
+  o.value = encoded;
+}
+function eventhandler(event) {
+  if (text === i.value && event.type !== "change")
+    return;
+  else
+    convert_text_to_character_references(text = i.value);
+}
+var text = "";
+var f = document.getElementById("convert-text-to-character-references");
+var s = f.getElementsByTagName("select")[0];
+var i = f.getElementsByTagName("textarea")[0];
+var o = f.getElementsByTagName("textarea")[1];
+i.onkeydown = eventhandler;
+i.onkeyup   = eventhandler;
+s.onchange  = eventhandler;
+})(); </script>
+
+
+<p></form></p>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://www.unicode.org/Public/UCD/latest/ucd/">The Unicode Character Database (UCD)</a></li>
+<li><a href="http://www.ietf.org/rfc/rfc1815.txt">RFC 1815 &ndash; Character Sets ISO-10646 and ISO-10646-J-1</a></li>
+<li><a href="http://www.w3.org/TR/html5/syntax.html#character-references">8.1.4 Character references — HTML5</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

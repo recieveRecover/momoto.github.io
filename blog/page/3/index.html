@@ -7,13 +7,13 @@
 <title>momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
 
-<meta name="description" content="　QEMUをつかって仮想マシンを作成する手引きです。ホスト側に仮想化機能が備わっていることを確かめたあと、QEMUをつかってゲストOSを構築します。">
+<meta name="description" content="　FuelPHPのRestコントローラを試用してみます。クラスファイルは、通常のコントローラと同様にfuel/app/classes/controllerへ設置して使用します。まずは次のような内容でapi.phpを作成し、ブラウザから出力を確認してみます。Restコントローラを使用する場合、 &hellip;">
 
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="canonical" href="http://momoto.github.io/">
+<link rel="canonical" href="http://momoto.github.io/blog/page/3/">
 <link href="/favicon.png" rel="icon">
 <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 <link href="/atom.xml" rel="alternate" title="momoto.github.io" type="application/atom+xml">
@@ -52,7 +52,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/08/11/guide-to-creating-virtual-machine-with-qemu/">QEMUをつかって仮想マシンを作成する</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp/">FuelPHP Restコントローラの使い方</a></h1>
     
     
       <p class="meta">
@@ -67,16 +67,26 @@
 
   
 
-<time datetime="2013-08-11T14:54:00+09:00" pubdate data-updated="true" class="updated">Aug 11<span>th</span>, 2013</time></p>
+<time datetime="2013-03-03T23:38:00+09:00" pubdate data-updated="true" class="updated">Mar 3<span>rd</span>, 2013</time></p>
     
   </header>
 
 
-  <div class="entry-content"><p>　QEMUをつかって仮想マシンを作成する手引きです。ホスト側に仮想化機能が備わっていることを確かめたあと、QEMUをつかってゲストOSを構築します。</div>
+  <div class="entry-content"><p>　FuelPHPのRestコントローラを試用してみます。クラスファイルは、通常のコントローラと同様に<code>fuel/app/classes/controller</code>へ設置して使用します。まずは次のような内容でapi.phpを作成し、ブラウザから出力を確認してみます。Restコントローラを使用する場合、継承するクラスはControllerではなく<code>Controller_Rest</code>になります。</p>
+
+<pre><code>&lt;?php
+class Controller_Api extends Controller_Rest {
+  public function action_range() {
+    $this-&gt;response(array(1,2,3));
+  }
+}
+</code></pre>
+
+</div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/08/11/guide-to-creating-virtual-machine-with-qemu/">Read on &rarr;</a>
+      <a rel="full-article" href="/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp/">Read on &rarr;</a>
     </footer>
   
 
@@ -88,7 +98,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/07/31/guide-to-compiling-and-installing-php-5-dot-5-1/">PHP 5.5.1をインストールする（ソースからビルドする方法）</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/02/24/input-japanese-on-emacs-24-dot-2-4/">Arch Linux Extra/emacs 24.2-4で日本語を入力する</a></h1>
     
     
       <p class="meta">
@@ -103,17 +113,19 @@
 
   
 
-<time datetime="2013-07-31T23:03:00+09:00" pubdate data-updated="true" class="updated">Jul 31<span>st</span>, 2013</time></p>
+<time datetime="2013-02-24T14:44:00+09:00" pubdate data-updated="true" class="updated">Feb 24<span>th</span>, 2013</time></p>
     
   </header>
 
 
-  <div class="entry-content"><p>　PHP 5.5.1をソースコードからビルドして、Unix系システムへインストールする手引きです。
-この記事ではCentOS 6.4環境でインストールの例を示しますが、自身でソースからビルドする方法は特定のLinuxディストリビューションに依りません。</div>
+  <div class="entry-content"><p>　Arch LinuxのEmacsで日本語を入力するための設定の記録です。この方法では、Emacsの他、UIM等の入力メソッドフレームワークと、AnthyやMozc等の入力メソッドがインストールされている必要があります。
+<img src="/blog/images/2013-02-24-input-japanese-on-emacs-24-dot-2-4/01.png" title="Mozcを使用して、Emacsで日本語を入力する" ></p>
+
+</div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/07/31/guide-to-compiling-and-installing-php-5-dot-5-1/">Read on &rarr;</a>
+      <a rel="full-article" href="/blog/2013/02/24/input-japanese-on-emacs-24-dot-2-4/">Read on &rarr;</a>
     </footer>
   
 
@@ -125,7 +137,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/07/31/guide-to-compiling-and-installing-mysql-community-server-5-dot-6-13/">MySQL Community Server 5.6.13をインストールする（ソースからビルドする方法）</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/01/05/install-arch-linux/">Arch Linux 2012.12.01をインストールする</a></h1>
     
     
       <p class="meta">
@@ -140,17 +152,23 @@
 
   
 
-<time datetime="2013-07-31T22:15:00+09:00" pubdate data-updated="true" class="updated">Jul 31<span>st</span>, 2013</time></p>
+<time datetime="2013-01-05T00:00:00+09:00" pubdate data-updated="true" class="updated">Jan 5<span>th</span>, 2013</time></p>
     
   </header>
 
 
-  <div class="entry-content"><p>　MySQL Community Server 5.6.13をソースコードからビルドして、Unix系システムへインストールする手引きです。
-この記事ではCentOS 6.4環境でインストールの例を示しますが、自身でソースからビルドする方法は特定のLinuxディストリビューションに依りません。</div>
+  <div class="entry-content"><p>　Arch Linux 2012.12.01をインストールした際の記録です。
+<a href="https://wiki.archlinux.org/index.php/Installation_Guide_%28%E6%97%A5%E6%9C%AC%E8%AA%9E%29">Installation Guide (日本語) &ndash; ArchWiki</a>の内容と重なる部分が多いですが、自分なりに注釈を加えて記録します。</p>
+
+<p>　インストールにはインターネットに接続できる環境が必要です。
+また、パーティションの構成やインストールするブートローダをあらかじめ決めておく必要があります。
+次の手順ではパーティションテーブルにGPTを使用し、ブートローダにはGRUB2をインストールしています。</p>
+
+</div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/07/31/guide-to-compiling-and-installing-mysql-community-server-5-dot-6-13/">Read on &rarr;</a>
+      <a rel="full-article" href="/blog/2013/01/05/install-arch-linux/">Read on &rarr;</a>
     </footer>
   
 
@@ -162,7 +180,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/07/31/guide-to-compiling-and-installing-apache-http-server-2-dot-4-6/">Apache HTTP Server 2.4.6をインストールする（ソースからビルドする方法）</a></h1>
+      <h1 class="entry-title"><a href="/blog/2012/12/06/create-and-ssh-to-ec2-instance/">Amazon EC2インスタンスを作成し、SSH接続する</a></h1>
     
     
       <p class="meta">
@@ -177,17 +195,18 @@
 
   
 
-<time datetime="2013-07-31T22:10:00+09:00" pubdate data-updated="true" class="updated">Jul 31<span>st</span>, 2013</time></p>
+<time datetime="2012-12-06T00:00:00+09:00" pubdate data-updated="true" class="updated">Dec 6<span>th</span>, 2012</time></p>
     
   </header>
 
 
-  <div class="entry-content"><p>　Apache HTTP Server 2.4.6をソースコードからビルドして、Unix系システムへインストールする手引きです。
-この記事ではCentOS 6.4環境でインストールの例を示しますが、自身でソースからビルドする方法は特定のLinuxディストリビューションに依りません。</div>
+  <div class="entry-content"><p>　Amazon EC2インスタンスを作成し、SSH接続するまでの手順の記録です。</p>
+
+</div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/07/31/guide-to-compiling-and-installing-apache-http-server-2-dot-4-6/">Read on &rarr;</a>
+      <a rel="full-article" href="/blog/2012/12/06/create-and-ssh-to-ec2-instance/">Read on &rarr;</a>
     </footer>
   
 
@@ -199,7 +218,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst/">Debian 7.1.0をインストールする</a></h1>
+      <h1 class="entry-title"><a href="/blog/2012/11/30/install-iis-7-dot-5-on-windows-7/">Windows 7にIIS 7.5をインストール</a></h1>
     
     
       <p class="meta">
@@ -214,18 +233,18 @@
 
   
 
-<time datetime="2013-06-23T05:54:00+09:00" pubdate data-updated="true" class="updated">Jun 23<span>rd</span>, 2013</time></p>
+<time datetime="2012-11-30T20:56:00+09:00" pubdate data-updated="true" class="updated">Nov 30<span>th</span>, 2012</time></p>
     
   </header>
 
 
-  <div class="entry-content"><p>　Debian 7.1.0をインストールした手順の記録です。インストールメディアはdebian-7.1.0-amd64-netinst.isoを使用しています。インターネットへ接続できる環境を前提にしています。</p>
+  <div class="entry-content"><p>　MicrosoftのWebサーバーソフトウェア&#8221;Internet Information Services (IIS)&ldquo;をWindows 7 Home Premiumにインストールした際の手順の記録です。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/01.png" width="400" title="インストーラの起動" ></div>
+</div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst/">Read on &rarr;</a>
+      <a rel="full-article" href="/blog/2012/11/30/install-iis-7-dot-5-on-windows-7/">Read on &rarr;</a>
     </footer>
   
 
@@ -234,9 +253,11 @@
   
   <div class="pagination">
     
-      <a class="prev" href="/blog/page/2/">&larr; Older</a>
+      <a class="prev" href="/blog/page/4/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/2/">Newer &rarr;</a>
     
   </div>
 </div>

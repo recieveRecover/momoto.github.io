@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: UML | momoto.github.io]]></title>
+  <link href="http://momoto.github.io/blog/categories/uml/atom.xml" rel="self"/>
+  <link href="http://momoto.github.io/"/>
+  <updated>2013-08-17T02:23:28+09:00</updated>
+  <id>http://momoto.github.io/</id>
+  <author>
+    <name><![CDATA[Seiji Momoto]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[UML 2.0の概要]]></title>
+    <link href="http://momoto.github.io/blog/2012/08/02/overview-uml/"/>
+    <updated>2012-08-02T19:37:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2012/08/02/overview-uml</id>
+    <content type="html"><![CDATA[<p>統一モデリング言語（UML）は、システムの構造や振る舞いを図で表現するために標準化されたモデリング言語の一つ。
+規定されている13種類の図を必要に応じて使い分ける。</p>
+
+<ol>
+<li>クラス図</li>
+<li>複合構造図</li>
+<li>コンポーネント図</li>
+<li>配置図</li>
+<li>オブジェクト図</li>
+<li>パッケージ図</li>
+<li>アクティビティ図</li>
+<li>ユースケース図</li>
+<li>ステートマシン図</li>
+<li>シーケンス図</li>
+<li>コミュニケーション図</li>
+<li>相互作用概要図</li>
+<li>タイミング図</li>
+</ol>
+
+
+<!-- more -->
+
+
+<h4>各図の特徴</h4>
+
+<ol>
+<li><p>クラス図</p>
+
+<p> システムの静的な構造を記述する。構成される主な要素は<strong>クラス</strong>と、それらの<strong>関連</strong>。
+ <img src="/blog/images/2012-08-02-overview-uml/01-classdiagram.png"></p></li>
+<li><p>複合構造図</p></li>
+<li><p>コンポーネント図</p></li>
+<li><p>配置図</p></li>
+<li><p>オブジェクト図</p>
+
+<p> システムの特定の状況での静的な構造を記述する。構成される主な要素は<strong>オブジェクト</strong>と、それらの<strong>リンク</strong>。</p>
+
+<p> <img src="/blog/images/2012-08-02-overview-uml/02-objectdiagram.png"></p></li>
+<li><p>パッケージ図</p>
+
+<p> クラスなどの要素をグループ化し、階層構造を記述できる。</p>
+
+<p> <img src="/blog/images/2012-08-02-overview-uml/03-packagediagram.png"></p></li>
+<li><p>アクティビティ図</p>
+
+<p> オブジェクトの振る舞いとその遷移を記述する。構成される主な要素は<strong>Activity</strong>と<strong>Activity Edge</strong>。</p></li>
+<li><p>ユースケース図</p>
+
+<p> システムの機能とユーザを記述する。構成される主な要素は<strong>アクタ</strong>と<strong>ユースケース</strong>。</p></li>
+<li><p>ステートマシン図</p>
+
+<p> オブジェクトの状態とその遷移を記述する。構成される主な要素は<strong>State</strong>と<strong>Transition</strong>。</p></li>
+<li><p>シーケンス図</p>
+
+<p>オブジェクト間の相互作用を記述する。構成される主な要素はオブジェクトの<strong>ライフライン</strong>と、それらの<strong>メッセージ</strong>。
+コミュニケーション図と比べると、メッセージの時系列を強調できる。</p></li>
+<li><p>コミュニケーション図</p>
+
+<p>オブジェクト間の相互作用を記述する。構成される主な要素は<strong>オブジェクト</strong>と、それらの<strong>メッセージフロー</strong>、<strong>関連</strong>。
+シーケンス図と比べると、オブジェクト間の関連を強調できる。</p></li>
+<li><p>相互作用概要図</p></li>
+<li>タイミング図</li>
+</ol>
+
+
+<iframe frameborder="0" marginheight="0" marginwidth="0" scrolling="no" src="http://rcm-jp.amazon.co.jp/e/cm?t=seijimomotobl-22&amp;o=9&amp;p=8&amp;l=as1&amp;asins=4894712636&amp;ref=qf_sp_asin_til&amp;fc1=000000&amp;IS2=1&amp;lt1=_top&amp;m=amazon&amp;lc1=0000FF&amp;bc1=FFFFFF&amp;bg1=FFFFFF&amp;f=ifr" style="height: 240px; width: 120px;"></iframe>
+
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="http://www.omg.org/technology/documents/modeling_spec_catalog.htm#UML">Unified Modeling Language &ndash; OMG Modeling and Metadata Specifications</a></li>
+<li><a href="http://www.omg.org/cgi-bin/doc?formal/05-07-04">OMG Document &mdash; formal/05-07-04 (UML Superstructure Specification, v2.0)</a></li>
+<li><a href="http://ja.wikipedia.org/wiki/%E7%B5%B1%E4%B8%80%E3%83%A2%E3%83%87%E3%83%AA%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E">統一モデリング言語 &ndash; Wikipedia</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

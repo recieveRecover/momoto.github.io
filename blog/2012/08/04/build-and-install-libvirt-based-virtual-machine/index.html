@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>libvirtを用いて仮想マシンを構築、インストールする - momoto.github.io</title>
+<meta name="author" content="Seiji Momoto">
+
+<meta name="description" content="virt-installを使って、CUIから仮想マシンのディスクイメージを作成する手順の記録です。">
+<meta name="keywords" content="python-libvirt, virt-install">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="canonical" href="http://momoto.github.io/blog/2012/08/04/build-and-install-libvirt-based-virtual-machine/">
+<link href="/favicon.png" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="momoto.github.io" type="application/atom+xml">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29340465-5']);
+  _gaq.push(['_setDomainName', 'github.io']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+<body>
+<div id="header-container">
+  <div id="header">
+    <div class="wrapper">
+      <header role="banner"><hgroup><h1><a href="/">momoto.github.io</a></h1></hgroup></header>
+      <nav role="navigation">
+        <form action="http://google.com/search" method="get"><fieldset role="search"><input type="hidden" name="q" value="site:momoto.github.io" /><input class="search" type="text" name="q" results="0" placeholder="Search"/></fieldset></form>
+        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<div id="body" class="collapse-sidebar sidebar-footer">
+  <div id="main"><div id="content"><div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Libvirtを用いて仮想マシンを構築、インストールする</h1>
+    
+    
+      <p class="meta">
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2012-08-04T09:49:00+09:00" pubdate data-updated="true" class="updated">Aug 4<span>th</span>, 2012</time></p>
+    
+  </header>
+
+
+<div class="entry-content"><p>virt-installを使って、CUIから仮想マシンのディスクイメージを作成する。</p>
+
+<p>動作要件として、ホストOSにハイパーバイザ（KVMやXen）とlibvirtがインストールされていて、libvirtdが起動している必要がある。
+virt-install自体は、RPMでは&#8221;python-virtinst&#8221;パッケージに含まれている。
+（参考：<a href="http://rpmfind.net/linux/rpm2html/search.php?query=virt-install">RPM resource virt-install</a>）</p>
+
+<!-- more -->
+
+
+<p>virt-installのオプションには仮想マシンに割り当てるリソースなどを指定する。
+例えば、仮想マシン名は「myvirtualmachine」、インストールイメージにはkddilabs.jpのミラーが配布しているCentOS6.3[x86_64]を
+指定した準仮想化ゲストOSを/var/lib/libvirt/images/myvirtualmachine.imgに作成する場合は下のようなオプションになる。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># virt-install \
+</span><span class='line'>--name=myvirtualmachine \
+</span><span class='line'>--ram=512 \
+</span><span class='line'>--vcpus=1 \
+</span><span class='line'>--paravirt \
+</span><span class='line'>--location='ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.3/os/x86_64/' \
+</span><span class='line'>--file=/var/lib/libvirt/images/myvirtualmachine.img \
+</span><span class='line'>--file-size=8 \
+</span><span class='line'>--nographics \
+</span><span class='line'>--keymap=jp106</span></code></pre></td></tr></table></div></figure>
+
+
+<p>また、<code>--prompt</code>オプションを使うと対話的に各項目を指定することができる。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># virt-install --prompt
+</span><span class='line'>
+</span><span class='line'>  Would you like a fully virtualized guest (yes or no)? This will allow you to run unmodified operating systems.
+</span><span class='line'>  // 完全仮想化を行うかどうか（noで準仮想化）
+</span><span class='line'>    no
+</span><span class='line'>
+</span><span class='line'>  What is the name of your virtual machine?
+</span><span class='line'>  // 仮想マシンの名称
+</span><span class='line'>    myvirtualmachine
+</span><span class='line'>
+</span><span class='line'>  How much RAM should be allocated (in megabytes)?
+</span><span class='line'>  // 仮想マシンに割り当てるメインメモリの容量
+</span><span class='line'>    512
+</span><span class='line'>
+</span><span class='line'>  What would you like to use as the disk (file path)?
+</span><span class='line'>  // イメージディスクのファイルパス
+</span><span class='line'>    /var/lib/libvirt/images/myvirtualmachine.img
+</span><span class='line'>
+</span><span class='line'>  How large would you like the disk (/var/lib/xen/images/centos-6.3-x86_64.img) to be (in gigabytes)?
+</span><span class='line'>  // イメージディスクに割り当てる容量
+</span><span class='line'>    8
+</span><span class='line'>
+</span><span class='line'>  Would you like to enable graphics support? (yes or no)
+</span><span class='line'>  // グラフィクスサポートを有効にするかどうか
+</span><span class='line'>    no
+</span><span class='line'>
+</span><span class='line'>  What is the install CD-ROM/ISO or URL?
+</span><span class='line'>  // ISOイメージのファイルパス、または配布元のURL
+</span><span class='line'>    ftp://ftp.kddilabs.jp/Linux/packages/CentOS/6.3/os/x86_64/</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>--nographics</code>オプションを指定していれば、テキストユーザインタフェースでゲストOSのインストールが始まる。
+ゲストOSとのコンソール接続を終了する場合は、&#8217;Ctrl + ]&lsquo;でホストOSへ戻ることができる。</p>
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="http://www.ibm.com/developerworks/jp/linux/library/l-libvirt/">libvirt 仮想化ライブラリーの徹底調査</a></li>
+<li><a href="http://docs.redhat.com/docs/ja-JP/Red_Hat_Enterprise_Linux/5/html/Virtualization/chap-Virtualization-Virtualized_guest_installation_overview.html">第6章 仮想化ゲストインストールの概要</a></li>
+<li><a href="http://www.atmarkit.co.jp/flinux/rensai/linuxkvm03/03a.html">libvirt探訪（基礎編） － ＠IT</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <a href="https://plus.google.com/101153525943529592041?rel=author" class="fn">Seiji Momoto</a></span>
+
+      
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2012-08-04T09:49:00+09:00" pubdate data-updated="true" class="updated">Aug 4<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/jia-xiang-hua/'>仮想化</a>
+  
+</span>
+
+
+    </p>
+    <div class="sharing">
+<a href="https://coderwall.com/momoto"><img alt="Endorse momoto on Coderwall" src="http://api.coderwall.com/momoto/endorsecount.png" /></a>
+<g:plusone size="medium" annotation="none"></g:plusone>
+<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-url="http://momoto.github.io/blog/2012/08/04/build-and-install-libvirt-based-virtual-machine/" data-text="libvirtを用いて仮想マシンを構築、インストールする - momoto.github.io" data-count="none">Tweet</a>
+<a href="http://b.hatena.ne.jp/entry/http://momoto.github.io/blog/2012/08/04/build-and-install-libvirt-based-virtual-machine/" data-hatena-bookmark-title="libvirtを用いて仮想マシンを構築、インストールする - momoto.github.io" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-noballoon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+<fb:like data-href="http://momoto.github.io/blog/2012/08/04/build-and-install-libvirt-based-virtual-machine/" layout="button_count"></fb:like>
+</div>
+<div class="sharing">
+<br>
+<div id="disqus_thread" aria-live="polite"></div>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/08/02/overview-uml/" title="Previous Post: UML 2.0の概要">&laquo; UML 2.0の概要</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/08/11/converting-text-to-character-references/" title="Next Post: テキストを文字参照記述へ変換する">テキストを文字参照記述へ変換する &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+</div>
+<aside class="sidebar"><section class="vcard">
+<h1>About Me</h1>
+<p>A little something about me.</p>
+<p><a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>
+ | <a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>
+ | <a href="https://github.com/momoto">GitHub</a>
+ | <a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
+</section>
+</aside></div></div>
+  <footer role="contentinfo"><p>Copyright &copy; 2013 - <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a> - <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>. Design by <a href="http://octopressthemes.com">Octopress Themes</a>.</span></p></footer>
+</div>
+<script src="/javascripts/modernizr-2.0.js"></script>
+<script src="/javascripts/ender.js"></script>
+<script src="/javascripts/octopress.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'momotogithubio';
+
+    var disqus_identifier = 'http://momoto.github.io/blog/2012/08/04/build-and-install-libvirt-based-virtual-machine/';
+    var disqus_url = 'http://momoto.github.io/blog/2012/08/04/build-and-install-libvirt-based-virtual-machine/';
+    var disqus_script = 'embed.js';
+
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+<script type="text/javascript">
+  (function() {
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+  })();
+</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1&appId=561979160531119";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+<script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+
+</body>
+</html>

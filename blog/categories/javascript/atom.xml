@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: JavaScript | momoto.github.io]]></title>
+  <link href="http://momoto.github.io/blog/categories/javascript/atom.xml" rel="self"/>
+  <link href="http://momoto.github.io/"/>
+  <updated>2013-08-17T02:23:28+09:00</updated>
+  <id>http://momoto.github.io/</id>
+  <author>
+    <name><![CDATA[Seiji Momoto]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[テキストを文字参照記述へ変換する]]></title>
+    <link href="http://momoto.github.io/blog/2012/08/11/converting-text-to-character-references/"/>
+    <updated>2012-08-11T00:00:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2012/08/11/converting-text-to-character-references</id>
+    <content type="html"><![CDATA[<p>　入力された文字列の符号位置（Unicode）を出力します。テキストをHTML数値文字参照に変換するように動作します。</p>
+
+<p><form id="convert-text-to-character-references">
+<label>形式 <select><option>HTML文字参照（10進数）</option><option>HTML文字参照（16進数）</option><option>符号位置のみ（10進数）</option><option>符号位置のみ（16進数）</option></select></label><br>
+<label>入力 <textarea rows="4" style="width: 100%;"></textarea></label>
+<label>出力 <output><textarea rows="4" style="width: 100%;" readonly=True></textarea></output></label></p>
+
+<script> (function(){
+function decimal_form(codepoint) { return "&#" + codepoint.toString(10) + ";"; }
+function hexadecimal_form(codepoint) { return "&#x" + codepoint.toString(16) + ";"; }
+function decimal_delimit_space(codepoint) { return codepoint.toString(10) + " "; }
+function hexadecimal_delimit_space(codepoint) { return codepoint.toString(16) + " "; }
+function convert_text_to_character_references(text) {
+  for (var encoded="", i=0; i<text.length; i++)
+    if (s.selectedIndex === 0) encoded += decimal_form(text.charCodeAt(i));
+    else if (s.selectedIndex === 1) encoded += hexadecimal_form(text.charCodeAt(i));
+    else if (s.selectedIndex === 2) encoded += decimal_delimit_space(text.charCodeAt(i));
+    else if (s.selectedIndex === 3) encoded += hexadecimal_delimit_space(text.charCodeAt(i));
+  o.value = encoded;
+}
+function eventhandler(event) {
+  if (text === i.value && event.type !== "change")
+    return;
+  else
+    convert_text_to_character_references(text = i.value);
+}
+var text = "";
+var f = document.getElementById("convert-text-to-character-references");
+var s = f.getElementsByTagName("select")[0];
+var i = f.getElementsByTagName("textarea")[0];
+var o = f.getElementsByTagName("textarea")[1];
+i.onkeydown = eventhandler;
+i.onkeyup   = eventhandler;
+s.onchange  = eventhandler;
+})(); </script>
+
+
+<p></form></p>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://www.unicode.org/Public/UCD/latest/ucd/">The Unicode Character Database (UCD)</a></li>
+<li><a href="http://www.ietf.org/rfc/rfc1815.txt">RFC 1815 &ndash; Character Sets ISO-10646 and ISO-10646-J-1</a></li>
+<li><a href="http://www.w3.org/TR/html5/syntax.html#character-references">8.1.4 Character references — HTML5</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Microsoft Windows | momoto.github.io]]></title>
+  <link href="http://momoto.github.io/blog/categories/microsoft-windows/atom.xml" rel="self"/>
+  <link href="http://momoto.github.io/"/>
+  <updated>2013-08-17T02:23:28+09:00</updated>
+  <id>http://momoto.github.io/</id>
+  <author>
+    <name><![CDATA[Seiji Momoto]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Windows 7にIIS 7.5をインストール]]></title>
+    <link href="http://momoto.github.io/blog/2012/11/30/install-iis-7-dot-5-on-windows-7/"/>
+    <updated>2012-11-30T20:56:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2012/11/30/install-iis-7-dot-5-on-windows-7</id>
+    <content type="html"><![CDATA[<p>　MicrosoftのWebサーバーソフトウェア"Internet Information Services (IIS)&ldquo;をWindows 7 Home Premiumにインストールした際の手順の記録です。</p>
+
+<!-- more -->
+
+
+<h3>IISのインストール</h3>
+
+<ol>
+<li><p>スタートメニュー等から「コントロールパネル」へ</p>
+
+<p><a href="/blog/images/2012-11-30/01.png"><img src="/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/01.png"></a></p></li>
+<li><p>コントロールパネルから「プログラム」の画面へ</p>
+
+<p><a href="/blog/images/2012-11-30/02.png"><img src="/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/02.png" width="600"></a></p></li>
+<li><p>プログラムから「Windowsの機能の有効化または無効化」の画面へ</p>
+
+<p><a href="/blog/images/2012-11-30/03.png"><img src="/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/03.png" width="600"></a></p></li>
+<li><p>　Windowsの機能から「インターネット インフォメーション サービス」のチェックボックスをオンにする。
+サブフォルダのチェックボックスからはIISの追加機能（FTPサーバーやアプリケーション開発機能など）を指定できる。</p>
+
+<p><a href="/blog/images/2012-11-30/04.png"><img src="/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/04.png" width="600"></a></p>
+
+<p>　必要な機能を選択した後は「OK」を押下するとIISのインストールがはじまる。
+インストールの完了後、ブラウザで自身のアドレス（<a href="http://localhost%EF%BC%89%E3%81%B8%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%81%99%E3%82%8B%E3%81%A8IIS%E3%81%8C%E5%8B%95%E4%BD%9C%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%81%93%E3%81%A8%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%A7%E3%81%8D%E3%82%8B%E3%80%82">http://localhost%EF%BC%89%E3%81%B8%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%81%99%E3%82%8B%E3%81%A8IIS%E3%81%8C%E5%8B%95%E4%BD%9C%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%81%93%E3%81%A8%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%A7%E3%81%8D%E3%82%8B%E3%80%82</a></p>
+
+<p><a href="/blog/images/2012-11-30/05.png"><img src="/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/05.png" width="600"></a></p></li>
+</ol>
+
+
+<h3>IISマネージャーの起動</h3>
+
+<ol>
+<li><p>Webサーバーの状態の確認や、起動/停止を操作できるIISマネージャーは、「ファイル名を指定して実行」から「InetMgr.exe」を指定して起動することができる</p>
+
+<p><a href="/blog/images/2012-11-30/06.png"><img src="/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/06.png" title="&ldquo;InetMgr.exeを開始する&rdquo;" ></a></p></li>
+<li><a href="/blog/images/2012-11-30/07.png"><img src="/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/07.png" width="600" title="&ldquo;IISマネージャーの起動画面&rdquo;" ></a></li>
+</ol>
+
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://technet.microsoft.com/ja-jp/library/cc753433%28v=ws.10%29.aspx">technet.microsoft.com &ndash; Web サーバー (IIS)</a></li>
+</ul>
+
+
+<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4891006129" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=489100570X" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+]]></content>
+  </entry>
+  
+</feed>

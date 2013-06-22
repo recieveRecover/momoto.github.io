@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Markdown | momoto.github.io]]></title>
+  <link href="http://momoto.github.io/blog/categories/markdown/atom.xml" rel="self"/>
+  <link href="http://momoto.github.io/"/>
+  <updated>2013-08-17T02:23:28+09:00</updated>
+  <id>http://momoto.github.io/</id>
+  <author>
+    <name><![CDATA[Seiji Momoto]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Markdownの概要]]></title>
+    <link href="http://momoto.github.io/blog/2012/07/31/overview-markdown/"/>
+    <updated>2012-07-31T11:06:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2012/07/31/overview-markdown</id>
+    <content type="html"><![CDATA[<p>覚えておきたいと思うMarkdown記法の備忘録です。複数の記法がある場合のその記述や、詳しい構文についてはふれていません。</p>
+
+<!-- more -->
+
+
+<h3>見出し</h3>
+
+<h4>Markdown記法</h4>
+
+<p>``` plain</p>
+
+<h1>Heading1</h1>
+
+<h2>Heading2</h2>
+
+<h3>Heading3</h3>
+
+<h4>Heading4</h4>
+
+<h5>Heading5</h5>
+
+<h6>Heading6</h6>
+
+<p>```</p>
+
+<h4>HTML変換例</h4>
+
+<p>``` plain</p>
+
+<h1>Heading1</h1>
+
+
+<h2>Heading2</h2>
+
+
+<h3>Heading3</h3>
+
+
+<h4>Heading4</h4>
+
+
+<h5>Heading5</h5>
+
+
+<h6>Heading6</h6>
+
+
+<p>```</p>
+
+<h3>リスト</h3>
+
+<h4>記法（unordered）</h4>
+
+<p>``` plain
+&ndash; リスト１
+&ndash; リスト２</p>
+
+<pre><code>- リスト２ー１
+- リスト２ー２
+</code></pre>
+
+<ul>
+<li>リスト３</li>
+<li>リスト４
+```
+
+<h4>HTML変換例</h4>
+
+<p>``` plain</p></li>
+</ul>
+
+
+<ul>
+  <li>リスト１</li>
+  <li>リスト２
+    <ul>
+      <li>リスト２ー１</li>
+      <li>リスト２ー２</li>
+    </ul>
+  </li>
+  <li>リスト３</li>
+  <li>リスト４</li>
+</ul>
+
+
+<p>```</p>
+
+<h4>記法（ordered）</h4>
+
+<p>``` plain
+1.  &ndash; unordered1</p>
+
+<pre><code>- unordered2
+- unordered3
+</code></pre>
+
+<ol>
+<li><ol>
+<li>ordered1</li>
+<li>ordered2</li>
+<li>ordered3
+```
+
+<h4>HTML変換例</h4>
+
+<p>``` plain</p></li>
+</ol>
+</li>
+</ol>
+
+
+<ol>
+  <li><ul>
+    <li>unordered1</li>
+    <li>unordered2</li>
+    <li>unordered3</li>
+  </ul></li>
+  <li><ol>
+    <li>ordered1</li>
+    <li>ordered2</li>
+    <li>ordered3</li>
+  </ol></li>
+</ol>
+
+
+<p>```</p>
+
+<h3>罫線</h3>
+
+<h4>記法</h4>
+
+<p>``` plain</p>
+
+<hr />
+
+<hr />
+
+<hr />
+
+<p>```</p>
+
+<h4>HTML変換例</h4>
+
+<p>``` plain</p>
+
+<hr />
+
+
+<hr />
+
+
+<hr />
+
+
+<p>```</p>
+
+<h4>引用</h4>
+
+<h5>記法</h5>
+
+<p>``` plain</p>
+
+<blockquote><p>BACKQUOTES
+BACKQUOTES</p>
+
+<blockquote><p>BACKQUOTES
+BACKQUOTES
+```</p></blockquote></blockquote>
+
+<h5>表示例</h5>
+
+<blockquote><blockquote><p>BACKQUOTES
+BACKQUOTES</p>
+
+<blockquote><p>BACKQUOTES
+BACKQUOTES</p></blockquote></blockquote></blockquote>
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="http://daringfireball.net/projects/markdown/syntax">Daring Fireball: Markdown Syntax Documentation</a></li>
+<li><a href="http://ja.wikipedia.org/wiki/Markdown">Markdown &ndash; Wikipedia</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>
