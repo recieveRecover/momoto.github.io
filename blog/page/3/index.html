@@ -2,17 +2,23 @@
 <!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
 <!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
 <meta charset="utf-8">
 <title>momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-
-<meta name="description" content="　FuelPHPのRestコントローラを試用してみます。クラスファイルは、通常のコントローラと同様にfuel/app/classes/controllerへ設置して使用します。まずは次のような内容でapi.phpを作成し、ブラウザから出力を確認してみます。Restコントローラを使用する場合、 &hellip;">
+<meta name="description" content="　GUIDパーティションテーブル（GPT）規格のディスクにSyslinuxをインストールした手順の記録です。OSはArch Linux、パーティショニングにはgptfdisk（gdisk）を使用しています。GPTの利点は2TiBを超える記憶容量を管理できることにありますが、 &hellip;">
 
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://momoto.github.io/blog/page/3/" />
 
+<meta property="og:site_name" content="momoto.github.io">
+<meta property="og:description" content="　GUIDパーティションテーブル（GPT）規格のディスクにSyslinuxをインストールした手順の記録です。OSはArch Linux、パーティショニングにはgptfdisk（gdisk）を使用しています。GPTの利点は2TiBを超える記憶容量を管理できることにありますが、 &hellip;">
+<meta property="og:image" content="/images/identicon.png" />
+<meta property="fb:app_id" content="561979160531119" />
+<meta property="article:author" content="Seiji Momoto" />
 <link rel="canonical" href="http://momoto.github.io/blog/page/3/">
 <link href="/favicon.png" rel="icon">
 <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -52,6 +58,196 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/04/08/install-syslinux-on-gpt-partition-styled-disk/">GUIDパーティションテーブルでのSyslinuxのインストール</a></h1>
+    
+    
+      <p class="meta">
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-04-08T20:46:00+09:00" pubdate data-updated="true" class="updated">Apr 8<span>th</span>, 2013</time>
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>　GUIDパーティションテーブル（GPT）規格のディスクにSyslinuxをインストールした手順の記録です。OSはArch Linux、パーティショニングにはgptfdisk（gdisk）を使用しています。GPTの利点は2TiBを超える記憶容量を管理できることにありますが、ここでは練習のため8GBの仮想ディスクを使用します。パーティションは以下のようにrootとbootだけに分割します。</p>
+
+<pre><code>Number  Start (sector)    End (sector)  Size       Code  Name
+   1            2048          206847   100.0 MiB   EF02  BIOS boot partition
+   2          206848        16777182   7.9 GiB     8300  Linux filesystem
+</code></pre>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/04/08/install-syslinux-on-gpt-partition-styled-disk/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/">CentOS 6.4をインストールする</a></h1>
+    
+    
+      <p class="meta">
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-04-06T01:37:00+09:00" pubdate data-updated="true" class="updated">Apr 6<span>th</span>, 2013</time>
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>　CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。インターネットへ接続できる環境を前提にしています。</p>
+
+<ol>
+<li><h3>Anacondaの起動</h3>
+
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/01.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/01_thumbnail.png" title="Anacondaの起動" ></a></p>
+
+<p>　インストールメディアからCentOSのインストーラ&#8221;Anaconda&#8221;を起動します。このとき、インストールメディア（光学ドライブやUSB、あるいはISOイメージファイル）が優先的に起動されるようにコンピュータ側（BIOSや仮想化環境）で正しく設定されている必要があります。</p>
+
+<p>　インストールを開始するために、&#8221;Install or upgrade an existing system&#8221;を選択します。</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/27/awesome-tutorials/">ウィンドウマネージャawesomeの基本操作</a></h1>
+    
+    
+      <p class="meta">
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-03-27T21:13:00+09:00" pubdate data-updated="true" class="updated">Mar 27<span>th</span>, 2013</time>
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>タイル型ウィンドウマネージャ「awesome」の特徴とショートカットキーを簡単にまとめています。</p>
+
+<h4>awesomeが提供しているレイアウトのスクリーンショット</h4>
+
+<ul>
+<li><p>タイル配置（awful.layout.suit.tile）</p>
+
+<p><img src="/blog/images/2013-03-27-awesome-tutorials/01.png" width="300">
+<img src="/blog/images/2013-03-27-awesome-tutorials/02.png" width="300"></p></li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/03/27/awesome-tutorials/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/16/install-x86-minimal-20121213/">Gentoo Linux (20121213)をインストールする</a></h1>
+    
+    
+      <p class="meta">
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-03-16T09:00:00+09:00" pubdate data-updated="true" class="updated">Mar 16<span>th</span>, 2013</time>
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>　Gentoo Linux (20121213)をインストールした手順の記録です。命令セットはx86、インストールメディアはinstall-x86-minimal-20121213.isoを使用しています。DHCPによりネットワークは既に接続できる状態を前提にしています。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/03/16/install-x86-minimal-20121213/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp/">FuelPHP Restコントローラの使い方</a></h1>
     
     
@@ -62,12 +258,16 @@
 
 
 
+
+
+
   
 
 
   
 
-<time datetime="2013-03-03T23:38:00+09:00" pubdate data-updated="true" class="updated">Mar 3<span>rd</span>, 2013</time></p>
+<time datetime="2013-03-03T23:38:00+09:00" pubdate data-updated="true" class="updated">Mar 3<span>rd</span>, 2013</time>
+      </p>
     
   </header>
 
@@ -87,164 +287,6 @@ class Controller_Api extends Controller_Rest {
   
     <footer>
       <a rel="full-article" href="/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/02/24/input-japanese-on-emacs-24-dot-2-4/">Arch Linux Extra/emacs 24.2-4で日本語を入力する</a></h1>
-    
-    
-      <p class="meta">
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2013-02-24T14:44:00+09:00" pubdate data-updated="true" class="updated">Feb 24<span>th</span>, 2013</time></p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>　Arch LinuxのEmacsで日本語を入力するための設定の記録です。この方法では、Emacsの他、UIM等の入力メソッドフレームワークと、AnthyやMozc等の入力メソッドがインストールされている必要があります。
-<img src="/blog/images/2013-02-24-input-japanese-on-emacs-24-dot-2-4/01.png" title="Mozcを使用して、Emacsで日本語を入力する" ></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/02/24/input-japanese-on-emacs-24-dot-2-4/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/01/05/install-arch-linux/">Arch Linux 2012.12.01をインストールする</a></h1>
-    
-    
-      <p class="meta">
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2013-01-05T00:00:00+09:00" pubdate data-updated="true" class="updated">Jan 5<span>th</span>, 2013</time></p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>　Arch Linux 2012.12.01をインストールした際の記録です。
-<a href="https://wiki.archlinux.org/index.php/Installation_Guide_%28%E6%97%A5%E6%9C%AC%E8%AA%9E%29">Installation Guide (日本語) &ndash; ArchWiki</a>の内容と重なる部分が多いですが、自分なりに注釈を加えて記録します。</p>
-
-<p>　インストールにはインターネットに接続できる環境が必要です。
-また、パーティションの構成やインストールするブートローダをあらかじめ決めておく必要があります。
-次の手順ではパーティションテーブルにGPTを使用し、ブートローダにはGRUB2をインストールしています。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/01/05/install-arch-linux/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/12/06/create-and-ssh-to-ec2-instance/">Amazon EC2インスタンスを作成し、SSH接続する</a></h1>
-    
-    
-      <p class="meta">
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2012-12-06T00:00:00+09:00" pubdate data-updated="true" class="updated">Dec 6<span>th</span>, 2012</time></p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>　Amazon EC2インスタンスを作成し、SSH接続するまでの手順の記録です。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/12/06/create-and-ssh-to-ec2-instance/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/11/30/install-iis-7-dot-5-on-windows-7/">Windows 7にIIS 7.5をインストール</a></h1>
-    
-    
-      <p class="meta">
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2012-11-30T20:56:00+09:00" pubdate data-updated="true" class="updated">Nov 30<span>th</span>, 2012</time></p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>　MicrosoftのWebサーバーソフトウェア&#8221;Internet Information Services (IIS)&ldquo;をWindows 7 Home Premiumにインストールした際の手順の記録です。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/11/30/install-iis-7-dot-5-on-windows-7/">Read on &rarr;</a>
     </footer>
   
 

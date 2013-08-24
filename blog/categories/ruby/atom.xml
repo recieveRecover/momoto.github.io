@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-08-17T02:23:28+09:00</updated>
+  <updated>2013-08-25T03:20:13+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -14,11 +14,150 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Red Hat OpenShiftにRedmine 2.0を展開する]]></title>
+    <link href="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/"/>
+    <updated>2013-08-24T12:06:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift</id>
+    <content type="html"><![CDATA[<p>　Red Hat OpenShiftにプロジェクト管理ソフトウェアのRedmine 2.0を展開します。rhcとredmine-2.0-openshift-quickstartを使用しています。<!--more-->
+あらかじめOpenShiftのアカウントを作成している必要があります。</p>
+
+<ol>
+<li><h4>Ruby 1.9のアプリケーションを作成する</h4>
+
+<p>　<code>rhc app create</code>でアプリケーションを作成します。-aにはアプリケーション名、-tにはウェブカートリッジを指定します。</p>
+
+<pre><code>$ rhc app create -a redmine -t ruby-1.9
+Application Options
+-------------------
+  Namespace:  momoto
+  Cartridges: ruby-1.9
+  Gear Size:  default
+  Scaling:    no
+
+Creating application 'redmine' ... done
+
+Waiting for your DNS name to be available ... done
+
+Cloning into 'redmine'...
+Checking connectivity... done
+
+Your application 'redmine' is now available.
+
+  URL:        http://redmine-momoto.rhcloud.com/
+  SSH to:     *
+  Git remote: *
+  Cloned to:  ~/Workspace/redmine
+
+Run 'rhc show-app redmine' for more details about your app.
+</code></pre>
+
+<p>　アプリケーションの作成と同時に、Gitリポジトリがローカルにクローンされています。</p></li>
+<li><h4>MySQL Database 5.1カートリッジを追加する</h4>
+
+<p>　<code>rhc cartridge add</code>でMySQL Database 5.1アドオンカートリッジを追加します。追加できるカートリッジは<code>rhc cartridges</code>または<code>rhc cartridge list</code>で確認できます。</p>
+
+<pre><code>$ rhc cartridge add -a redmine -c mysql-5.1
+Adding mysql-5.1 to application 'redmine' ... done
+
+mysql-5.1 (MySQL Database 5.1)
+------------------------------
+  Gears:          Located with ruby-1.9
+  Connection URL: mysql://$OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT/
+  Database Name:  *
+  Password:       *
+  Username:       *
+
+MySQL 5.1 database added.  Please make note of these credentials:
+       Root User: *
+   Root Password: *
+   Database Name: *
+Connection URL: mysql://$OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT/
+You can manage your new MySQL database by also embedding phpmyadmin-3.4.
+The phpmyadmin username and password will be the same as the MySQL credentials above.
+</code></pre></li>
+<li><h4>redmine-2.0-openshift-quickstartを併合する</h4>
+
+<ol>
+<li>　OpenShiftからクローンしたローカルリポジトリにワーキングディレクトリをうつします</li>
+<li>　GitHubの<a href="https://github.com/openshift/redmine-2.0-openshift-quickstart">redmine-2.0-openshift-quickstart</a>を<code>upstream</code>としてリモートリポジトリに追加します</li>
+<li>　ローカルリポジトリにupstreamを併合します（MERGE STRATEGYはrecursive、recursive strategyのオプションはtheirs）</li>
+</ol>
+
+
+<p>　もし、OpenShiftからリポジトリをクローンしなおす場合は<code>rhc git-clone &lt;app&gt;</code>をつかいます。</p>
+
+<pre><code>$ cd redmine/
+$ git remote add upstream -m master git://github.com/openshift/redmine-2.0-openshift-quickstart.git
+$ git pull -s recursive -X theirs upstream master
+warning: no common commits
+remote: Counting objects: 2003, done.
+remote: Compressing objects: 100% (1725/1725), done.
+remote: Total 2003 (delta 300), reused 1897 (delta 199)
+Receiving objects: 100% (2003/2003), 4.06 MiB | 272.00 KiB/s, done.
+Resolving deltas: 100% (300/300), done.
+From git://github.com/openshift/redmine-2.0-openshift-quickstart
+ * branch            master     -&gt; FETCH_HEAD
+Auto-merging config.ru
+Auto-merging README.md
+Auto-merging .openshift/cron/weekly/jobs.allow
+Auto-merging .openshift/cron/README.cron
+...
+</code></pre></li>
+<li><h4>OpenShiftに展開する</h4>
+
+<p>　redmine-2.0-openshift-quickstartと併合したローカルリポジトリを、OpenShiftのリモートリポジトリ（origin）に更新します。</p>
+
+<pre><code>$ git push origin master
+Counting objects: 2011, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (1625/1625), done.
+Writing objects: 100% (2001/2001), 4.06 MiB | 1.58 MiB/s, done.
+Total 2001 (delta 307), reused 1989 (delta 300)
+remote: Stopping Ruby cart
+remote: Running build on Ruby cart
+remote: Bundling RubyGems based on Gemfile/Gemfile.lock to repo/vendor/bundle with 'bundle install --deployment'
+remote: Fetching gem metadata from http://rubygems.org/.........
+...
+</code></pre>
+
+<p>　<code>git push</code>の処理が終わったら、ウェブブラウザからアプリケーションのURLへアクセスして動作を確認します。アプリケーションのURLは<code>rhc show-app &lt;app&gt;</code>からも確認できます。</p>
+
+<p><img src="/blog/images/2013-08-24-deploying-redmine-2-dot-0-on-openshift/redmine-home.png" width="500" title="Red Hat OpenShiftにRedmine 2.0を展開する" ></p></li>
+</ol>
+
+
+<p>　OpenShiftではRedmineのほか、<a href="https://www.openshift.com/quickstarts/django">Django</a>、<a href="https://www.openshift.com/quickstarts/cakephp">CakePHP</a>、<a href="https://www.openshift.com/quickstarts/wordpress-3x">WordPress 3.x</a>などのクイックスタートも用意されています。</p>
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://www.openshift.com/developers/documentation">Understanding OpenShift | OpenShift by Red Hat</a></li>
+<li><a href="https://github.com/openshift">openshift (OpenShift Origin) · GitHub</a>
+
+<ul>
+<li><a href="https://github.com/openshift/redmine-2.0-openshift-quickstart">openshift/redmine-2.0-openshift-quickstart</a></li>
+</ul>
+</li>
+</ul>
+
+
+<h2>関連記事</h2>
+
+<ul>
+<li><a href="/blog/2013/08/24/installation-guide-for-openshift-rhc-client-tools/">Red Hat OpenShiftクライアントツールをインストールする</a></li>
+<li><a href="/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku/">HerokuにRedmine 2.3.1を展開する</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[HerokuにRedmine 2.3.1を展開する]]></title>
     <link href="http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku/"/>
     <updated>2013-05-31T23:19:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku</id>
-    <content type="html"><![CDATA[<p>　Herokuが提供するPaaSに、プロジェクト管理ソフトウェア Redmine 2.3.1を展開します。Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、<a href="https://aur.archlinux.org/packages/heroku-client/">heroku-toolbelt</a>は2.39.4を使用しました。<!-- more --></p>
+    <content type="html"><![CDATA[<p>　Herokuが提供するPaaSに、プロジェクト管理ソフトウェア Redmine 2.3.1を展開します。
+Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、<a href="https://aur.archlinux.org/packages/heroku-client/">heroku-toolbelt</a>は2.39.4を使用しました。<!-- more --></p>
 
 <h4>Redmine 2.3.1のダウンロード</h4>
 
@@ -256,6 +395,13 @@ $ heroku run rake redmine:load_default_data
 <li><a href="https://github.com/redmine/redmine">Redmine</a></li>
 <li><a href="http://redmine.jp/guide/RedmineInstall/">Redmineのインストール &mdash; Redmine Guide 日本語訳</a></li>
 <li><a href="https://devcenter.heroku.com/articles/rails3">Getting Started with Rails 3.x on Heroku | Heroku Dev Center</a></li>
+</ul>
+
+
+<h4>関連記事</h4>
+
+<ul>
+<li><a href="/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/">Red Hat OpenShiftにRedmine 2.0を展開する</a></li>
 </ul>
 
 ]]></content>

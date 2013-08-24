@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Python | momoto.github.io]]></title>
+  <link href="http://momoto.github.io/blog/categories/python/atom.xml" rel="self"/>
+  <link href="http://momoto.github.io/"/>
+  <updated>2013-08-25T03:20:13+09:00</updated>
+  <id>http://momoto.github.io/</id>
+  <author>
+    <name><![CDATA[Seiji Momoto]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[HerokuにDjango 1.5.2を展開する]]></title>
+    <link href="http://momoto.github.io/blog/2013/08/16/deploying-django-1-dot-5-2-on-heroku/"/>
+    <updated>2013-08-16T00:00:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/08/16/deploying-django-1-dot-5-2-on-heroku</id>
+    <content type="html"><![CDATA[<p>　Herokuが提供するPaaSにウェブアプリケーションフレームワーク Django 1.5.2を展開します。Pythonのバージョンは2.7を使用しています。<!-- more --></p>
+
+<h4>1. django-toolbeltをインストールする</h4>
+
+<p>　django-toolbeltをインストールするところからはじめていきます。ここまでにPythonとVirtualenvがインストールされている必要があります。</p>
+
+<p>　まず、Python環境をつくるためのディレクトリを用意します。</p>
+
+<p><code>
+$ mkdir {application_root}
+$ cd {application_root}/
+</code></p>
+
+<p>　<a href="https://pypi.python.org/pypi/virtualenv/1.10.1">virtualenv 1.10.1</a>をつかって、独立したPython環境を作成します。</p>
+
+<p>```
+$ virtualenv-2.7 venv &mdash;distribute</p>
+
+<p>  New python executable in venv/bin/python2
+  Also creating executable in venv/bin/python
+  Installing Setuptools&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;.done.
+  Installing Pip&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;..done.</p>
+
+<p>$ source venv/bin/activate
+```</p>
+
+<p>　<a href="https://pypi.python.org/pypi/pip/1.4.1">pip 1.4.1</a>をつかって<a href="https://pypi.python.org/pypi/django-toolbelt/0.0.1">django-toolbelt 0.0.1</a>をインストールします。</p>
+
+<p>```
+(venv) $ pip install django-toolbelt</p>
+
+<p>  Successfully installed django-toolbelt django psycopg2 gunicorn dj-database-url dj-static static
+  Cleaning up&hellip;</p>
+
+<p>```</p>
+
+<h4>2. Djangoプロジェクトを作成する</h4>
+
+<p>　Herokuへ展開するDjangoのプロジェクトを作成していきます。この手順の中で、Herokuのプラットフォームでも動作するようにDjangoの設定を調整する必要があります。</p>
+
+<p>　django-admin.pyをつかってプロジェクトを作成します。</p>
+
+<p><code>
+(venv) $ django-admin.py startproject {project_name} .
+</code></p>
+
+<p>　アプリケーションのルートディレクトリにProcfile、requirements.txt、.gitignoteを用意します。
+<a href="https://devcenter.heroku.com/articles/procfile">Procfile</a>にはHerokuのdynosに実行させるコマンドを宣言します。
+<a href="http://www.pip-installer.org/en/latest/requirements.html">requirements.txt</a>には必要なPythonパッケージを記述します。
+<a href="http://git-scm.com/docs/gitignore">.gitignore</a>にはGitで追跡しないファイルを明示します。</p>
+
+<p>```
+(venv) $ vi Procfile</p>
+
+<p>  web: gunicorn {project_name}.wsgi</p>
+
+<p>(venv) $ pip freeze > requirements.txt</p>
+
+<p>  Django==1.5.2
+  dj-database-url==0.2.2
+  dj-static==0.0.5
+  django-toolbelt==0.0.1
+  gunicorn==17.5
+  psycopg2==2.5.1
+  static==0.4
+  wsgiref==0.1.2</p>
+
+<p>(venv) $ vi .gitignore</p>
+
+<p>  venv
+  *.pyc
+  staticfiles
+```</p>
+
+<p>　{project_name}/settings.py では、データベースURLやスタティックファイルへのパスを調整する必要があります。</p>
+
+<p>```</p>
+
+<h1>Parse database configuration from $DATABASE_URL</h1>
+
+<p>import dj_database_url
+DATABASES[&lsquo;default&rsquo;] =  dj_database_url.config()</p>
+
+<h1>Honor the &lsquo;X-Forwarded-Proto&rsquo; header for request.is_secure()</h1>
+
+<p>SECURE_PROXY_SSL_HEADER = (&lsquo;HTTP_X_FORWARDED_PROTO&rsquo;, &lsquo;https&rsquo;)</p>
+
+<h1>Allow all host headers</h1>
+
+<p>ALLOWED_HOSTS = [&lsquo;*&rsquo;]</p>
+
+<h1>Static asset configuration</h1>
+
+<p>import os
+BASE_DIR = os.path.dirname(os.path.abspath(<strong>file</strong>))
+STATIC_ROOT = &lsquo;staticfiles&rsquo;
+STATIC_URL = &lsquo;/static/&rsquo;</p>
+
+<p>STATICFILES_DIRS = (</p>
+
+<pre><code>os.path.join(BASE_DIR, 'static'),
+</code></pre>
+
+<p>)</p>
+
+<p>TEMPLATE_DIRS = (</p>
+
+<pre><code>os.path.join(BASE_DIR, 'templates'),
+</code></pre>
+
+<p>)
+```</p>
+
+<p>　同様に、{project_name}/wsgi.py の内容も変更します。</p>
+
+<p>```
+from django.core.wsgi import get_wsgi_application
+from dj_static import Cling</p>
+
+<p>application = Cling(get_wsgi_application())
+```</p>
+
+<h4>3. Herokuへ展開する</h4>
+
+<p>　作成したDjangoプロジェクトをHerokuへ展開していきます。GitやHeroku ToolbeltとHerokuユーザアカウントが必要です。</p>
+
+<p>　Gitをつかってローカルリポジトリを作成します。</p>
+
+<p>```
+(venv) $ git init</p>
+
+<p>  Initialized empty Git repository in ~/{application_root}/.git/</p>
+
+<p>(venv) $ git add .
+(venv) $ git commit -m &ldquo;Initial commit&rdquo;</p>
+
+<p>  [master (root-commit) 691c642] Initial commit
+   8 files changed, 254 insertions(+)
+   create mode 100644 .gitignore
+   create mode 100644 Procfile
+   create mode 100644 requirements.txt
+   &hellip;
+```</p>
+
+<p>　Heroku ToolbeltをつかってHeroku側でアプリケーションを作成します。</p>
+
+<p>```
+(venv) $ heroku create</p>
+
+<p>  Creating {application_name}&hellip; done, stack is cedar
+  <a href="http://">http://</a>{application_name}.herokuapp.com/ | git@heroku.com:{application_name}.git
+  Git remote heroku added
+```</p>
+
+<p>　GitをつかってローカルリポジトリをHerokuプラットフォームへプッシュします。</p>
+
+<p>```
+(venv) $ git push heroku master</p>
+
+<p>&mdash;&mdash;&ndash;> Python app detected
+&mdash;&mdash;&ndash;> No runtime.txt provided; assuming python-2.7.4.
+&mdash;&mdash;&ndash;> Preparing Python runtime (python-2.7.4)
+&mdash;&mdash;&ndash;> Installing Distribute (0.6.36)
+&mdash;&mdash;&ndash;> Installing Pip (1.3.1)
+&mdash;&mdash;&ndash;> Installing dependencies using Pip (1.3.1)</p>
+
+<pre><code>   Installing collected packages: Django, dj-database-url, dj-static, django-toolbelt, gunicorn, psycopg2, static
+   Successfully installed Django dj-database-url dj-static django-toolbelt gunicorn psycopg2 static
+     Cleaning up...
+</code></pre>
+
+<p>&mdash;&mdash;&ndash;> Discovering process types</p>
+
+<pre><code>   Procfile declares types -&gt; web
+</code></pre>
+
+<p>&mdash;&mdash;&ndash;> Compiled slug size: 34.3MB
+&mdash;&mdash;&ndash;> Launching&hellip; done, v5</p>
+
+<pre><code>   http://{application_name}.herokuapp.com deployed to Heroku
+</code></pre>
+
+<p>```</p>
+
+<p><img src="/blog/images/2013-08-16-deploying-django-1-dot-5-2-on-heroku/welcome-to-django.png" title="Welcome to Django" alt="Welcome to Django" /></p>
+
+<h2>管理サイトを有効化する</h2>
+
+<p>　管理サイトを有効化する場合は<code>INSTALLED_APPS</code>の<code>django.contrib.admin</code>の行をアンコメントします。INSTALLED_APPSは{project_name}/settings.pyに記述されています。</p>
+
+<p>```
+INSTALLED_APPS = (</p>
+
+<pre><code>'django.contrib.auth',
+'django.contrib.contenttypes',
+'django.contrib.sessions',
+'django.contrib.sites',
+'django.contrib.messages',
+'django.contrib.staticfiles',
+# Uncomment the next line to enable the admin:
+'django.contrib.admin',
+# Uncomment the next line to enable admin documentation:
+'django.contrib.admindocs',
+</code></pre>
+
+<p>)
+```</p>
+
+<p>　同様に、<code>urlpatterns</code>の<code>url(r'^admin/', include(admin.site.urls))</code>の行をアンコメントします。urlpatternsは{project_name}/urls.pyに記述されています。</p>
+
+<p>```</p>
+
+<h1>Uncomment the next two lines to enable the admin:</h1>
+
+<p>from django.contrib import admin
+admin.autodiscover()</p>
+
+<p>urlpatterns = patterns(&lsquo;&rsquo;,</p>
+
+<pre><code># Uncomment the admin/doc line below to enable admin documentation:
+url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+
+# Uncomment the next line to enable the admin:
+url(r'^admin/', include(admin.site.urls)),
+</code></pre>
+
+<p>)
+```</p>
+
+<p>　INSTALLED_APPSを変更してHerokuへプッシュした後は、Herokuプラットフォーム側で<code>python manage.py syncdb</code>を実行する必要があります。
+Herokuプラットフォーム側でコマンドを実行する場合は<code>heroku run</code>をつかいます。</p>
+
+<p><code>``
+(venv) $ heroku run python manage.py syncdb
+Running</code>python manage.py syncdb` attached to terminal&hellip; up, run.4816
+Creating tables &hellip;
+Creating table auth_permission
+Creating table auth_group_permissions
+Creating table auth_group
+Creating table auth_user_groups
+Creating table auth_user_user_permissions
+Creating table auth_user
+Creating table django_content_type
+Creating table django_session
+Creating table django_site
+Creating table django_admin_log</p>
+
+<p>You just installed Django&rsquo;s auth system, which means you don&rsquo;t have any superusers defined.
+&hellip;
+Superuser created successfully.
+Installing custom SQL &hellip;
+Installing indexes &hellip;
+Installed 0 object(s) from 0 fixture(s)
+```</p>
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://devcenter.heroku.com/articles/django">Getting Started with Django on Heroku | Heroku Dev Center</a></li>
+<li><a href="https://docs.djangoproject.com/en/1.5/intro/">Getting started | Django documentation | Django</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

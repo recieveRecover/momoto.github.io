@@ -2,17 +2,23 @@
 <!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
 <!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
 <meta charset="utf-8">
 <title>QEMUをつかって仮想マシンを作成する - momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-
 <meta name="description" content="QEMUをつかって仮想マシンを作成する手引きです。ホスト側に仮想化支援機能が備わっていることを確かめたあと、QEMUをつかってゲストOSを構築します。">
 <meta name="keywords" content="QEMU version 1.5.2, KVM, Virtualization, 仮想化">
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://momoto.github.io/blog/2013/08/11/guide-to-creating-virtual-machine-with-qemu/" />
+<meta property="og:title" content="QEMUをつかって仮想マシンを作成する" />
+<meta property="og:site_name" content="momoto.github.io">
+<meta property="og:description" content="QEMUをつかって仮想マシンを作成する手引きです。ホスト側に仮想化支援機能が備わっていることを確かめたあと、QEMUをつかってゲストOSを構築します。">
+<meta property="og:image" content="/images/identicon.png" />
+<meta property="fb:app_id" content="561979160531119" />
+<meta property="article:author" content="Seiji Momoto" />
 <link rel="canonical" href="http://momoto.github.io/blog/2013/08/11/guide-to-creating-virtual-machine-with-qemu/">
 <link href="/favicon.png" rel="icon">
 <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -53,6 +59,11 @@
     
     
       <p class="meta">
+<span class="breadcrumb">
+<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/blog/categories/jia-xiang-hua/" itemprop="url"><span itemprop="title">仮想化</span></a> › </span>
+</span>
+
+
 
 
 
@@ -64,7 +75,8 @@
 
   
 
-<time datetime="2013-08-11T14:54:00+09:00" pubdate data-updated="true" class="updated">Aug 11<span>th</span>, 2013</time></p>
+<time datetime="2013-08-11T14:54:00+09:00" pubdate data-updated="true" class="updated">Aug 11<span>th</span>, 2013</time>
+      </p>
     
   </header>
 
@@ -238,6 +250,8 @@ QEMUの<code>-m</code>オプションの値を引き上げて試してみてく�
       
         <a class="basic-alignment left" href="/blog/2013/07/31/guide-to-compiling-and-installing-php-5-dot-5-1/" title="Previous Post: PHP 5.5.1をインストールする（ソースからビルドする方法）">&laquo; PHP 5.5.1をインストールする（ソースからビルドする方法）</a>
       
+      
+        <a class="basic-alignment right" href="/blog/2013/08/16/deploying-django-1-dot-5-2-on-heroku/" title="Next Post: HerokuにDjango 1.5.2を展開する">HerokuにDjango 1.5.2を展開する &raquo;</a>
       
     </p>
   </footer>

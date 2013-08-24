@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 仮想化 | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/jia-xiang-hua/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-08-17T02:23:28+09:00</updated>
+  <updated>2013-08-25T03:20:13+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -12,6 +12,120 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[virshをつかって仮想マシンを管理する]]></title>
+    <link href="http://momoto.github.io/blog/2013/08/17/guide-to-managing-guests-using-virsh/"/>
+    <updated>2013-08-17T15:51:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/08/17/guide-to-managing-guests-using-virsh</id>
+    <content type="html"><![CDATA[<p>　libvirtのコマンドラインツールであるvirshをつかって、仮想マシンを管理する手引きです。virt-installなどで作成した仮想マシンの起動、停止、接続などの操作を行います。<!-- more --></p>
+
+<h3>仮想マシンの一覧</h3>
+
+<p>　virt-manager（virt-installを含む）で作成した仮想マシンや、XMLファイルから定義した仮想マシンの一覧を表示します。
+オプションを何も付けない場合、シャットオフ状態の仮想マシンは一覧に表示されないので、状態に依らずすべての一覧を得るには<code>--all</code>のオプションを付けます。
+他のユーザが作成した仮想マシンも一覧には表示されません。</p>
+
+<pre><code>$ virsh list --all
+ Id    名前                         状態
+----------------------------------------------------
+ -     ubuntu-13.04                   シャットオフ
+ 6     centos-6.4                     実行中
+</code></pre>
+
+<h3>仮想マシンの起動</h3>
+
+<p>　定義済みの仮想マシン（libvirtに認識されていてlistに現れる仮想マシン）を起動する場合、<code>virsh start &lt;仮想マシンの名前&gt;</code>のコマンドを使います。</p>
+
+<pre><code>$ virsh start ubuntu-13.04
+ドメイン ubuntu-13.04 が起動されました
+</code></pre>
+
+<p>　未定義の仮想マシンをXMLファイルから定義して、起動する場合、<code>virsh create &lt;XMLファイル&gt;</code>のコマンドを使います。</p>
+
+<pre><code>$ virsh create centos-6.4.backup.xml
+ドメイン centos-6.4 が centos-6.4.backup.xml から作成されました
+</code></pre>
+
+<h3>仮想マシンのコンソールへ接続する</h3>
+
+<p>　実行中の仮想マシンのシリアルポートへコンソール接続するには<code>virsh console &lt;仮想マシンのIDまたは名前&gt;</code>をつかいます。</p>
+
+<pre><code>$ virsh console 6
+ドメイン centos-6.4 に接続しました
+エスケープ文字は ^] です
+
+CentOS release 6.4 (Final)
+Kernel 2.6.32-358.el6.x86_64 on an x86_64
+
+localhost.localdomain login: 
+</code></pre>
+
+<p>　コンソールへ接続するには、仮想マシンのXMLファイルにシリアルデバイスが定義されていること（ホスト側）と、シリアルポートによる接続が許可されていること（ゲスト側）が必要です。</p>
+
+<ul>
+<li>参考
+
+<ul>
+<li><a href="http://lost-and-found-narihiro.blogspot.jp/2010/10/kvm-virsh-guest-os-centos.html">lost and found ( for me ? ): KVM: virsh コンソール接続&#12288;( guest OS CentOS )</a></li>
+<li><a href="http://lost-and-found-narihiro.blogspot.jp/2010/10/kvm-virsh-guest-os-ubuntu_18.html">lost and found ( for me ? ): KVM: virsh コンソール接続&#12288;( guest OS Ubuntu )</a></li>
+</ul>
+</li>
+</ul>
+
+
+<h3>一時停止と再開</h3>
+
+<pre><code>$ virsh suspend 5
+ドメイン 5 は一時停止されました
+
+$ virsh resume 5
+ドメイン 5 が再開されました
+</code></pre>
+
+<h3>停止する</h3>
+
+<p>　ホスト側から仮想マシンを停止させるには<code>virsh shutdown</code>または<code>virsh destroy</code>をつかいます。</p>
+
+<pre><code>$ virsh shutdown 6
+ドメイン 6 はシャットダウン中です
+
+$ virsh destroy 6
+ドメイン 6 は強制停止されました
+</code></pre>
+
+<h3>定義と定義の解除</h3>
+
+<p>　仮想マシンの定義を消すには<code>virsh undefine &lt;仮想マシンの名前&gt;</code>をつかいます。</p>
+
+<pre><code>$ virsh undefine ubuntu-13.04
+ドメイン ubuntu-13.04 の定義が削除されました
+</code></pre>
+
+<p>　XMLファイルから仮想マシンを定義するには<code>virsh define &lt;XMLファイル&gt;</code>をつかいます。</p>
+
+<pre><code>$ virsh define ubuntu-13.04.backup.xml
+ドメイン ubuntu-13.04 が ubuntu-13.04.backup.xml から定義されました
+</code></pre>
+
+<p>　定義済みの仮想マシンの情報をXML形式で出力するには<code>virsh dumpxml &lt;仮想マシンのIDまたは名前&gt;</code>をつかいます。</p>
+
+<pre><code>$ virsh dumpxml ubuntu-13.04 &gt; ubuntu-13.04.backup.xml
+</code></pre>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://libvirt.org/sources/virshcmdref/html-single/">Virsh Command Reference</a></li>
+<li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Virtualization_Administration_Guide/chap-Virtualization_Administration_Guide-Managing_guests_with_virsh.html">&#31532;14&#31456; virsh &#12434;&#20351;&#12387;&#12390;&#12466;&#12473;&#12488;&#12434;&#31649;&#29702;&#12377;&#12427; &ndash; Red Hat Customer Portal</a></li>
+<li><a href="http://docs.fedoraproject.org/ja-JP/Fedora/13/html/Virtualization_Guide/chap-Virtualization-Managing_guests_with_virsh.html">第28章 Managing guests with virsh</a></li>
+<li><a href="http://opensuse-man-ja.berlios.de/opensuse-html/bk05pt02.html">openSUSE 12.3: パート II. libvirt を利用した仮想マシンの管理</a></li>
+<li><a href="https://help.ubuntu.com/community/KVM/Managing">KVM/Managing &ndash; Community Ubuntu Documentation</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/Libvirt">libvirt &ndash; ArchWiki</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[QEMUをつかって仮想マシンを作成する]]></title>

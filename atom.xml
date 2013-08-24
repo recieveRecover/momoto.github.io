@@ -4,7 +4,7 @@
   <title><![CDATA[momoto.github.io]]></title>
   <link href="http://momoto.github.io/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-08-17T02:23:28+09:00</updated>
+  <updated>2013-08-25T03:20:13+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -12,6 +12,768 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Red Hat OpenShiftにRedmine 2.0を展開する]]></title>
+    <link href="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/"/>
+    <updated>2013-08-24T12:06:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift</id>
+    <content type="html"><![CDATA[<p>　Red Hat OpenShiftにプロジェクト管理ソフトウェアのRedmine 2.0を展開します。rhcとredmine-2.0-openshift-quickstartを使用しています。<!--more-->
+あらかじめOpenShiftのアカウントを作成している必要があります。</p>
+
+<ol>
+<li><h4>Ruby 1.9のアプリケーションを作成する</h4>
+
+<p>　<code>rhc app create</code>でアプリケーションを作成します。-aにはアプリケーション名、-tにはウェブカートリッジを指定します。</p>
+
+<pre><code>$ rhc app create -a redmine -t ruby-1.9
+Application Options
+-------------------
+  Namespace:  momoto
+  Cartridges: ruby-1.9
+  Gear Size:  default
+  Scaling:    no
+
+Creating application 'redmine' ... done
+
+Waiting for your DNS name to be available ... done
+
+Cloning into 'redmine'...
+Checking connectivity... done
+
+Your application 'redmine' is now available.
+
+  URL:        http://redmine-momoto.rhcloud.com/
+  SSH to:     *
+  Git remote: *
+  Cloned to:  ~/Workspace/redmine
+
+Run 'rhc show-app redmine' for more details about your app.
+</code></pre>
+
+<p>　アプリケーションの作成と同時に、Gitリポジトリがローカルにクローンされています。</p></li>
+<li><h4>MySQL Database 5.1カートリッジを追加する</h4>
+
+<p>　<code>rhc cartridge add</code>でMySQL Database 5.1アドオンカートリッジを追加します。追加できるカートリッジは<code>rhc cartridges</code>または<code>rhc cartridge list</code>で確認できます。</p>
+
+<pre><code>$ rhc cartridge add -a redmine -c mysql-5.1
+Adding mysql-5.1 to application 'redmine' ... done
+
+mysql-5.1 (MySQL Database 5.1)
+------------------------------
+  Gears:          Located with ruby-1.9
+  Connection URL: mysql://$OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT/
+  Database Name:  *
+  Password:       *
+  Username:       *
+
+MySQL 5.1 database added.  Please make note of these credentials:
+       Root User: *
+   Root Password: *
+   Database Name: *
+Connection URL: mysql://$OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT/
+You can manage your new MySQL database by also embedding phpmyadmin-3.4.
+The phpmyadmin username and password will be the same as the MySQL credentials above.
+</code></pre></li>
+<li><h4>redmine-2.0-openshift-quickstartを併合する</h4>
+
+<ol>
+<li>　OpenShiftからクローンしたローカルリポジトリにワーキングディレクトリをうつします</li>
+<li>　GitHubの<a href="https://github.com/openshift/redmine-2.0-openshift-quickstart">redmine-2.0-openshift-quickstart</a>を<code>upstream</code>としてリモートリポジトリに追加します</li>
+<li>　ローカルリポジトリにupstreamを併合します（MERGE STRATEGYはrecursive、recursive strategyのオプションはtheirs）</li>
+</ol>
+
+
+<p>　もし、OpenShiftからリポジトリをクローンしなおす場合は<code>rhc git-clone &lt;app&gt;</code>をつかいます。</p>
+
+<pre><code>$ cd redmine/
+$ git remote add upstream -m master git://github.com/openshift/redmine-2.0-openshift-quickstart.git
+$ git pull -s recursive -X theirs upstream master
+warning: no common commits
+remote: Counting objects: 2003, done.
+remote: Compressing objects: 100% (1725/1725), done.
+remote: Total 2003 (delta 300), reused 1897 (delta 199)
+Receiving objects: 100% (2003/2003), 4.06 MiB | 272.00 KiB/s, done.
+Resolving deltas: 100% (300/300), done.
+From git://github.com/openshift/redmine-2.0-openshift-quickstart
+ * branch            master     -&gt; FETCH_HEAD
+Auto-merging config.ru
+Auto-merging README.md
+Auto-merging .openshift/cron/weekly/jobs.allow
+Auto-merging .openshift/cron/README.cron
+...
+</code></pre></li>
+<li><h4>OpenShiftに展開する</h4>
+
+<p>　redmine-2.0-openshift-quickstartと併合したローカルリポジトリを、OpenShiftのリモートリポジトリ（origin）に更新します。</p>
+
+<pre><code>$ git push origin master
+Counting objects: 2011, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (1625/1625), done.
+Writing objects: 100% (2001/2001), 4.06 MiB | 1.58 MiB/s, done.
+Total 2001 (delta 307), reused 1989 (delta 300)
+remote: Stopping Ruby cart
+remote: Running build on Ruby cart
+remote: Bundling RubyGems based on Gemfile/Gemfile.lock to repo/vendor/bundle with 'bundle install --deployment'
+remote: Fetching gem metadata from http://rubygems.org/.........
+...
+</code></pre>
+
+<p>　<code>git push</code>の処理が終わったら、ウェブブラウザからアプリケーションのURLへアクセスして動作を確認します。アプリケーションのURLは<code>rhc show-app &lt;app&gt;</code>からも確認できます。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-08-24-deploying-redmine-2-dot-0-on-openshift/redmine-home.png" width="500" title="Red Hat OpenShiftにRedmine 2.0を展開する" ></p></li>
+</ol>
+
+
+<p>　OpenShiftではRedmineのほか、<a href="https://www.openshift.com/quickstarts/django">Django</a>、<a href="https://www.openshift.com/quickstarts/cakephp">CakePHP</a>、<a href="https://www.openshift.com/quickstarts/wordpress-3x">WordPress 3.x</a>などのクイックスタートも用意されています。</p>
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://www.openshift.com/developers/documentation">Understanding OpenShift | OpenShift by Red Hat</a></li>
+<li><a href="https://github.com/openshift">openshift (OpenShift Origin) · GitHub</a>
+
+<ul>
+<li><a href="https://github.com/openshift/redmine-2.0-openshift-quickstart">openshift/redmine-2.0-openshift-quickstart</a></li>
+</ul>
+</li>
+</ul>
+
+
+<h2>関連記事</h2>
+
+<ul>
+<li><a href="http://momoto.github.io/blog/2013/08/24/installation-guide-for-openshift-rhc-client-tools/">Red Hat OpenShiftクライアントツールをインストールする</a></li>
+<li><a href="http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku/">HerokuにRedmine 2.3.1を展開する</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Red Hat OpenShiftクライアントツールをインストールする]]></title>
+    <link href="http://momoto.github.io/blog/2013/08/24/installation-guide-for-openshift-rhc-client-tools/"/>
+    <updated>2013-08-24T11:08:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/08/24/installation-guide-for-openshift-rhc-client-tools</id>
+    <content type="html"><![CDATA[<p>　Red Hat OpenShiftに用意されている２通りのユーザインタフェースのうちの１つ、クライアントツールをインストールします。
+クライアントツールをつかうと、もう一方のユーザインタフェースであるマネジメントコンソールでは提供されていない機能を利用できます。<!-- more --></p>
+
+<h2>インストール</h2>
+
+<p>　クライアントツール（以下、rhc）の要件として、Ruby、RubyGems、Gitがあらかじめインストールされている必要があります。
+インストールにはパッケージ管理システムごとに何通りかの方法がありますが、OpenShift開発チームの調整が最も反映されているのはGEMパッケージであるようです。</p>
+
+<h4>RPMパッケージ</h4>
+
+<p>　YumをつかってRPMパッケージ版rhcをインストールします。</p>
+
+<pre><code>$ sudo yum install rhc
+</code></pre>
+
+<h4>AURパッケージ</h4>
+
+<p>　Pacmanをつかって<a href="https://aur.archlinux.org/packages/rhc/">AURパッケージ版rhc</a>をインストールします。</p>
+
+<pre><code>$ curl -Os https://aur.archlinux.org/packages/rh/rhc/rhc.tar.gz
+$ tar xfz rhc.tar.gz
+$ cd rhc
+$ makepkg -i -s
+</code></pre>
+
+<h4>GEMパッケージ</h4>
+
+<p>　RubyGemsをつかって<a href="http://rubygems.org/gems/rhc">gemパッケージ版rhc</a>をインストールします。</p>
+
+<pre><code>$ sudo gem install rhc
+</code></pre>
+
+<h2>初期設定</h2>
+
+<p>　<code>rhc setup</code>コマンドでセットアップウィザードを起動させます。
+OpenShiftへのログイン情報を入力するので、あらかじめ<a href="http://openshift.redhat.com/">OpenShift</a>のアカウントを作成している必要があります。</p>
+
+<pre><code>$ rhc setup
+OpenShift Client Tools (RHC) Setup Wizard
+
+This wizard will help you upload your SSH keys, set your application namespace, and check that other programs like Git are properly installed.
+
+Login to openshift.redhat.com: 
+</code></pre>
+
+<p>　認証トークンを生成するかどうかを選択します。
+トークンを生成しておくと、その有効期限の間はログイン情報の入力を省略できます。このトークンは<code>rhc logout</code>で消すことができます。</p>
+
+<pre><code>OpenShift can create and store a token on disk which allows to you to access the server without using your password. The key is stored in your home directory and should
+be kept secret.  You can delete the key at any time by running 'rhc logout'.
+Generate a token now? (yes|no) yes
+Generating an authorization token for this client ... lasts about 1 day
+
+Saving configuration to ~/.openshift/express.conf ... done
+</code></pre>
+
+<p>　SSHの認証につかう公開鍵をOpenShiftリモートサーバへアップロードするかどうかを選択します。
+セットアップウィザードに従う場合、ホームディレクトリから見つかったid_rsaとid_rsa.pubのペアのうち、id_rsa.pubのほうをアップロードします。</p>
+
+<pre><code>Your public SSH key must be uploaded to the OpenShift server to access code.  Upload now? (yes|no) 
+</code></pre>
+
+<h2>SSH接続</h2>
+
+<p>　<code>rhc ssh &lt;app&gt;</code>コマンドをつかって、SSH接続を試してみます。今までに作成したアプリケーションは<code>rhc apps</code>コマンドで確認することができます。</p>
+
+<pre><code>$ rhc ssh &lt;app&gt;
+Connecting to ********@&lt;app&gt;-&lt;namespace&gt;.rhcloud.com ...
+
+*********************************************************************
+
+You are accessing a service that is for use only by authorized users.
+If you do not have authorization, discontinue use at once.
+Any use of the services is subject to the applicable terms of the
+agreement which can be found at:
+https://www.openshift.com/legal
+
+*********************************************************************
+
+Welcome to OpenShift shell
+
+This shell will assist you in managing OpenShift applications.
+
+!!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!!
+Shell access is quite powerful and it is possible for you to
+accidentally damage your application.  Proceed with care!
+If worse comes to worst, destroy your application with 'rhc app delete'
+and recreate it
+!!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!!
+
+Type "help" for more info.
+
+[&lt;app&gt;-&lt;namespace&gt;.rhcloud.com ********]\&gt;
+</code></pre>
+
+<p>　<code>help</code>では、OpenShiftアプリケーション環境で利用できるコマンドを参照することができます。</p>
+
+<pre><code>Help menu: The following commands are available to help control your openshift
+application and environment.
+
+ctl_app         control your application (start, stop, restart, etc)
+ctl_all         control application and deps like mysql in one command
+tail_all        tail all log files
+export          list available environment variables
+rm              remove files / directories
+ls              list files / directories
+ps              list running applications
+kill            kill running applications
+mysql           interactive MySQL shell
+mongo           interactive MongoDB shell
+psql            interactive PostgreSQL shell
+quota           list disk usage
+</code></pre>
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://access.redhat.com/site/documentation/en-US/OpenShift_Online/2.0/html/User_Guide/index.html">User Guide &ndash; Red Hat Customer Portal</a></li>
+<li><a href="https://access.redhat.com/site/documentation/en-US/OpenShift_Online/2.0/html/Client_Tools_Installation_Guide/index.html">Client Tools Installation Guide &ndash; Red Hat Customer Portal</a></li>
+</ul>
+
+
+<h2>関連記事</h2>
+
+<ul>
+<li><a href="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/">Red Hat OpenShiftにRedmine 2.0を展開する</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[virshをつかって仮想マシンを管理する]]></title>
+    <link href="http://momoto.github.io/blog/2013/08/17/guide-to-managing-guests-using-virsh/"/>
+    <updated>2013-08-17T15:51:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/08/17/guide-to-managing-guests-using-virsh</id>
+    <content type="html"><![CDATA[<p>　libvirtのコマンドラインツールであるvirshをつかって、仮想マシンを管理する手引きです。virt-installなどで作成した仮想マシンの起動、停止、接続などの操作を行います。<!-- more --></p>
+
+<h3>仮想マシンの一覧</h3>
+
+<p>　virt-manager（virt-installを含む）で作成した仮想マシンや、XMLファイルから定義した仮想マシンの一覧を表示します。
+オプションを何も付けない場合、シャットオフ状態の仮想マシンは一覧に表示されないので、状態に依らずすべての一覧を得るには<code>--all</code>のオプションを付けます。
+他のユーザが作成した仮想マシンも一覧には表示されません。</p>
+
+<pre><code>$ virsh list --all
+ Id    名前                         状態
+----------------------------------------------------
+ -     ubuntu-13.04                   シャットオフ
+ 6     centos-6.4                     実行中
+</code></pre>
+
+<h3>仮想マシンの起動</h3>
+
+<p>　定義済みの仮想マシン（libvirtに認識されていてlistに現れる仮想マシン）を起動する場合、<code>virsh start &lt;仮想マシンの名前&gt;</code>のコマンドを使います。</p>
+
+<pre><code>$ virsh start ubuntu-13.04
+ドメイン ubuntu-13.04 が起動されました
+</code></pre>
+
+<p>　未定義の仮想マシンをXMLファイルから定義して、起動する場合、<code>virsh create &lt;XMLファイル&gt;</code>のコマンドを使います。</p>
+
+<pre><code>$ virsh create centos-6.4.backup.xml
+ドメイン centos-6.4 が centos-6.4.backup.xml から作成されました
+</code></pre>
+
+<h3>仮想マシンのコンソールへ接続する</h3>
+
+<p>　実行中の仮想マシンのシリアルポートへコンソール接続するには<code>virsh console &lt;仮想マシンのIDまたは名前&gt;</code>をつかいます。</p>
+
+<pre><code>$ virsh console 6
+ドメイン centos-6.4 に接続しました
+エスケープ文字は ^] です
+
+CentOS release 6.4 (Final)
+Kernel 2.6.32-358.el6.x86_64 on an x86_64
+
+localhost.localdomain login: 
+</code></pre>
+
+<p>　コンソールへ接続するには、仮想マシンのXMLファイルにシリアルデバイスが定義されていること（ホスト側）と、シリアルポートによる接続が許可されていること（ゲスト側）が必要です。</p>
+
+<ul>
+<li>参考
+
+<ul>
+<li><a href="http://lost-and-found-narihiro.blogspot.jp/2010/10/kvm-virsh-guest-os-centos.html">lost and found ( for me ? ): KVM: virsh コンソール接続&#12288;( guest OS CentOS )</a></li>
+<li><a href="http://lost-and-found-narihiro.blogspot.jp/2010/10/kvm-virsh-guest-os-ubuntu_18.html">lost and found ( for me ? ): KVM: virsh コンソール接続&#12288;( guest OS Ubuntu )</a></li>
+</ul>
+</li>
+</ul>
+
+
+<h3>一時停止と再開</h3>
+
+<pre><code>$ virsh suspend 5
+ドメイン 5 は一時停止されました
+
+$ virsh resume 5
+ドメイン 5 が再開されました
+</code></pre>
+
+<h3>停止する</h3>
+
+<p>　ホスト側から仮想マシンを停止させるには<code>virsh shutdown</code>または<code>virsh destroy</code>をつかいます。</p>
+
+<pre><code>$ virsh shutdown 6
+ドメイン 6 はシャットダウン中です
+
+$ virsh destroy 6
+ドメイン 6 は強制停止されました
+</code></pre>
+
+<h3>定義と定義の解除</h3>
+
+<p>　仮想マシンの定義を消すには<code>virsh undefine &lt;仮想マシンの名前&gt;</code>をつかいます。</p>
+
+<pre><code>$ virsh undefine ubuntu-13.04
+ドメイン ubuntu-13.04 の定義が削除されました
+</code></pre>
+
+<p>　XMLファイルから仮想マシンを定義するには<code>virsh define &lt;XMLファイル&gt;</code>をつかいます。</p>
+
+<pre><code>$ virsh define ubuntu-13.04.backup.xml
+ドメイン ubuntu-13.04 が ubuntu-13.04.backup.xml から定義されました
+</code></pre>
+
+<p>　定義済みの仮想マシンの情報をXML形式で出力するには<code>virsh dumpxml &lt;仮想マシンのIDまたは名前&gt;</code>をつかいます。</p>
+
+<pre><code>$ virsh dumpxml ubuntu-13.04 &gt; ubuntu-13.04.backup.xml
+</code></pre>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://libvirt.org/sources/virshcmdref/html-single/">Virsh Command Reference</a></li>
+<li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Virtualization_Administration_Guide/chap-Virtualization_Administration_Guide-Managing_guests_with_virsh.html">&#31532;14&#31456; virsh &#12434;&#20351;&#12387;&#12390;&#12466;&#12473;&#12488;&#12434;&#31649;&#29702;&#12377;&#12427; &ndash; Red Hat Customer Portal</a></li>
+<li><a href="http://docs.fedoraproject.org/ja-JP/Fedora/13/html/Virtualization_Guide/chap-Virtualization-Managing_guests_with_virsh.html">第28章 Managing guests with virsh</a></li>
+<li><a href="http://opensuse-man-ja.berlios.de/opensuse-html/bk05pt02.html">openSUSE 12.3: パート II. libvirt を利用した仮想マシンの管理</a></li>
+<li><a href="https://help.ubuntu.com/community/KVM/Managing">KVM/Managing &ndash; Community Ubuntu Documentation</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/Libvirt">libvirt &ndash; ArchWiki</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[HerokuにDjango 1.5.2を展開する]]></title>
+    <link href="http://momoto.github.io/blog/2013/08/16/deploying-django-1-dot-5-2-on-heroku/"/>
+    <updated>2013-08-16T00:00:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/08/16/deploying-django-1-dot-5-2-on-heroku</id>
+    <content type="html"><![CDATA[<p>　Herokuが提供するPaaSにウェブアプリケーションフレームワーク Django 1.5.2を展開します。Pythonのバージョンは2.7を使用しています。<!-- more --></p>
+
+<h4>1. django-toolbeltをインストールする</h4>
+
+<p>　django-toolbeltをインストールするところからはじめていきます。ここまでにPythonとVirtualenvがインストールされている必要があります。</p>
+
+<p>　まず、Python環境をつくるためのディレクトリを用意します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir {application_root}
+</span><span class='line'>$ cd {application_root}/</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　<a href="https://pypi.python.org/pypi/virtualenv/1.10.1">virtualenv 1.10.1</a>をつかって、独立したPython環境を作成します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ virtualenv-2.7 venv --distribute
+</span><span class='line'>
+</span><span class='line'>  New python executable in venv/bin/python2
+</span><span class='line'>  Also creating executable in venv/bin/python
+</span><span class='line'>  Installing Setuptools......................done.
+</span><span class='line'>  Installing Pip.............................done.
+</span><span class='line'>
+</span><span class='line'>$ source venv/bin/activate</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　<a href="https://pypi.python.org/pypi/pip/1.4.1">pip 1.4.1</a>をつかって<a href="https://pypi.python.org/pypi/django-toolbelt/0.0.1">django-toolbelt 0.0.1</a>をインストールします。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(venv) $ pip install django-toolbelt
+</span><span class='line'>
+</span><span class='line'>  Successfully installed django-toolbelt django psycopg2 gunicorn dj-database-url dj-static static
+</span><span class='line'>  Cleaning up...
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>2. Djangoプロジェクトを作成する</h4>
+
+<p>　Herokuへ展開するDjangoのプロジェクトを作成していきます。この手順の中で、Herokuのプラットフォームでも動作するようにDjangoの設定を調整する必要があります。</p>
+
+<p>　django-admin.pyをつかってプロジェクトを作成します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(venv) $ django-admin.py startproject {project_name} .</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　アプリケーションのルートディレクトリにProcfile、requirements.txt、.gitignoteを用意します。
+<a href="https://devcenter.heroku.com/articles/procfile">Procfile</a>にはHerokuのdynosに実行させるコマンドを宣言します。
+<a href="http://www.pip-installer.org/en/latest/requirements.html">requirements.txt</a>には必要なPythonパッケージを記述します。
+<a href="http://git-scm.com/docs/gitignore">.gitignore</a>にはGitで追跡しないファイルを明示します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(venv) $ vi Procfile
+</span><span class='line'>
+</span><span class='line'>  web: gunicorn {project_name}.wsgi
+</span><span class='line'>
+</span><span class='line'>(venv) $ pip freeze &gt; requirements.txt
+</span><span class='line'>
+</span><span class='line'>  Django==1.5.2
+</span><span class='line'>  dj-database-url==0.2.2
+</span><span class='line'>  dj-static==0.0.5
+</span><span class='line'>  django-toolbelt==0.0.1
+</span><span class='line'>  gunicorn==17.5
+</span><span class='line'>  psycopg2==2.5.1
+</span><span class='line'>  static==0.4
+</span><span class='line'>  wsgiref==0.1.2
+</span><span class='line'>
+</span><span class='line'>(venv) $ vi .gitignore
+</span><span class='line'>
+</span><span class='line'>  venv
+</span><span class='line'>  *.pyc
+</span><span class='line'>  staticfiles</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　{project_name}/settings.py では、データベースURLやスタティックファイルへのパスを調整する必要があります。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Parse database configuration from $DATABASE_URL
+</span><span class='line'>import dj_database_url
+</span><span class='line'>DATABASES['default'] =  dj_database_url.config()
+</span><span class='line'>
+</span><span class='line'># Honor the 'X-Forwarded-Proto' header for request.is_secure()
+</span><span class='line'>SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+</span><span class='line'>
+</span><span class='line'># Allow all host headers
+</span><span class='line'>ALLOWED_HOSTS = ['*']
+</span><span class='line'>
+</span><span class='line'># Static asset configuration
+</span><span class='line'>import os
+</span><span class='line'>BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+</span><span class='line'>STATIC_ROOT = 'staticfiles'
+</span><span class='line'>STATIC_URL = '/static/'
+</span><span class='line'>
+</span><span class='line'>STATICFILES_DIRS = (
+</span><span class='line'>    os.path.join(BASE_DIR, 'static'),
+</span><span class='line'>)
+</span><span class='line'>
+</span><span class='line'>TEMPLATE_DIRS = (
+</span><span class='line'>    os.path.join(BASE_DIR, 'templates'),
+</span><span class='line'>)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　同様に、{project_name}/wsgi.py の内容も変更します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>from django.core.wsgi import get_wsgi_application
+</span><span class='line'>from dj_static import Cling
+</span><span class='line'>
+</span><span class='line'>application = Cling(get_wsgi_application())</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>3. Herokuへ展開する</h4>
+
+<p>　作成したDjangoプロジェクトをHerokuへ展開していきます。GitやHeroku ToolbeltとHerokuユーザアカウントが必要です。</p>
+
+<p>　Gitをつかってローカルリポジトリを作成します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(venv) $ git init
+</span><span class='line'>
+</span><span class='line'>  Initialized empty Git repository in ~/{application_root}/.git/
+</span><span class='line'>
+</span><span class='line'>(venv) $ git add .
+</span><span class='line'>(venv) $ git commit -m "Initial commit"
+</span><span class='line'>
+</span><span class='line'>  [master (root-commit) 691c642] Initial commit
+</span><span class='line'>   8 files changed, 254 insertions(+)
+</span><span class='line'>   create mode 100644 .gitignore
+</span><span class='line'>   create mode 100644 Procfile
+</span><span class='line'>   create mode 100644 requirements.txt
+</span><span class='line'>   ...</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　Heroku ToolbeltをつかってHeroku側でアプリケーションを作成します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(venv) $ heroku create
+</span><span class='line'>
+</span><span class='line'>  Creating {application_name}... done, stack is cedar
+</span><span class='line'>  http://{application_name}.herokuapp.com/ | git@heroku.com:{application_name}.git
+</span><span class='line'>  Git remote heroku added</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　GitをつかってローカルリポジトリをHerokuプラットフォームへプッシュします。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(venv) $ git push heroku master
+</span><span class='line'>
+</span><span class='line'>-----&gt; Python app detected
+</span><span class='line'>-----&gt; No runtime.txt provided; assuming python-2.7.4.
+</span><span class='line'>-----&gt; Preparing Python runtime (python-2.7.4)
+</span><span class='line'>-----&gt; Installing Distribute (0.6.36)
+</span><span class='line'>-----&gt; Installing Pip (1.3.1)
+</span><span class='line'>-----&gt; Installing dependencies using Pip (1.3.1)
+</span><span class='line'>
+</span><span class='line'>       Installing collected packages: Django, dj-database-url, dj-static, django-toolbelt, gunicorn, psycopg2, static
+</span><span class='line'>       Successfully installed Django dj-database-url dj-static django-toolbelt gunicorn psycopg2 static
+</span><span class='line'>         Cleaning up...
+</span><span class='line'>
+</span><span class='line'>-----&gt; Discovering process types
+</span><span class='line'>       Procfile declares types -&gt; web
+</span><span class='line'>
+</span><span class='line'>-----&gt; Compiled slug size: 34.3MB
+</span><span class='line'>-----&gt; Launching... done, v5
+</span><span class='line'>       http://{application_name}.herokuapp.com deployed to Heroku</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://momoto.github.io/blog/images/2013-08-16-deploying-django-1-dot-5-2-on-heroku/welcome-to-django.png" title="Welcome to Django" alt="Welcome to Django" /></p>
+
+<h2>管理サイトを有効化する</h2>
+
+<p>　管理サイトを有効化する場合は<code>INSTALLED_APPS</code>の<code>django.contrib.admin</code>の行をアンコメントします。INSTALLED_APPSは{project_name}/settings.pyに記述されています。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>INSTALLED_APPS = (
+</span><span class='line'>    'django.contrib.auth',
+</span><span class='line'>    'django.contrib.contenttypes',
+</span><span class='line'>    'django.contrib.sessions',
+</span><span class='line'>    'django.contrib.sites',
+</span><span class='line'>    'django.contrib.messages',
+</span><span class='line'>    'django.contrib.staticfiles',
+</span><span class='line'>    # Uncomment the next line to enable the admin:
+</span><span class='line'>    'django.contrib.admin',
+</span><span class='line'>    # Uncomment the next line to enable admin documentation:
+</span><span class='line'>    'django.contrib.admindocs',
+</span><span class='line'>)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　同様に、<code>urlpatterns</code>の<code>url(r'^admin/', include(admin.site.urls))</code>の行をアンコメントします。urlpatternsは{project_name}/urls.pyに記述されています。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Uncomment the next two lines to enable the admin:
+</span><span class='line'>from django.contrib import admin
+</span><span class='line'>admin.autodiscover()
+</span><span class='line'>
+</span><span class='line'>urlpatterns = patterns('',
+</span><span class='line'>    # Uncomment the admin/doc line below to enable admin documentation:
+</span><span class='line'>    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+</span><span class='line'>
+</span><span class='line'>    # Uncomment the next line to enable the admin:
+</span><span class='line'>    url(r'^admin/', include(admin.site.urls)),
+</span><span class='line'>)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　INSTALLED_APPSを変更してHerokuへプッシュした後は、Herokuプラットフォーム側で<code>python manage.py syncdb</code>を実行する必要があります。
+Herokuプラットフォーム側でコマンドを実行する場合は<code>heroku run</code>をつかいます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(venv) $ heroku run python manage.py syncdb
+</span><span class='line'>Running `python manage.py syncdb` attached to terminal... up, run.4816
+</span><span class='line'>Creating tables ...
+</span><span class='line'>Creating table auth_permission
+</span><span class='line'>Creating table auth_group_permissions
+</span><span class='line'>Creating table auth_group
+</span><span class='line'>Creating table auth_user_groups
+</span><span class='line'>Creating table auth_user_user_permissions
+</span><span class='line'>Creating table auth_user
+</span><span class='line'>Creating table django_content_type
+</span><span class='line'>Creating table django_session
+</span><span class='line'>Creating table django_site
+</span><span class='line'>Creating table django_admin_log
+</span><span class='line'>
+</span><span class='line'>You just installed Django's auth system, which means you don't have any superusers defined.
+</span><span class='line'>...
+</span><span class='line'>Superuser created successfully.
+</span><span class='line'>Installing custom SQL ...
+</span><span class='line'>Installing indexes ...
+</span><span class='line'>Installed 0 object(s) from 0 fixture(s)</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://devcenter.heroku.com/articles/django">Getting Started with Django on Heroku | Heroku Dev Center</a></li>
+<li><a href="https://docs.djangoproject.com/en/1.5/intro/">Getting started | Django documentation | Django</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[QEMUをつかって仮想マシンを作成する]]></title>
@@ -975,7 +1737,8 @@ httpd_can_network_connect --&gt; off
     <link href="http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku/"/>
     <updated>2013-05-31T23:19:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku</id>
-    <content type="html"><![CDATA[<p>　Herokuが提供するPaaSに、プロジェクト管理ソフトウェア Redmine 2.3.1を展開します。Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、<a href="https://aur.archlinux.org/packages/heroku-client/">heroku-toolbelt</a>は2.39.4を使用しました。<!-- more --></p>
+    <content type="html"><![CDATA[<p>　Herokuが提供するPaaSに、プロジェクト管理ソフトウェア Redmine 2.3.1を展開します。
+Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、<a href="https://aur.archlinux.org/packages/heroku-client/">heroku-toolbelt</a>は2.39.4を使用しました。<!-- more --></p>
 
 <h4>Redmine 2.3.1のダウンロード</h4>
 
@@ -1213,6 +1976,13 @@ $ heroku run rake redmine:load_default_data
 <li><a href="https://github.com/redmine/redmine">Redmine</a></li>
 <li><a href="http://redmine.jp/guide/RedmineInstall/">Redmineのインストール &mdash; Redmine Guide 日本語訳</a></li>
 <li><a href="https://devcenter.heroku.com/articles/rails3">Getting Started with Rails 3.x on Heroku | Heroku Dev Center</a></li>
+</ul>
+
+
+<h4>関連記事</h4>
+
+<ul>
+<li><a href="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/">Red Hat OpenShiftにRedmine 2.0を展開する</a></li>
 </ul>
 
 ]]></content>
@@ -2368,208 +3138,6 @@ $ rbenv versions
 <li><a href="http://packages.ubuntu.com/quantal/ruby-build" title="Ubuntu -- quantal の ruby-build パッケージに関する詳細">packages.ubuntu.com/quantal/ruby-build</a></li>
 <li><a href="https://github.com/sstephenson/rbenv" title="sstephenson/rbenv">github.com/sstephenson/rbenv</a></li>
 <li><a href="https://github.com/sstephenson/ruby-build" title="sstephenson/ruby-build">github.com/sstephenson/ruby-build</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[OpenSSLを使用してファイルをRSA暗号化する]]></title>
-    <link href="http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption/"/>
-    <updated>2012-10-14T17:45:00+09:00</updated>
-    <id>http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption</id>
-    <content type="html"><![CDATA[<p>OpenSSLは様々な暗号方式での暗号化、復号化をサポートするセキュリティライブラリ。
-使用できる暗号方式は<code>openssl ciphers</code>で確認できる。</p>
-
-<p>RSA暗号方式の暗号化、復号、署名、検証を利用する場合は<code>openssl rsautl</code>を使う。</p>
-
-<!-- more -->
-
-
-<h3>暗号化</h3>
-
-<p>ファイルをRSA暗号方式で暗号化するには、秘密鍵または公開鍵のいずれかが必要。</p>
-
-<h4>ファイル<em>&ldquo;plain.txt&rdquo;</em>を、秘密鍵<em>&ldquo;private_key&rdquo;</em>を使用して暗号化する</h4>
-
-<pre><code>$ openssl rsautl -encrypt -inkey private_key -in plain.txt -out encrypted
-Enter pass phrase for private_key:
-</code></pre>
-
-<p>秘密鍵にパスフレーズが設定されていれば入力が必要。</p>
-
-<h4>ファイル<em>&ldquo;plain.txt&rdquo;</em>を、公開鍵<em>&ldquo;public_key&rdquo;</em>を使用して暗号化する</h4>
-
-<pre><code>$ openssl rsautl -encrypt -pubin -inkey public_key -in plain.txt -out encrypted
-</code></pre>
-
-<p><em>-pubin</em>のオプションを加えることに注意。</p>
-
-<p>上のコマンドで暗号化した場合、<em>encrypted</em>という名前でバイナリファイルとして出力される。
-使用できる公開鍵は下のような形式になる。</p>
-
-<pre><code>-----BEGIN PUBLIC KEY-----
-MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAM2twTjVLOYMK2Y7uKQ03CeSc8B+0GjJ
-xy0ir28fIfGb523ogDyWKDjMDx5pTBUpOgDYUgSpP/I6SzER1ArhcnMCAwEAAQ==
------END PUBLIC KEY-----
-</code></pre>
-
-<p><code>unable to load Public Key</code>とエラーが出る場合は、鍵の形式が無効。</p>
-
-<h3>復号</h3>
-
-<p>暗号化されたファイルを復号するには、秘密鍵が必要。</p>
-
-<h4>暗号化されたファイル<em>&ldquo;encrypted&rdquo;</em>を、秘密鍵<em>&ldquo;private_key&rdquo;</em>を使用して復号する</h4>
-
-<pre><code>$ openssl rsautl -decrypt -inkey private_key -in encrypted -out decrypted.txt
-Enter pass phrase for private_key:
-</code></pre>
-
-<p>復号に成功すると、<em>&ldquo;decrypted.txt&rdquo;</em>にその内容が出力される。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iconvで文字コードを変換する]]></title>
-    <link href="http://momoto.github.io/blog/2012/10/08/encoding-conversion-with-iconv/"/>
-    <updated>2012-10-08T00:00:00+09:00</updated>
-    <id>http://momoto.github.io/blog/2012/10/08/encoding-conversion-with-iconv</id>
-    <content type="html"><![CDATA[<p>　文字コードの変換は、変換前の文字コードを<code>--from-code (-f)</code>に、変換後の文字コードを<code>--to-code (-t)</code>を指定して、さらに入力ファイルと出力ファイルを指定して使用する。</p>
-
-<!-- more -->
-
-
-<p>　例えば、Windowsで作成したテキストファイル（SJIS-WIN）をUTF-8に変換したい場合は次のようなコマンドになる。</p>
-
-<pre><code>$ iconv -f SJIS-WIN -t UTF-8 coded_in_sjiswin.txt &gt; coded_in_utf8.txt
-</code></pre>
-
-<p>　扱える文字コードについては<code>iconv --list</code>で一覧が出力される。日本語に関連しそうな行に見当をつけて、一覧を制限してみると次のような出力だった。</p>
-
-<pre><code>$ iconv --list | grep -iP "ja|jp"
-
-  CSEUCPKDFMTJAPANESE//
-  CSISO2022JP//
-  CSISO2022JP2//
-  EBCDIC-JP-E//
-  EBCDIC-JP-KANA//
-  EUC-JP-MS//
-  EUC-JP//
-  EUCJP-MS//
-  EUCJP-OPEN//
-  EUCJP-WIN//
-  EUCJP//
-  ISO-2022-JP-2//
-  ISO-2022-JP-3//
-  ISO-2022-JP//
-  ISO646-JP-OCR-B//
-  ISO646-JP//
-  ISO2022JP//
-  ISO2022JP2//
-  JP-OCR-B//
-  JP//
-</code></pre>
-
-<h3>参考</h3>
-
-<ul>
-<li><a href="https://wiki.ubuntulinux.jp/UbuntuTips/FileHandling/ConvertTextfileCharacterEncoding">テキストファイルの文字コードを変換するには &ndash; Ubuntu Japanese Wiki</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[IdeaPad S205のメインメモリとストレージデバイスの換装]]></title>
-    <link href="http://momoto.github.io/blog/2012/08/12/install-ram-and-ssd-in-lenovo-ideapad-s205/"/>
-    <updated>2012-08-12T10:30:00+09:00</updated>
-    <id>http://momoto.github.io/blog/2012/08/12/install-ram-and-ssd-in-lenovo-ideapad-s205</id>
-    <content type="html"><![CDATA[<p>　レノボ社のノートパソコン「<a href="http://www.amazon.co.jp/gp/product/BiB004XWLKDC/ref=as_li_ss_tl?ie=UTF8&camp=247&creative=7399&creativeASIN=B004XWLKDC&linkCode=as2&tag=alqet049-22">IdeaPad S205</a><img src="http://www.assoc-amazon.jp/e/ir?t=alqet049-22&l=as2&o=9&a=B004XWLKDC" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />」（2011年4月）のメインメモリとストレージデバイスを換装した。</p>
-
-<p><img src="http://momoto.github.io/blog/images/2012-08-12-install-ram-and-ssd-in-lenovo-ideapad-s205/01.png"></p>
-
-<p>換装する前後の&#8221;ディスクユーティリティ&#8221;ベンチマーク結果</p>
-
-<p>換装前</p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-08-12-install-ram-and-ssd-in-lenovo-ideapad-s205/02.png"><img src="http://momoto.github.io/blog/images/2012-08-12-install-ram-and-ssd-in-lenovo-ideapad-s205/02.png" width="600" title="換装前のベンチマーク結果" ></a></p>
-
-<p>換装後</p>
-
-<!-- more -->
-
-
-<p>　メモリは、トランセンド社の<a href="http://www.amazon.co.jp/gp/product/B0057K0DVE/ref=as_li_ss_tl?ie=UTF8&camp=247&creative=7399&creativeASIN=B0057K0DVE&linkCode=as2&tag=alqet049-22">JM1333KSN-8GK</a><img src="http://www.assoc-amazon.jp/e/ir?t=alqet049-22&l=as2&o=9&a=B0057K0DVE" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />（チップ規格とモジュール規格がPC3-10600とDDR3-1333）。ストレージは、シリコンパワー社の <a href="http://www.amazon.co.jp/gp/product/B0086EUZMK/ref=as_li_ss_tl?ie=UTF8&camp=247&creative=7399&creativeASIN=B0086EUZMK&linkCode=as2&tag=alqet049-22">SP032GBSS2T10S25</a><img src="http://www.assoc-amazon.jp/e/ir?t=alqet049-22&l=as2&o=9&a=B0086EUZMK" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />（2.5インチ SSD）。2012年8月現在、どちらも3,000円を下回る価格だった。</p>
-
-<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=B004XWLKDC" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
-
-
-<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=B0057K0DVE" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
-
-
-<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=B0086EUZMK" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
-
-
-<h4>参考</h4>
-
-<ul>
-<li><a href="http://shopap.lenovo.com/jp/products/laptops/ideapad/s-series/s205/index.html">ノートパソコン &ndash; IdeaPad &ndash; Sシリーズ &ndash; S205 | 製品 | Lenovo | (JP)</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[テキストを文字参照記述へ変換する]]></title>
-    <link href="http://momoto.github.io/blog/2012/08/11/converting-text-to-character-references/"/>
-    <updated>2012-08-11T00:00:00+09:00</updated>
-    <id>http://momoto.github.io/blog/2012/08/11/converting-text-to-character-references</id>
-    <content type="html"><![CDATA[<p>　入力された文字列の符号位置（Unicode）を出力します。テキストをHTML数値文字参照に変換するように動作します。</p>
-
-<p><form id="convert-text-to-character-references">
-<label>形式 <select><option>HTML文字参照（10進数）</option><option>HTML文字参照（16進数）</option><option>符号位置のみ（10進数）</option><option>符号位置のみ（16進数）</option></select></label><br>
-<label>入力 <textarea rows="4" style="width: 100%;"></textarea></label>
-<label>出力 <output><textarea rows="4" style="width: 100%;" readonly=True></textarea></output></label></p>
-
-<script> (function(){
-function decimal_form(codepoint) { return "&#" + codepoint.toString(10) + ";"; }
-function hexadecimal_form(codepoint) { return "&#x" + codepoint.toString(16) + ";"; }
-function decimal_delimit_space(codepoint) { return codepoint.toString(10) + " "; }
-function hexadecimal_delimit_space(codepoint) { return codepoint.toString(16) + " "; }
-function convert_text_to_character_references(text) {
-  for (var encoded="", i=0; i<text.length; i++)
-    if (s.selectedIndex === 0) encoded += decimal_form(text.charCodeAt(i));
-    else if (s.selectedIndex === 1) encoded += hexadecimal_form(text.charCodeAt(i));
-    else if (s.selectedIndex === 2) encoded += decimal_delimit_space(text.charCodeAt(i));
-    else if (s.selectedIndex === 3) encoded += hexadecimal_delimit_space(text.charCodeAt(i));
-  o.value = encoded;
-}
-function eventhandler(event) {
-  if (text === i.value && event.type !== "change")
-    return;
-  else
-    convert_text_to_character_references(text = i.value);
-}
-var text = "";
-var f = document.getElementById("convert-text-to-character-references");
-var s = f.getElementsByTagName("select")[0];
-var i = f.getElementsByTagName("textarea")[0];
-var o = f.getElementsByTagName("textarea")[1];
-i.onkeydown = eventhandler;
-i.onkeyup   = eventhandler;
-s.onchange  = eventhandler;
-})(); </script>
-
-
-<p></form></p>
-
-<h3>参考</h3>
-
-<ul>
-<li><a href="http://www.unicode.org/Public/UCD/latest/ucd/">The Unicode Character Database (UCD)</a></li>
-<li><a href="http://www.ietf.org/rfc/rfc1815.txt">RFC 1815 &ndash; Character Sets ISO-10646 and ISO-10646-J-1</a></li>
-<li><a href="http://www.w3.org/TR/html5/syntax.html#character-references">8.1.4 Character references — HTML5</a></li>
 </ul>
 
 ]]></content>

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: OpenShift | momoto.github.io]]></title>
+  <link href="http://momoto.github.io/blog/categories/openshift/atom.xml" rel="self"/>
+  <link href="http://momoto.github.io/"/>
+  <updated>2013-08-25T03:20:13+09:00</updated>
+  <id>http://momoto.github.io/</id>
+  <author>
+    <name><![CDATA[Seiji Momoto]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Red Hat OpenShiftにRedmine 2.0を展開する]]></title>
+    <link href="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/"/>
+    <updated>2013-08-24T12:06:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift</id>
+    <content type="html"><![CDATA[<p>　Red Hat OpenShiftにプロジェクト管理ソフトウェアのRedmine 2.0を展開します。rhcとredmine-2.0-openshift-quickstartを使用しています。<!--more-->
+あらかじめOpenShiftのアカウントを作成している必要があります。</p>
+
+<ol>
+<li><h4>Ruby 1.9のアプリケーションを作成する</h4>
+
+<p>　<code>rhc app create</code>でアプリケーションを作成します。-aにはアプリケーション名、-tにはウェブカートリッジを指定します。</p>
+
+<pre><code>$ rhc app create -a redmine -t ruby-1.9
+Application Options
+-------------------
+  Namespace:  momoto
+  Cartridges: ruby-1.9
+  Gear Size:  default
+  Scaling:    no
+
+Creating application 'redmine' ... done
+
+Waiting for your DNS name to be available ... done
+
+Cloning into 'redmine'...
+Checking connectivity... done
+
+Your application 'redmine' is now available.
+
+  URL:        http://redmine-momoto.rhcloud.com/
+  SSH to:     *
+  Git remote: *
+  Cloned to:  ~/Workspace/redmine
+
+Run 'rhc show-app redmine' for more details about your app.
+</code></pre>
+
+<p>　アプリケーションの作成と同時に、Gitリポジトリがローカルにクローンされています。</p></li>
+<li><h4>MySQL Database 5.1カートリッジを追加する</h4>
+
+<p>　<code>rhc cartridge add</code>でMySQL Database 5.1アドオンカートリッジを追加します。追加できるカートリッジは<code>rhc cartridges</code>または<code>rhc cartridge list</code>で確認できます。</p>
+
+<pre><code>$ rhc cartridge add -a redmine -c mysql-5.1
+Adding mysql-5.1 to application 'redmine' ... done
+
+mysql-5.1 (MySQL Database 5.1)
+------------------------------
+  Gears:          Located with ruby-1.9
+  Connection URL: mysql://$OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT/
+  Database Name:  *
+  Password:       *
+  Username:       *
+
+MySQL 5.1 database added.  Please make note of these credentials:
+       Root User: *
+   Root Password: *
+   Database Name: *
+Connection URL: mysql://$OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT/
+You can manage your new MySQL database by also embedding phpmyadmin-3.4.
+The phpmyadmin username and password will be the same as the MySQL credentials above.
+</code></pre></li>
+<li><h4>redmine-2.0-openshift-quickstartを併合する</h4>
+
+<ol>
+<li>　OpenShiftからクローンしたローカルリポジトリにワーキングディレクトリをうつします</li>
+<li>　GitHubの<a href="https://github.com/openshift/redmine-2.0-openshift-quickstart">redmine-2.0-openshift-quickstart</a>を<code>upstream</code>としてリモートリポジトリに追加します</li>
+<li>　ローカルリポジトリにupstreamを併合します（MERGE STRATEGYはrecursive、recursive strategyのオプションはtheirs）</li>
+</ol>
+
+
+<p>　もし、OpenShiftからリポジトリをクローンしなおす場合は<code>rhc git-clone &lt;app&gt;</code>をつかいます。</p>
+
+<pre><code>$ cd redmine/
+$ git remote add upstream -m master git://github.com/openshift/redmine-2.0-openshift-quickstart.git
+$ git pull -s recursive -X theirs upstream master
+warning: no common commits
+remote: Counting objects: 2003, done.
+remote: Compressing objects: 100% (1725/1725), done.
+remote: Total 2003 (delta 300), reused 1897 (delta 199)
+Receiving objects: 100% (2003/2003), 4.06 MiB | 272.00 KiB/s, done.
+Resolving deltas: 100% (300/300), done.
+From git://github.com/openshift/redmine-2.0-openshift-quickstart
+ * branch            master     -&gt; FETCH_HEAD
+Auto-merging config.ru
+Auto-merging README.md
+Auto-merging .openshift/cron/weekly/jobs.allow
+Auto-merging .openshift/cron/README.cron
+...
+</code></pre></li>
+<li><h4>OpenShiftに展開する</h4>
+
+<p>　redmine-2.0-openshift-quickstartと併合したローカルリポジトリを、OpenShiftのリモートリポジトリ（origin）に更新します。</p>
+
+<pre><code>$ git push origin master
+Counting objects: 2011, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (1625/1625), done.
+Writing objects: 100% (2001/2001), 4.06 MiB | 1.58 MiB/s, done.
+Total 2001 (delta 307), reused 1989 (delta 300)
+remote: Stopping Ruby cart
+remote: Running build on Ruby cart
+remote: Bundling RubyGems based on Gemfile/Gemfile.lock to repo/vendor/bundle with 'bundle install --deployment'
+remote: Fetching gem metadata from http://rubygems.org/.........
+...
+</code></pre>
+
+<p>　<code>git push</code>の処理が終わったら、ウェブブラウザからアプリケーションのURLへアクセスして動作を確認します。アプリケーションのURLは<code>rhc show-app &lt;app&gt;</code>からも確認できます。</p>
+
+<p><img src="/blog/images/2013-08-24-deploying-redmine-2-dot-0-on-openshift/redmine-home.png" width="500" title="Red Hat OpenShiftにRedmine 2.0を展開する" ></p></li>
+</ol>
+
+
+<p>　OpenShiftではRedmineのほか、<a href="https://www.openshift.com/quickstarts/django">Django</a>、<a href="https://www.openshift.com/quickstarts/cakephp">CakePHP</a>、<a href="https://www.openshift.com/quickstarts/wordpress-3x">WordPress 3.x</a>などのクイックスタートも用意されています。</p>
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://www.openshift.com/developers/documentation">Understanding OpenShift | OpenShift by Red Hat</a></li>
+<li><a href="https://github.com/openshift">openshift (OpenShift Origin) · GitHub</a>
+
+<ul>
+<li><a href="https://github.com/openshift/redmine-2.0-openshift-quickstart">openshift/redmine-2.0-openshift-quickstart</a></li>
+</ul>
+</li>
+</ul>
+
+
+<h2>関連記事</h2>
+
+<ul>
+<li><a href="/blog/2013/08/24/installation-guide-for-openshift-rhc-client-tools/">Red Hat OpenShiftクライアントツールをインストールする</a></li>
+<li><a href="/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku/">HerokuにRedmine 2.3.1を展開する</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Red Hat OpenShiftクライアントツールをインストールする]]></title>
+    <link href="http://momoto.github.io/blog/2013/08/24/installation-guide-for-openshift-rhc-client-tools/"/>
+    <updated>2013-08-24T11:08:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/08/24/installation-guide-for-openshift-rhc-client-tools</id>
+    <content type="html"><![CDATA[<p>　Red Hat OpenShiftに用意されている２通りのユーザインタフェースのうちの１つ、クライアントツールをインストールします。
+クライアントツールをつかうと、もう一方のユーザインタフェースであるマネジメントコンソールでは提供されていない機能を利用できます。<!-- more --></p>
+
+<h2>インストール</h2>
+
+<p>　クライアントツール（以下、rhc）の要件として、Ruby、RubyGems、Gitがあらかじめインストールされている必要があります。
+インストールにはパッケージ管理システムごとに何通りかの方法がありますが、OpenShift開発チームの調整が最も反映されているのはGEMパッケージであるようです。</p>
+
+<h4>RPMパッケージ</h4>
+
+<p>　YumをつかってRPMパッケージ版rhcをインストールします。</p>
+
+<pre><code>$ sudo yum install rhc
+</code></pre>
+
+<h4>AURパッケージ</h4>
+
+<p>　Pacmanをつかって<a href="https://aur.archlinux.org/packages/rhc/">AURパッケージ版rhc</a>をインストールします。</p>
+
+<pre><code>$ curl -Os https://aur.archlinux.org/packages/rh/rhc/rhc.tar.gz
+$ tar xfz rhc.tar.gz
+$ cd rhc
+$ makepkg -i -s
+</code></pre>
+
+<h4>GEMパッケージ</h4>
+
+<p>　RubyGemsをつかって<a href="http://rubygems.org/gems/rhc">gemパッケージ版rhc</a>をインストールします。</p>
+
+<pre><code>$ sudo gem install rhc
+</code></pre>
+
+<h2>初期設定</h2>
+
+<p>　<code>rhc setup</code>コマンドでセットアップウィザードを起動させます。
+OpenShiftへのログイン情報を入力するので、あらかじめ<a href="http://openshift.redhat.com/">OpenShift</a>のアカウントを作成している必要があります。</p>
+
+<pre><code>$ rhc setup
+OpenShift Client Tools (RHC) Setup Wizard
+
+This wizard will help you upload your SSH keys, set your application namespace, and check that other programs like Git are properly installed.
+
+Login to openshift.redhat.com: 
+</code></pre>
+
+<p>　認証トークンを生成するかどうかを選択します。
+トークンを生成しておくと、その有効期限の間はログイン情報の入力を省略できます。このトークンは<code>rhc logout</code>で消すことができます。</p>
+
+<pre><code>OpenShift can create and store a token on disk which allows to you to access the server without using your password. The key is stored in your home directory and should
+be kept secret.  You can delete the key at any time by running 'rhc logout'.
+Generate a token now? (yes|no) yes
+Generating an authorization token for this client ... lasts about 1 day
+
+Saving configuration to ~/.openshift/express.conf ... done
+</code></pre>
+
+<p>　SSHの認証につかう公開鍵をOpenShiftリモートサーバへアップロードするかどうかを選択します。
+セットアップウィザードに従う場合、ホームディレクトリから見つかったid_rsaとid_rsa.pubのペアのうち、id_rsa.pubのほうをアップロードします。</p>
+
+<pre><code>Your public SSH key must be uploaded to the OpenShift server to access code.  Upload now? (yes|no) 
+</code></pre>
+
+<h2>SSH接続</h2>
+
+<p>　<code>rhc ssh &lt;app&gt;</code>コマンドをつかって、SSH接続を試してみます。今までに作成したアプリケーションは<code>rhc apps</code>コマンドで確認することができます。</p>
+
+<pre><code>$ rhc ssh &lt;app&gt;
+Connecting to ********@&lt;app&gt;-&lt;namespace&gt;.rhcloud.com ...
+
+*********************************************************************
+
+You are accessing a service that is for use only by authorized users.
+If you do not have authorization, discontinue use at once.
+Any use of the services is subject to the applicable terms of the
+agreement which can be found at:
+https://www.openshift.com/legal
+
+*********************************************************************
+
+Welcome to OpenShift shell
+
+This shell will assist you in managing OpenShift applications.
+
+!!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!!
+Shell access is quite powerful and it is possible for you to
+accidentally damage your application.  Proceed with care!
+If worse comes to worst, destroy your application with 'rhc app delete'
+and recreate it
+!!! IMPORTANT !!! IMPORTANT !!! IMPORTANT !!!
+
+Type "help" for more info.
+
+[&lt;app&gt;-&lt;namespace&gt;.rhcloud.com ********]\&gt;
+</code></pre>
+
+<p>　<code>help</code>では、OpenShiftアプリケーション環境で利用できるコマンドを参照することができます。</p>
+
+<pre><code>Help menu: The following commands are available to help control your openshift
+application and environment.
+
+ctl_app         control your application (start, stop, restart, etc)
+ctl_all         control application and deps like mysql in one command
+tail_all        tail all log files
+export          list available environment variables
+rm              remove files / directories
+ls              list files / directories
+ps              list running applications
+kill            kill running applications
+mysql           interactive MySQL shell
+mongo           interactive MongoDB shell
+psql            interactive PostgreSQL shell
+quota           list disk usage
+</code></pre>
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://access.redhat.com/site/documentation/en-US/OpenShift_Online/2.0/html/User_Guide/index.html">User Guide &ndash; Red Hat Customer Portal</a></li>
+<li><a href="https://access.redhat.com/site/documentation/en-US/OpenShift_Online/2.0/html/Client_Tools_Installation_Guide/index.html">Client Tools Installation Guide &ndash; Red Hat Customer Portal</a></li>
+</ul>
+
+
+<h2>関連記事</h2>
+
+<ul>
+<li><a href="/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/">Red Hat OpenShiftにRedmine 2.0を展開する</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

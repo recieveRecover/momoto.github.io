@@ -2,17 +2,23 @@
 <!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
 <!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
 <meta charset="utf-8">
 <title>HerokuにRedmine 2.3.1を展開する - momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-
-<meta name="description" content="HerokuにRedmine 2.3.1を展開した際の手順の記録です。">
-<meta name="keywords" content="Ruby, Redmine, Heroku">
+<meta name="description" content="Herokuが提供するPaaSに、プロジェクト管理ソフトウェア Redmine 2.3.1を展開します。">
+<meta name="keywords" content="PaaS, Heroku, Ruby, Redmine">
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku/" />
+<meta property="og:title" content="HerokuにRedmine 2.3.1を展開する" />
+<meta property="og:site_name" content="momoto.github.io">
+<meta property="og:description" content="Herokuが提供するPaaSに、プロジェクト管理ソフトウェア Redmine 2.3.1を展開します。">
+<meta property="og:image" content="/images/identicon.png" />
+<meta property="fb:app_id" content="561979160531119" />
+<meta property="article:author" content="Seiji Momoto" />
 <link rel="canonical" href="http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku/">
 <link href="/favicon.png" rel="icon">
 <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -53,6 +59,11 @@
     
     
       <p class="meta">
+<span class="breadcrumb">
+<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/blog/categories/paas/" itemprop="url"><span itemprop="title">Platform-as-a-Service</span></a> › </span>
+</span>
+
+
 
 
 
@@ -64,12 +75,14 @@
 
   
 
-<time datetime="2013-05-31T23:19:00+09:00" pubdate data-updated="true" class="updated">May 31<span>st</span>, 2013</time></p>
+<time datetime="2013-05-31T23:19:00+09:00" pubdate data-updated="true" class="updated">May 31<span>st</span>, 2013</time>
+      </p>
     
   </header>
 
 
-<div class="entry-content"><p>　Herokuが提供するPaaSに、プロジェクト管理ソフトウェア Redmine 2.3.1を展開します。Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、<a href="https://aur.archlinux.org/packages/heroku-client/">heroku-toolbelt</a>は2.39.4を使用しました。<!-- more --></p>
+<div class="entry-content"><p>　Herokuが提供するPaaSに、プロジェクト管理ソフトウェア Redmine 2.3.1を展開します。
+Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、<a href="https://aur.archlinux.org/packages/heroku-client/">heroku-toolbelt</a>は2.39.4を使用しました。<!-- more --></p>
 
 <h4>Redmine 2.3.1のダウンロード</h4>
 
@@ -309,6 +322,13 @@ $ heroku run rake redmine:load_default_data
 <li><a href="https://devcenter.heroku.com/articles/rails3">Getting Started with Rails 3.x on Heroku | Heroku Dev Center</a></li>
 </ul>
 
+
+<h4>関連記事</h4>
+
+<ul>
+<li><a href="/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/">Red Hat OpenShiftにRedmine 2.0を展開する</a></li>
+</ul>
+
 </div>
 
 
@@ -336,7 +356,7 @@ $ heroku run rake redmine:load_default_data
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/ruby/'>Ruby</a>
+    <a class='category' href='/blog/categories/heroku/'>Heroku</a>, <a class='category' href='/blog/categories/paas/'>PaaS</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>
   
 </span>
 
