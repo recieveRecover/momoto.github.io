@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: JavaScript | momoto.github.io]]></title>
+  <title><![CDATA[JavaScript | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-08-25T04:44:48+09:00</updated>
+  <updated>2013-09-01T20:27:10+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>

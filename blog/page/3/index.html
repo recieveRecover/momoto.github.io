@@ -6,7 +6,8 @@
 <meta charset="utf-8">
 <title>momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-<meta name="description" content="　GUIDパーティションテーブル（GPT）規格のディスクにSyslinuxをインストールした手順の記録です。OSはArch Linux、パーティショニングにはgptfdisk（gdisk）を使用しています。GPTの利点は2TiBを超える記憶容量を管理できることにありますが、 &hellip;">
+<meta name="description" content="　Herokuが提供するPaaSにプロジェクト管理ソフトウェア Redmine 2.3.1を展開します。
+Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、heroku-toolbeltは2.39.4を使用しました。">
 
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
@@ -15,7 +16,8 @@
 <meta property="og:url" content="http://momoto.github.io/blog/page/3/" />
 
 <meta property="og:site_name" content="momoto.github.io">
-<meta property="og:description" content="　GUIDパーティションテーブル（GPT）規格のディスクにSyslinuxをインストールした手順の記録です。OSはArch Linux、パーティショニングにはgptfdisk（gdisk）を使用しています。GPTの利点は2TiBを超える記憶容量を管理できることにありますが、 &hellip;">
+<meta property="og:description" content="　Herokuが提供するPaaSにプロジェクト管理ソフトウェア Redmine 2.3.1を展開します。
+Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、heroku-toolbeltは2.39.4を使用しました。">
 <meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
 <meta property="fb:app_id" content="561979160531119" />
 <link rel="canonical" href="http://momoto.github.io/blog/page/3/">
@@ -43,21 +45,60 @@
       <header role="banner"><hgroup><h1><a href="/">momoto.github.io</a></h1></hgroup></header>
       <nav role="navigation">
         <form action="http://google.com/search" method="get"><fieldset role="search"><input type="hidden" name="q" value="site:momoto.github.io" /><input class="search" type="text" name="q" results="0" placeholder="Search"/></fieldset></form>
-        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li></ul>
+        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li><li><a href="https://github.com/momoto/momoto.github.io/wiki" title="momoto.github.io Wiki">Wiki</a></li></ul>
       </nav>
     </div>
   </div>
 </div>
 <div id="body" class="collapse-sidebar sidebar-footer">
-  <div id="main"><div id="content"><div class="blog-index">
+  <div id="main"><div id="content">
+    <div class="blog-index">
   
   
   
     <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/04/08/install-syslinux-on-gpt-partition-styled-disk/">GUIDパーティションテーブルでのSyslinuxのインストール</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku/">HerokuにRedmine 2.3.1を展開する</a></h1>
+    
+    
+      <p class="meta">
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-05-31T23:19:00+09:00" pubdate data-updated="true" class="updated">May 31<span>st</span>, 2013</time>
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>　Herokuが提供するPaaSにプロジェクト管理ソフトウェア Redmine 2.3.1を展開します。
+Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、<a href="https://aur.archlinux.org/packages/heroku-client/">heroku-toolbelt</a>は2.39.4を使用しました。</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku/">Read on &rarr;</a>
+    </footer>
+  
+
+</article>
+  
+  
+    <article>
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/08/install-syslinux-on-gpt-partition-styled-disk/">GPT規格のディスクにSyslinuxをインストールする</a></h1>
     
     
       <p class="meta">
@@ -96,12 +137,10 @@
     </footer>
   
 
-
-    </article>
+</article>
   
   
     <article>
-      
   <header>
     
       <h1 class="entry-title"><a href="/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/">CentOS 6.4をインストールする</a></h1>
@@ -128,16 +167,7 @@
   </header>
 
 
-  <div class="entry-content"><p>　CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。インターネットへ接続できる環境を前提にしています。</p>
-
-<ol>
-<li><h3>Anacondaの起動</h3>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/01.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/01_thumbnail.png" title="Anacondaの起動" ></a></p>
-
-<p>　インストールメディアからCentOSのインストーラ&#8221;Anaconda&#8221;を起動します。このとき、インストールメディア（光学ドライブやUSB、あるいはISOイメージファイル）が優先的に起動されるようにコンピュータ側（BIOSや仮想化環境）で正しく設定されている必要があります。</p>
-
-<p>　インストールを開始するために、&#8221;Install or upgrade an existing system&#8221;を選択します。</div>
+  <div class="entry-content"><p>　CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。インターネットへ接続できる環境を前提にしています。</div>
   
   
     <footer>
@@ -145,12 +175,10 @@
     </footer>
   
 
-
-    </article>
+</article>
   
   
     <article>
-      
   <header>
     
       <h1 class="entry-title"><a href="/blog/2013/03/27/awesome-tutorials/">ウィンドウマネージャawesomeの基本操作</a></h1>
@@ -184,8 +212,8 @@
 <ul>
 <li><p>タイル配置（awful.layout.suit.tile）</p>
 
-<p><img src="/blog/images/2013-03-27-awesome-tutorials/01.png" width="300">
-<img src="/blog/images/2013-03-27-awesome-tutorials/02.png" width="300"></p></li>
+<p><img src="/blog/images/2013-03-27-awesome-tutorials/01.png" width="300" title="awesomeのタイル配置" >
+<img src="/blog/images/2013-03-27-awesome-tutorials/02.png" width="300" title="awesomeのタイル配置" ></p></li>
 </ul>
 
 
@@ -197,15 +225,13 @@
     </footer>
   
 
-
-    </article>
+</article>
   
   
     <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/03/16/install-x86-minimal-20121213/">Gentoo Linux (20121213)をインストールする</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/03/16/install-x86-minimal-20121213/">Gentoo Linux 20121213をインストールする</a></h1>
     
     
       <p class="meta">
@@ -229,9 +255,7 @@
   </header>
 
 
-  <div class="entry-content"><p>　Gentoo Linux (20121213)をインストールした手順の記録です。命令セットはx86、インストールメディアはinstall-x86-minimal-20121213.isoを使用しています。DHCPによりネットワークは既に接続できる状態を前提にしています。</p>
-
-</div>
+  <div class="entry-content"><p>　Gentoo Linux 20121213をインストールした手順の記録です。インストールメディアはinstall-x86-minimal-20121213.isoを使用しています。DHCPによりネットワークは既に接続できる状態を前提にしています。</div>
   
   
     <footer>
@@ -239,58 +263,7 @@
     </footer>
   
 
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp/">FuelPHP Restコントローラの使い方</a></h1>
-    
-    
-      <p class="meta">
-
-
-
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2013-03-03T23:38:00+09:00" pubdate data-updated="true" class="updated">Mar 3<span>rd</span>, 2013</time>
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>　FuelPHPのRestコントローラを試用してみます。クラスファイルは、通常のコントローラと同様に<code>fuel/app/classes/controller</code>へ設置して使用します。まずは次のような内容でapi.phpを作成し、ブラウザから出力を確認してみます。Restコントローラを使用する場合、継承するクラスはControllerではなく<code>Controller_Rest</code>になります。</p>
-
-<pre><code>&lt;?php
-class Controller_Api extends Controller_Rest {
-  public function action_range() {
-    $this-&gt;response(array(1,2,3));
-  }
-}
-</code></pre>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
+</article>
   
   <div class="pagination">
     
@@ -302,15 +275,17 @@ class Controller_Api extends Controller_Rest {
     
   </div>
 </div>
-<aside class="sidebar"><section class="vcard">
-<h1>About Me</h1>
-<p>A little something about me.</p>
-<p><a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>
- | <a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>
- | <a href="https://github.com/momoto">GitHub</a>
- | <a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
+
+    <aside class="sidebar"><section class="vcard">
+<h2>About Me</h2>
+<p>
+<a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
+<a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
+<a href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
+<a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
 </section>
-</aside></div></div>
+</aside>
+  </div></div>
   <footer role="contentinfo"><p>Copyright &copy; 2013 - <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a> - <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>. Design by <a href="http://octopressthemes.com">Octopress Themes</a>.</span></p></footer>
 </div>
 <script src="/javascripts/modernizr-2.0.js"></script>

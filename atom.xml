@@ -4,7 +4,7 @@
   <title><![CDATA[momoto.github.io]]></title>
   <link href="http://momoto.github.io/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-08-25T04:44:48+09:00</updated>
+  <updated>2013-09-01T20:27:10+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -12,6 +12,223 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Vagrantをつかって仮想マシンを管理する]]></title>
+    <link href="http://momoto.github.io/blog/2013/08/28/guide-to-managing-guests-using-vagrant/"/>
+    <updated>2013-08-28T21:41:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/08/28/guide-to-managing-guests-using-vagrant</id>
+    <content type="html"><![CDATA[<p>　Vagrantをつかって仮想マシンを管理する手引きです。Vagrantを利用するにはVirtualBoxやAWSなどのプロバイダを利用できる状態である必要があります。<!-- more --></p>
+
+<ol>
+<li><h3>試してみる</h3>
+
+<p>　<a href="http://www.vagrantbox.es/">Vagrantbox.es</a>で紹介されているBoxファイルから仮想マシンを新しく作成します。
+Boxファイルは次のウェブサイトでも公開されています。</p>
+
+<ul>
+<li><a href="http://www.vagrantbox.es/">Vagrantbox.es</a></li>
+<li><a href="http://www.vagrantup.com/">vagrantup.com</a>
+
+<ul>
+<li><a href="http://files.vagrantup.com/precise64.box">Ubuntu 12.04 precise 64-bit</a> (323MB)</li>
+<li><a href="http://files.vagrantup.com/precise32.box">Ubuntu 12.04 precise 32-bit</a> (299MB)</li>
+</ul>
+</li>
+<li><a href="http://cloud-images.ubuntu.com/">Ubuntu Cloud Images</a>
+
+<ul>
+<li><a href="http://cloud-images.ubuntu.com/vagrant/saucy/current/saucy-server-cloudimg-amd64-vagrant-disk1.box">Ubuntu 13.10 saucy 64-bit</a> (324MB)</li>
+<li><a href="http://cloud-images.ubuntu.com/vagrant/saucy/current/saucy-server-cloudimg-i386-vagrant-disk1.box">Ubuntu 13.10 saucy 32-bit</a> (324MB)</li>
+</ul>
+</li>
+<li><a href="http://nrel.github.io/vagrant-boxes/">米エネルギー省 国立再生可能エネルギー研究所（NREL）GitHub</a>
+
+<ul>
+<li><a href="http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130731.box">CentOS 6.4 x86_64</a> (494MB)</li>
+<li><a href="http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-i386-v20130731.box">CentOS 6.4 i386</a> (459MB)</li>
+</ul>
+</li>
+</ul>
+
+
+<p>　例えばFedora 18 x86 MinimalのBoxファイルをつかう場合、次のように<code>vagrant init [box-name] [box-url]</code>を実行して、Vagrantのプロジェクトを開始します。</p>
+
+<pre><code>$ mkdir vagrant-fedora-18
+$ cd vagrant-fedora-18/
+$ vagrant init fedora-18 http://static.stasiak.at/fedora-18-x86-2.box
+A `Vagrantfile` has been placed in this directory. You are now
+ready to `vagrant up` your first virtual environment! Please read
+the comments in the Vagrantfile as well as documentation on
+`vagrantup.com` for more information on using Vagrant.
+</code></pre>
+
+<p>　次に<code>vagrant up [vm-name]</code>を実行して、作成したVagrantのプロジェクトから仮想マシンを起動します。</p>
+
+<pre><code>vagrant-fedora-18 $ vagrant up
+Bringing machine 'default' up with 'virtualbox' provider...
+[default] Box 'fedora-18' was not found. Fetching box from specified URL for
+the provider 'virtualbox'. Note that if the URL does not have
+a box for this provider, you should interrupt Vagrant now and add
+the box yourself. Otherwise Vagrant will attempt to download the
+full box prior to discovering this error.
+Downloading or copying the box...
+Extracting box...te: 456k/s, Estimated time remaining: 0:00:01))
+Successfully added box 'fedora-18' with provider 'virtualbox'!
+[default] Importing base box 'fedora-18'...
+[default] Matching MAC address for NAT networking...
+[default] Setting the name of the VM...
+[default] Clearing any previously set forwarded ports...
+[default] Creating shared folders metadata...
+[default] Clearing any previously set network interfaces...
+[default] Preparing network interfaces based on configuration...
+[default] Forwarding ports...
+[default] -- 22 =&gt; 2222 (adapter 1)
+[default] Booting VM...
+[default] Waiting for VM to boot. This can take a few minutes.
+[default] VM booted and ready for use!
+[default] Mounting shared folders...
+[default] -- /vagrant
+</code></pre>
+
+<p>　仮想マシンの状態は<code>vagrant status</code>やプロバイダのユーザインタフェースから確かめることができます。</p>
+
+<pre><code>vagrant-fedora-18 $ vagrant status
+Current machine states:
+
+default                   running (virtualbox)
+</code></pre>
+
+<p><img src="http://momoto.github.io/blog/images/2013-08-30-guide-to-managing-guests-using-vagrant/01-verify-the-vm-booted-by-looking-at-the-virtualbox.png" width="600" title="VirtualBoxのGUIから仮想マシンの動作を確認する" ></p>
+
+<p>　起動している仮想マシンへSSH接続するには<code>vagrant ssh</code>を実行します。</p>
+
+<pre><code>$ vagrant ssh
+[vagrant@localhost ~]$
+[vagrant@localhost ~]$ cat /etc/fedora-release
+Fedora release 18 (Spherical Cow)
+</code></pre></li>
+<li><h3>Boxを管理する</h3>
+
+<ul>
+<li>Boxの一覧 <code>vagrant box list</code></li>
+<li>Boxの追加 <code>vagrant box add &lt;name&gt; &lt;url&gt;</code>（VagrantfileをつくらずにBoxの追加だけを行います）</li>
+<li>Boxの削除 <code>vagrant box remove &lt;name&gt;</code></li>
+</ul>
+
+
+<p>　仮想マシンからBoxファイルを作成するには<code>vagrant package</code>をつかいます。
+Boxファイルは仮想マシンディスクイメージ（VMDK）、OVFファイル、そしてVagrantfile等をTAR形式でまとめたものであるようです。</p>
+
+<pre><code>$ vagrant package
+[default] Attempting graceful shutdown of VM...
+[default] Clearing any previously set forwarded ports...
+[default] Creating temporary directory for export...
+[default] Exporting VM...
+[default] Compressing package to: vagrant-fedora-18/package.box
+</code></pre></li>
+<li><h3>仮想マシンを管理する</h3>
+
+<p>　Vagrantのプロジェクトディレクトリ内から、ゲストOSの起動や停止などを操作できます。</p>
+
+<ul>
+<li>仮想マシンの起動 <code>vagrant up</code></li>
+<li>仮想マシンの停止 <code>vagrant halt</code></li>
+<li>仮想マシンの再起動 <code>vagrant reload</code></li>
+<li>仮想マシンの一時停止 <code>vagrant suspend</code></li>
+<li>仮想マシンの再開 <code>vagrant resume</code></li>
+<li>仮想マシンへSSH接続 <code>vagrant ssh</code></li>
+</ul>
+
+
+<p>　仮想マシンの状態を確認するには<code>vagrant status</code>を実行します。</p>
+
+<pre><code>$ vagrant status
+Current machine states:
+
+default                   running (virtualbox)
+</code></pre></li>
+<li><h3>MULTI-MACHINEを利用する</h3>
+
+<p>　複数の仮想マシンをコントロールできるMULTI-MACHINE環境を利用するには、Vagrantfileに仮想マシンの情報を定義します。
+例えば、仮想マシンを２つ、異なるホスト名とBoxで定義する場合、Vagrantfileの<code>Vagrant.configure(VAGRANTFILE_API_VERSION) do |config| ... end</code>の間に、次のように記述します。</p>
+
+<pre><code>config.vm.define :node1 do |node1_config|
+  node1_config.vm.hostname = "node1"
+end
+config.vm.define :node2 do |node2_config|
+  node2_config.vm.box = "centos-6.3"
+  node2_config.vm.hostname = "node2"
+end
+</code></pre>
+
+<p>　上のようにVagrantfileを書き換えたあと<code>vagrant up</code>を実行してみると、ゲストのFedoraとCentOSが同時に起動します。</p>
+
+<pre><code>$ vagrant up
+
+Bringing machine 'node1' up with 'virtualbox' provider...
+Bringing machine 'node2' up with 'virtualbox' provider...
+[node1] Importing base box 'fedora-18'...
+[node1] Matching MAC address for NAT networking...
+[node1] Setting the name of the VM...
+[node1] Clearing any previously set forwarded ports...
+[node1] Creating shared folders metadata...
+[node1] Clearing any previously set network interfaces...
+[node1] Preparing network interfaces based on configuration...
+[node1] Forwarding ports...
+[node1] -- 22 =&gt; 2222 (adapter 1)
+[node1] Booting VM...
+[node1] Waiting for VM to boot. This can take a few minutes.
+[node1] VM booted and ready for use!
+[node1] Setting hostname...
+[node1] Mounting shared folders...
+[node1] -- /vagrant
+[node2] Importing base box 'centos-6.3'...
+[node2] Matching MAC address for NAT networking...
+[node2] Setting the name of the VM...
+[node2] Clearing any previously set forwarded ports...
+[node2] Fixed port collision for 22 =&gt; 2222. Now on port 2200.
+[node2] Creating shared folders metadata...
+[node2] Clearing any previously set network interfaces...
+[node2] Preparing network interfaces based on configuration...
+[node2] Forwarding ports...
+[node2] -- 22 =&gt; 2200 (adapter 1)
+[node2] Booting VM...
+[node2] Waiting for VM to boot. This can take a few minutes.
+[node2] VM booted and ready for use!
+[node2] Setting hostname...
+[node2] Mounting shared folders...
+[node2] -- /vagrant
+
+$ vagrant status
+Current machine states:
+
+node1                     running (virtualbox)
+node2                     running (virtualbox)
+</code></pre>
+
+<p><img src="http://momoto.github.io/blog/images/2013-08-30-guide-to-managing-guests-using-vagrant/02-multi-machine.png" width="600" title="VirtualBoxからMULTI-MACHINEの動作を確認する" ></p>
+
+<p>　Vagrantfileにはホスト名以外にも細かく設定を記述することができます。詳しい設定項目については<a href="http://docs.vagrantup.com/v2/vagrantfile/index.html">Documentation</a>を参照してください。</p></li>
+</ol>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="http://docs.vagrantup.com/v2">Vagrant Documentation</a></li>
+</ul>
+
+
+<h2>関連記事</h2>
+
+<ul>
+<li><a href="http://momoto.github.io/blog/2013/08/17/guide-to-managing-guests-using-virsh/">Virshをつかって仮想マシンを管理する</a></li>
+<li><a href="http://momoto.github.io/blog/2013/08/11/guide-to-creating-virtual-machine-with-qemu/">QEMUをつかって仮想マシンを作成する</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Red Hat OpenShiftにRedmine 2.0を展開する]]></title>
@@ -1666,19 +1883,19 @@ httpd_can_network_connect --&gt; off
 <ol>
 <li><p>　パーティショニングを「ガイド」（自動）で行うか、「手動」で行うかを選択します。パーティション構成を詳しく指定する必要がある場合には「手動」を選択します。この記事では「ガイド &ndash; ディスク全体を使う」でインストールを進めます。</p>
 
-<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-01.png" width="400"></p></li>
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-01.png" width="400" title="パーティショニングを自動で行うか、手動で行うかを選択する" ></p></li>
 <li><p>　パーティショニングの対象となるストレージデバイスを選択します。デバイスを正しく認識していれば、この画面の選択肢に現れているはずです。</p>
 
-<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-02.png" width="400"></p></li>
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-02.png" width="400" title="パーティショニングの対象になるストレージデバイスを選択する" ></p></li>
 <li><p>　ガイドに従ってパーティション構成を選択します。ここで選択できるものより複雑なパーティショニングが必要な場合は手動で設定しなければなりません。この記事では「すべてのファイルを１つのパーティションに」を選択してインストールをすすめます。</p>
 
-<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-03.png" width="400"></p></li>
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-03.png" width="400" title="パーティション構成を選択する" ></p></li>
 <li><p>　ここまでのパーティション設定を確認します。</p>
 
-<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-04.png" width="400"></p></li>
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-04.png" width="400" title="パーティション設定を確認する" ></p></li>
 <li><p>　ストレージデバイスに対する書込みの最後の確認です。書込みを行うとそれまで記録されていた情報は削除されますので、対象デバイスとパーティションをよく確かめて画面をすすめてください。</p>
 
-<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-05.png" width="400"></p></li>
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-05.png" width="400" title="ストレージデバイスに対する書込みを確認する" ></p></li>
 </ol>
 </li>
 <li><h3>パッケージマネージャの設定</h3>
@@ -1737,7 +1954,7 @@ httpd_can_network_connect --&gt; off
     <link href="http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku/"/>
     <updated>2013-05-31T23:19:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku</id>
-    <content type="html"><![CDATA[<p>　Herokuが提供するPaaSに、プロジェクト管理ソフトウェア Redmine 2.3.1を展開します。
+    <content type="html"><![CDATA[<p>　Herokuが提供するPaaSにプロジェクト管理ソフトウェア Redmine 2.3.1を展開します。
 Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、<a href="https://aur.archlinux.org/packages/heroku-client/">heroku-toolbelt</a>は2.39.4を使用しました。<!-- more --></p>
 
 <h4>Redmine 2.3.1のダウンロード</h4>
@@ -1989,7 +2206,7 @@ $ heroku run rake redmine:load_default_data
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[GUIDパーティションテーブルでのSyslinuxのインストール]]></title>
+    <title type="html"><![CDATA[GPT規格のディスクにSyslinuxをインストールする]]></title>
     <link href="http://momoto.github.io/blog/2013/04/08/install-syslinux-on-gpt-partition-styled-disk/"/>
     <updated>2013-04-08T20:46:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/04/08/install-syslinux-on-gpt-partition-styled-disk</id>
@@ -2152,7 +2369,7 @@ The operation has completed successfully.
     <link href="http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/"/>
     <updated>2013-04-06T01:37:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall</id>
-    <content type="html"><![CDATA[<p>　CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。インターネットへ接続できる環境を前提にしています。</p>
+    <content type="html"><![CDATA[<p>　CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。インターネットへ接続できる環境を前提にしています。<!-- more --></p>
 
 <ol>
 <li><h3>Anacondaの起動</h3>
@@ -2161,7 +2378,7 @@ The operation has completed successfully.
 
 <p>　インストールメディアからCentOSのインストーラ&#8221;Anaconda&#8221;を起動します。このとき、インストールメディア（光学ドライブやUSB、あるいはISOイメージファイル）が優先的に起動されるようにコンピュータ側（BIOSや仮想化環境）で正しく設定されている必要があります。</p>
 
-<p>　インストールを開始するために、&#8221;Install or upgrade an existing system&#8221;を選択します。<!-- more --></p></li>
+<p>　インストールを開始するために、&#8221;Install or upgrade an existing system&#8221;を選択します。</p></li>
 <li><h3>インストールメディアのチェック</h3>
 
 <p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02_thumbnail.png" title="インストールメディアのチェック" ></a></p>
@@ -2270,8 +2487,8 @@ The operation has completed successfully.
 <ul>
 <li><p>タイル配置（awful.layout.suit.tile）</p>
 
-<p><img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/01.png" width="300">
-<img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/02.png" width="300"></p></li>
+<p><img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/01.png" width="300" title="awesomeのタイル配置" >
+<img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/02.png" width="300" title="awesomeのタイル配置" ></p></li>
 </ul>
 
 
@@ -2281,11 +2498,11 @@ The operation has completed successfully.
 <ul>
 <li><p>均等配置（awful.layout.suit.fair）</p>
 
-<p><img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/03.png" width="300">
-<img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/04.png" width="300"></p></li>
+<p><img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/03.png" width="300" title="awesomeの均等配置" >
+<img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/04.png" width="300" title="awesomeの均等配置" ></p></li>
 <li><p>螺旋配置（awful.layout.suit.spiral）</p>
 
-<p><img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/05.png" width="300"></p></li>
+<p><img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/05.png" width="300" title="awesomeの螺旋配置" ></p></li>
 </ul>
 
 
@@ -2355,26 +2572,23 @@ The operation has completed successfully.
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Gentoo Linux (20121213)をインストールする]]></title>
+    <title type="html"><![CDATA[Gentoo Linux 20121213をインストールする]]></title>
     <link href="http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213/"/>
     <updated>2013-03-16T09:00:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213</id>
-    <content type="html"><![CDATA[<p>　Gentoo Linux (20121213)をインストールした手順の記録です。命令セットはx86、インストールメディアはinstall-x86-minimal-20121213.isoを使用しています。DHCPによりネットワークは既に接続できる状態を前提にしています。</p>
-
-<!-- more -->
-
+    <content type="html"><![CDATA[<p>　Gentoo Linux 20121213をインストールした手順の記録です。インストールメディアはinstall-x86-minimal-20121213.isoを使用しています。DHCPによりネットワークは既に接続できる状態を前提にしています。<!-- more --></p>
 
 <h3>1. 起動</h3>
 
-<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/01.png" width="600"></p>
+<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/01.png" width="600" title="インストールメディアを起動する" ></p>
 
 <p>　カーネルとブートオプションの指定画面では、特に何も指定しないままEnterキーを押してインストールを始める。すぐにキーボード配列の選択画面が現れるので、日本語配列のキーボードを使用している場合は「22」と入力する。</p>
 
-<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/02.png" width="600"></p>
+<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/02.png" width="600" title="キーボード配列を選択する" ></p>
 
 <p>　起動が完了しrootにログインできたら、pingコマンド等でネットワークへの接続を確認する。</p>
 
-<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/03.png" width="600"></p>
+<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/03.png" width="600" title="ネットワーク接続を確認する" ></p>
 
 <h3>2. ストレージデバイスの準備</h3>
 
@@ -2461,7 +2675,7 @@ livecd ~ # mount /dev/sda1 /mnt/gentoo/boot/
 livecd gentoo # links http://www.gentoo.org/main/en/mirrors.xml
 </code></pre>
 
-<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/04.png" width="600" title="links初期起動の画面" ></p>
+<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/04.png" width="600" title="linksを起動してGentooミラーリストへアクセスする" ></p>
 
 <p>　linksが起動したらミラーリストから国内のミラーへ移り、stage3-&lt;architecture&gt;&ndash;&lt;release&gt;.tar.bz2とportage-latest.tar.bz2をダウンロードする。<a href="http://ftp.jaist.ac.jp/">JAIST（北陸先端科学技術大学院大学）</a>のミラーであれば、<a href="http://ftp.jaist.ac.jp/pub/Linux/Gentoo/releases/x86/current-stage3/">releases/x86/current-stage3/</a>と<a href="http://ftp.jaist.ac.jp/pub/Linux/Gentoo/snapshots/">snapshots/</a>のディレクトリに配置されている。ダウンロードが済んだら、それぞれのtarballを次のオプションで展開する。</p>
 
@@ -2488,7 +2702,7 @@ livecd gentoo # nano -w /mnt/gentoo/etc/make.conf
 * Downloading a list of mirrors... Got 222 mirrors.
 </code></pre>
 
-<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/05.png" width="600"></p>
+<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/05.png" width="600" title="ミラーを選択する" ></p>
 
 <h4>3-3. /procと/devのマウント、chroot、ロケールとタイムゾーンの設定</h4>
 
@@ -2612,9 +2826,9 @@ livecd ~ # reboot
 
 <p>　再起動の後、ブートローダが動作してシステムが起動されたらインストールが完了する。インストールの後は、上述の手順からは省いていたシステム設定（ユーザーの追加、パスワード変更）を行なっていく。</p>
 
-<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/07.png" width="600"></p>
+<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/07.png" width="600" title="ブートローダから起動させるOSを選択する" ></p>
 
-<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/08.png" width="600"></p>
+<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/08.png" width="600" title="インストールが完了し、ログインプロンプトが表示される" ></p>
 
 <h3>参考</h3>
 
@@ -2776,15 +2990,12 @@ pnsft-pur/mozc 1.6.1187.102-4 (mozc-im)
     <link href="http://momoto.github.io/blog/2013/01/05/install-arch-linux/"/>
     <updated>2013-01-05T00:00:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/01/05/install-arch-linux</id>
-    <content type="html"><![CDATA[<p>　Arch Linux 2012.12.01をインストールした際の記録です。
+    <content type="html"><![CDATA[<p>　Arch Linux 2012.12.01をインストールした手順の記録です。インストールメディアはarchlinux-2012.12.01-dual.isoを使用しています。
 <a href="https://wiki.archlinux.org/index.php/Installation_Guide_%28%E6%97%A5%E6%9C%AC%E8%AA%9E%29">Installation Guide (日本語) &ndash; ArchWiki</a>の内容と重なる部分が多いですが、自分なりに注釈を加えて記録します。</p>
 
 <p>　インストールにはインターネットに接続できる環境が必要です。
 また、パーティションの構成やインストールするブートローダをあらかじめ決めておく必要があります。
-次の手順ではパーティションテーブルにGPTを使用し、ブートローダにはGRUB2をインストールしています。</p>
-
-<!-- more -->
-
+次の手順ではパーティションテーブルにGPTを使用し、ブートローダにはGRUB2をインストールしています。<!-- more --></p>
 
 <h3>1. キーボード配列の指定</h3>
 
@@ -3039,106 +3250,6 @@ hwclock --systohc --utc
 
 
 <iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=489100570X" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Ubuntu 12.10にrbenvとruby-buildをインストール]]></title>
-    <link href="http://momoto.github.io/blog/2012/11/23/install-rbenv-and-ruby-build-on-ubuntu-12-dot-10/"/>
-    <updated>2012-11-23T20:23:00+09:00</updated>
-    <id>http://momoto.github.io/blog/2012/11/23/install-rbenv-and-ruby-build-on-ubuntu-12-dot-10</id>
-    <content type="html"><![CDATA[<p>rbenvとruby-buildを使用して、Ubuntu 12.10にRuby 1.9.3をインストールしたときの記録です。
-rbenvとruby-buildはディストリビューションが配布するパッケージに含まれているため、Ubuntuのバージョン管理システム（APT）からインストールすることもできますが、次の記録はgithub.comからクローンする方法によるものです。</p>
-
-<p>(* <em><a href="http://packages.ubuntu.com/quantal/rbenv" title="Ubuntu -- quantal の rbenv パッケージに関する詳細">rbenv</a>はprecise (12.04)以降、<a href="http://packages.ubuntu.com/quantal/ruby-build" title="Ubuntu -- quantal の ruby-build パッケージに関する詳細">ruby-build</a>はquantal (12.10)以降にuniverseに追加されたようです</em> )</p>
-
-<!-- more -->
-
-
-<h3>rbenvのインストール</h3>
-
-<pre><code>$ git clone git://github.com/sstephenson/rbenv.git .rbenv
-  Cloning into '.rbenv'...
-  remote: Counting objects: 1040, done.
-  remote: Compressing objects: 100% (413/413), done.
-  remote: Total 1040 (delta 649), reused 962 (delta 599)
-  Receiving objects: 100% (1040/1040), 138.43 KiB | 115 KiB/s, done.
-  Resolving deltas: 100% (649/649), done.
-
-$ echo 'export PATH="$HOME/.rbenv/bin:$PATH"' &gt;&gt; ~/.bashrc
-$ echo 'eval "$(rbenv init -)"' &gt;&gt; ~/.bashrc
-</code></pre>
-
-<h3>ruby-installのインストール</h3>
-
-<pre><code>$ mkdir -p ~/.rbenv/plugins
-$ cd ~/.rbenv/plugins
-$ git clone git://github.com/sstephenson/ruby-build.git
-  Cloning into 'ruby-build'...
-  remote: Counting objects: 1329, done.
-  remote: Compressing objects: 100% (631/631), done.
-  remote: Total 1329 (delta 691), reused 1183 (delta 555)
-  Receiving objects: 100% (1329/1329), 146.68 KiB | 150 KiB/s, done.
-  Resolving deltas: 100% (691/691), done.
-
-$ cd ruby-build
-$ sudo bash ./install.sh
-  Installed ruby-build at /usr/local
-</code></pre>
-
-<h3>Rubyの特定のバージョンをインストール（1.9.3-p327の場合）</h3>
-
-<pre><code>## インストールが可能なバージョンのリストから"1.9.3"のバージョンを抽出
-$ rbenv install --list | grep "1.9.3"
-  1.9.3-dev
-  1.9.3-p0
-  1.9.3-p125
-  1.9.3-p194
-  1.9.3-p286
-  1.9.3-p327
-  1.9.3-preview1
-  1.9.3-rc1
-
-## 1.9.3-p327を指定して、目的のバージョンをインストール
-$ rbenv install 1.9.3-p327
-  Downloading yaml-0.1.4.tar.gz...
-  -&gt; http://cloud.github.com/downloads/sstephenson/ruby-build-download-mirror/36c852831d02cf90508c29852361d01b
-  Installing yaml-0.1.4...
-  Installed yaml-0.1.4 to $HOME/.rbenv/versions/1.9.3-p327
-
-  Downloading ruby-1.9.3-p327.tar.gz...
-  -&gt; http://cloud.github.com/downloads/sstephenson/ruby-build-download-mirror/96118e856b502b5d7b3a4398e6c6e98c
-  Installing ruby-1.9.3-p327...
-  Installed ruby-1.9.3-p327 to $HOME/.rbenv/versions/1.9.3-p327
-</code></pre>
-
-<h3>Rubyの特定のバージョンを使用するように設定する（1.9.3-p194の場合）</h3>
-
-<pre><code>## 既にインストールしたRubyのバージョンのリストを取得する
-$ rbenv versions
-  1.9.3-p194
-  1.9.3-p327
-
-## 1.9.3-p194を指定して、目的のバージョンを設定する（.rbenv-versionが作成されます）
-~/workspace$ rbenv local 1.9.3-p194
-
-## 設定されているRubyのバージョンの確認（この場合`rbenv local`でも同じ結果が得られます）
-~/workspace$ rbenv version
-  1.9.3-p194 (set by $HOME/workspace/.rbenv-version)
-
-## カレントディレクトリで設定されているRubyのバージョンを解除
-~/workspace$ rbenv local --unset
-</code></pre>
-
-<h3>参考</h3>
-
-<ul>
-<li><a href="http://packages.ubuntu.com/quantal/rbenv" title="Ubuntu -- quantal の rbenv パッケージに関する詳細">packages.ubuntu.com/quantal/rbenv</a></li>
-<li><a href="http://packages.ubuntu.com/quantal/ruby-build" title="Ubuntu -- quantal の ruby-build パッケージに関する詳細">packages.ubuntu.com/quantal/ruby-build</a></li>
-<li><a href="https://github.com/sstephenson/rbenv" title="sstephenson/rbenv">github.com/sstephenson/rbenv</a></li>
-<li><a href="https://github.com/sstephenson/ruby-build" title="sstephenson/ruby-build">github.com/sstephenson/ruby-build</a></li>
-</ul>
 
 ]]></content>
   </entry>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: 国際化 | momoto.github.io]]></title>
+  <title><![CDATA[国際化 | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/guo-ji-hua/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-08-25T04:44:48+09:00</updated>
+  <updated>2013-09-01T20:27:10+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -18,10 +18,7 @@
     <link href="http://momoto.github.io/blog/2012/10/08/encoding-conversion-with-iconv/"/>
     <updated>2012-10-08T00:00:00+09:00</updated>
     <id>http://momoto.github.io/blog/2012/10/08/encoding-conversion-with-iconv</id>
-    <content type="html"><![CDATA[<p>　文字コードの変換は、変換前の文字コードを<code>--from-code (-f)</code>に、変換後の文字コードを<code>--to-code (-t)</code>を指定して、さらに入力ファイルと出力ファイルを指定して使用する。</p>
-
-<!-- more -->
-
+    <content type="html"><![CDATA[<p>　文字コードの変換は、変換前の文字コードを<code>--from-code (-f)</code>に、変換後の文字コードを<code>--to-code (-t)</code>を指定して、さらに入力ファイルと出力ファイルを指定して使用する。<!-- more --></p>
 
 <p>　例えば、Windowsで作成したテキストファイル（SJIS-WIN）をUTF-8に変換したい場合は次のようなコマンドになる。</p>
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: GNU/Linux | momoto.github.io]]></title>
+  <title><![CDATA[GNU/Linux | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/gnu-slash-linux/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-08-25T04:44:48+09:00</updated>
+  <updated>2013-09-01T20:27:10+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -70,19 +70,19 @@
 <ol>
 <li><p>　パーティショニングを「ガイド」（自動）で行うか、「手動」で行うかを選択します。パーティション構成を詳しく指定する必要がある場合には「手動」を選択します。この記事では「ガイド &ndash; ディスク全体を使う」でインストールを進めます。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-01.png" width="400"></p></li>
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-01.png" width="400" title="パーティショニングを自動で行うか、手動で行うかを選択する" ></p></li>
 <li><p>　パーティショニングの対象となるストレージデバイスを選択します。デバイスを正しく認識していれば、この画面の選択肢に現れているはずです。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-02.png" width="400"></p></li>
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-02.png" width="400" title="パーティショニングの対象になるストレージデバイスを選択する" ></p></li>
 <li><p>　ガイドに従ってパーティション構成を選択します。ここで選択できるものより複雑なパーティショニングが必要な場合は手動で設定しなければなりません。この記事では「すべてのファイルを１つのパーティションに」を選択してインストールをすすめます。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-03.png" width="400"></p></li>
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-03.png" width="400" title="パーティション構成を選択する" ></p></li>
 <li><p>　ここまでのパーティション設定を確認します。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-04.png" width="400"></p></li>
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-04.png" width="400" title="パーティション設定を確認する" ></p></li>
 <li><p>　ストレージデバイスに対する書込みの最後の確認です。書込みを行うとそれまで記録されていた情報は削除されますので、対象デバイスとパーティションをよく確かめて画面をすすめてください。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-05.png" width="400"></p></li>
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-05.png" width="400" title="ストレージデバイスに対する書込みを確認する" ></p></li>
 </ol>
 </li>
 <li><h3>パッケージマネージャの設定</h3>
@@ -137,7 +137,7 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[GUIDパーティションテーブルでのSyslinuxのインストール]]></title>
+    <title type="html"><![CDATA[GPT規格のディスクにSyslinuxをインストールする]]></title>
     <link href="http://momoto.github.io/blog/2013/04/08/install-syslinux-on-gpt-partition-styled-disk/"/>
     <updated>2013-04-08T20:46:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/04/08/install-syslinux-on-gpt-partition-styled-disk</id>
@@ -300,7 +300,7 @@ The operation has completed successfully.
     <link href="http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/"/>
     <updated>2013-04-06T01:37:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall</id>
-    <content type="html"><![CDATA[<p>　CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。インターネットへ接続できる環境を前提にしています。</p>
+    <content type="html"><![CDATA[<p>　CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。インターネットへ接続できる環境を前提にしています。<!-- more --></p>
 
 <ol>
 <li><h3>Anacondaの起動</h3>
@@ -309,7 +309,7 @@ The operation has completed successfully.
 
 <p>　インストールメディアからCentOSのインストーラ"Anaconda"を起動します。このとき、インストールメディア（光学ドライブやUSB、あるいはISOイメージファイル）が優先的に起動されるようにコンピュータ側（BIOSや仮想化環境）で正しく設定されている必要があります。</p>
 
-<p>　インストールを開始するために、"Install or upgrade an existing system"を選択します。<!-- more --></p></li>
+<p>　インストールを開始するために、"Install or upgrade an existing system"を選択します。</p></li>
 <li><h3>インストールメディアのチェック</h3>
 
 <p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02_thumbnail.png" title="インストールメディアのチェック" ></a></p>
@@ -407,26 +407,23 @@ The operation has completed successfully.
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Gentoo Linux (20121213)をインストールする]]></title>
+    <title type="html"><![CDATA[Gentoo Linux 20121213をインストールする]]></title>
     <link href="http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213/"/>
     <updated>2013-03-16T09:00:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213</id>
-    <content type="html"><![CDATA[<p>　Gentoo Linux (20121213)をインストールした手順の記録です。命令セットはx86、インストールメディアはinstall-x86-minimal-20121213.isoを使用しています。DHCPによりネットワークは既に接続できる状態を前提にしています。</p>
-
-<!-- more -->
-
+    <content type="html"><![CDATA[<p>　Gentoo Linux 20121213をインストールした手順の記録です。インストールメディアはinstall-x86-minimal-20121213.isoを使用しています。DHCPによりネットワークは既に接続できる状態を前提にしています。<!-- more --></p>
 
 <h3>1. 起動</h3>
 
-<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/01.png" width="600"></p>
+<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/01.png" width="600" title="インストールメディアを起動する" ></p>
 
 <p>　カーネルとブートオプションの指定画面では、特に何も指定しないままEnterキーを押してインストールを始める。すぐにキーボード配列の選択画面が現れるので、日本語配列のキーボードを使用している場合は「22」と入力する。</p>
 
-<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/02.png" width="600"></p>
+<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/02.png" width="600" title="キーボード配列を選択する" ></p>
 
 <p>　起動が完了しrootにログインできたら、pingコマンド等でネットワークへの接続を確認する。</p>
 
-<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/03.png" width="600"></p>
+<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/03.png" width="600" title="ネットワーク接続を確認する" ></p>
 
 <h3>2. ストレージデバイスの準備</h3>
 
@@ -513,7 +510,7 @@ livecd ~ # mount /dev/sda1 /mnt/gentoo/boot/
 livecd gentoo # links http://www.gentoo.org/main/en/mirrors.xml
 </code></pre>
 
-<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/04.png" width="600" title="links初期起動の画面" ></p>
+<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/04.png" width="600" title="linksを起動してGentooミラーリストへアクセスする" ></p>
 
 <p>　linksが起動したらミラーリストから国内のミラーへ移り、stage3-&lt;architecture&gt;&ndash;&lt;release&gt;.tar.bz2とportage-latest.tar.bz2をダウンロードする。<a href="http://ftp.jaist.ac.jp/">JAIST（北陸先端科学技術大学院大学）</a>のミラーであれば、<a href="http://ftp.jaist.ac.jp/pub/Linux/Gentoo/releases/x86/current-stage3/">releases/x86/current-stage3/</a>と<a href="http://ftp.jaist.ac.jp/pub/Linux/Gentoo/snapshots/">snapshots/</a>のディレクトリに配置されている。ダウンロードが済んだら、それぞれのtarballを次のオプションで展開する。</p>
 
@@ -540,7 +537,7 @@ livecd gentoo # nano -w /mnt/gentoo/etc/make.conf
 * Downloading a list of mirrors... Got 222 mirrors.
 </code></pre>
 
-<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/05.png" width="600"></p>
+<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/05.png" width="600" title="ミラーを選択する" ></p>
 
 <h4>3-3. /procと/devのマウント、chroot、ロケールとタイムゾーンの設定</h4>
 
@@ -664,9 +661,9 @@ livecd ~ # reboot
 
 <p>　再起動の後、ブートローダが動作してシステムが起動されたらインストールが完了する。インストールの後は、上述の手順からは省いていたシステム設定（ユーザーの追加、パスワード変更）を行なっていく。</p>
 
-<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/07.png" width="600"></p>
+<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/07.png" width="600" title="ブートローダから起動させるOSを選択する" ></p>
 
-<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/08.png" width="600"></p>
+<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/08.png" width="600" title="インストールが完了し、ログインプロンプトが表示される" ></p>
 
 <h3>参考</h3>
 

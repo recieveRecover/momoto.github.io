@@ -4,18 +4,18 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
 <meta charset="utf-8">
-<title>Gentoo Linux (20121213)をインストールする - momoto.github.io</title>
+<title>Gentoo Linux 20121213をインストールする - momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-<meta name="description" content="Gentoo Linux (20121213)インストールの手引きです。">
+<meta name="description" content="Gentoo Linux 20121213をインストールした手順の記録です。インストールメディアはinstall-x86-minimal-20121213.isoを使用しています。">
 <meta name="keywords" content="Gentoo Linux, install-x86-minimal-20121213, Portage, GNU/Linux">
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta property="og:type" content="website" />
 <meta property="og:url" content="http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213/" />
-<meta property="og:title" content="Gentoo Linux (20121213)をインストールする" />
+<meta property="og:title" content="Gentoo Linux 20121213をインストールする" />
 <meta property="og:site_name" content="momoto.github.io">
-<meta property="og:description" content="Gentoo Linux (20121213)インストールの手引きです。">
+<meta property="og:description" content="Gentoo Linux 20121213をインストールした手順の記録です。インストールメディアはinstall-x86-minimal-20121213.isoを使用しています。">
 <meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
 <meta property="fb:app_id" content="561979160531119" />
 <link rel="canonical" href="http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213/">
@@ -43,22 +43,27 @@
       <header role="banner"><hgroup><h1><a href="/">momoto.github.io</a></h1></hgroup></header>
       <nav role="navigation">
         <form action="http://google.com/search" method="get"><fieldset role="search"><input type="hidden" name="q" value="site:momoto.github.io" /><input class="search" type="text" name="q" results="0" placeholder="Search"/></fieldset></form>
-        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li></ul>
+        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li><li><a href="https://github.com/momoto/momoto.github.io/wiki" title="momoto.github.io Wiki">Wiki</a></li></ul>
       </nav>
     </div>
   </div>
 </div>
 <div id="body" class="collapse-sidebar sidebar-footer">
-  <div id="main"><div id="content"><div>
+  <div id="main"><div id="content">
+    <div>
 <article class="hentry" role="article">
   
   <header>
     
-      <h1 class="entry-title">Gentoo Linux (20121213)をインストールする</h1>
+      <h1 class="entry-title">Gentoo Linux 20121213をインストールする</h1>
     
     
       <p class="meta">
+<span class="breadcrumb">
+<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/" itemprop="url"><span itemprop="title">Blog</span></a> › </span>
 
+<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/blog/categories/gnu-slash-linux/" itemprop="url"><span itemprop="title">GNU/Linux</span></a> › </span>
+</span>
 
 
 
@@ -78,22 +83,19 @@
   </header>
 
 
-<div class="entry-content"><p>　Gentoo Linux (20121213)をインストールした手順の記録です。命令セットはx86、インストールメディアはinstall-x86-minimal-20121213.isoを使用しています。DHCPによりネットワークは既に接続できる状態を前提にしています。</p>
-
-<!-- more -->
-
+<div class="entry-content"><p>　Gentoo Linux 20121213をインストールした手順の記録です。インストールメディアはinstall-x86-minimal-20121213.isoを使用しています。DHCPによりネットワークは既に接続できる状態を前提にしています。<!-- more --></p>
 
 <h3>1. 起動</h3>
 
-<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/01.png" width="600"></p>
+<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/01.png" width="600" title="インストールメディアを起動する" ></p>
 
 <p>　カーネルとブートオプションの指定画面では、特に何も指定しないままEnterキーを押してインストールを始める。すぐにキーボード配列の選択画面が現れるので、日本語配列のキーボードを使用している場合は「22」と入力する。</p>
 
-<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/02.png" width="600"></p>
+<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/02.png" width="600" title="キーボード配列を選択する" ></p>
 
 <p>　起動が完了しrootにログインできたら、pingコマンド等でネットワークへの接続を確認する。</p>
 
-<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/03.png" width="600"></p>
+<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/03.png" width="600" title="ネットワーク接続を確認する" ></p>
 
 <h3>2. ストレージデバイスの準備</h3>
 
@@ -180,7 +182,7 @@ livecd ~ # mount /dev/sda1 /mnt/gentoo/boot/
 livecd gentoo # links http://www.gentoo.org/main/en/mirrors.xml
 </code></pre>
 
-<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/04.png" width="600" title="links初期起動の画面" ></p>
+<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/04.png" width="600" title="linksを起動してGentooミラーリストへアクセスする" ></p>
 
 <p>　linksが起動したらミラーリストから国内のミラーへ移り、stage3-&lt;architecture&gt;&ndash;&lt;release&gt;.tar.bz2とportage-latest.tar.bz2をダウンロードする。<a href="http://ftp.jaist.ac.jp/">JAIST（北陸先端科学技術大学院大学）</a>のミラーであれば、<a href="http://ftp.jaist.ac.jp/pub/Linux/Gentoo/releases/x86/current-stage3/">releases/x86/current-stage3/</a>と<a href="http://ftp.jaist.ac.jp/pub/Linux/Gentoo/snapshots/">snapshots/</a>のディレクトリに配置されている。ダウンロードが済んだら、それぞれのtarballを次のオプションで展開する。</p>
 
@@ -207,7 +209,7 @@ livecd gentoo # nano -w /mnt/gentoo/etc/make.conf
 * Downloading a list of mirrors... Got 222 mirrors.
 </code></pre>
 
-<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/05.png" width="600"></p>
+<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/05.png" width="600" title="ミラーを選択する" ></p>
 
 <h4>3-3. /procと/devのマウント、chroot、ロケールとタイムゾーンの設定</h4>
 
@@ -331,9 +333,9 @@ livecd ~ # reboot
 
 <p>　再起動の後、ブートローダが動作してシステムが起動されたらインストールが完了する。インストールの後は、上述の手順からは省いていたシステム設定（ユーザーの追加、パスワード変更）を行なっていく。</p>
 
-<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/07.png" width="600"></p>
+<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/07.png" width="600" title="ブートローダから起動させるOSを選択する" ></p>
 
-<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/08.png" width="600"></p>
+<p><img src="/blog/images/2013-03-16-install-x86-minimal-20121213/08.png" width="600" title="インストールが完了し、ログインプロンプトが表示される" ></p>
 
 <h3>参考</h3>
 
@@ -377,8 +379,8 @@ livecd ~ # reboot
     <div class="sharing">
 <a href="https://coderwall.com/momoto"><img alt="Endorse momoto on Coderwall" src="http://api.coderwall.com/momoto/endorsecount.png" /></a>
 <g:plusone size="medium" annotation="none"></g:plusone>
-<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-url="http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213/" data-text="Gentoo Linux (20121213)をインストールする - momoto.github.io" data-count="none">Tweet</a>
-<a href="http://b.hatena.ne.jp/entry/http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213/" data-hatena-bookmark-title="Gentoo Linux (20121213)をインストールする - momoto.github.io" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-noballoon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-url="http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213/" data-text="Gentoo Linux 20121213をインストールする - momoto.github.io" data-count="none">Tweet</a>
+<a href="http://b.hatena.ne.jp/entry/http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213/" data-hatena-bookmark-title="Gentoo Linux 20121213をインストールする - momoto.github.io" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-noballoon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
 <fb:like data-href="http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213/" layout="button_count"></fb:like>
 </div>
 <div class="sharing">
@@ -399,15 +401,17 @@ livecd ~ # reboot
   </footer>
 </article>
 </div>
-<aside class="sidebar"><section class="vcard">
-<h1>About Me</h1>
-<p>A little something about me.</p>
-<p><a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>
- | <a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>
- | <a href="https://github.com/momoto">GitHub</a>
- | <a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
+
+    <aside class="sidebar"><section class="vcard">
+<h2>About Me</h2>
+<p>
+<a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
+<a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
+<a href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
+<a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
 </section>
-</aside></div></div>
+</aside>
+  </div></div>
   <footer role="contentinfo"><p>Copyright &copy; 2013 - <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a> - <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>. Design by <a href="http://octopressthemes.com">Octopress Themes</a>.</span></p></footer>
 </div>
 <script src="/javascripts/modernizr-2.0.js"></script>

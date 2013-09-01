@@ -6,8 +6,8 @@
 <meta charset="utf-8">
 <title>momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-<meta name="description" content="OpenSSLは様々な暗号方式での暗号化、復号化をサポートするセキュリティライブラリ。
-使用できる暗号方式はopenssl ciphersで確認できる。 RSA暗号方式の暗号化、復号、署名、検証を利用する場合はopenssl rsautlを使う。 ">
+<meta name="description" content="rbenvとruby-buildを使用して、Ubuntu 12.10にRuby 1.9.3をインストールしたときの記録です。
+rbenvとruby-buildはディストリビューションが配布するパッケージに含まれているため、Ubuntuのバージョン管理システム（APT） &hellip;">
 
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
@@ -16,8 +16,8 @@
 <meta property="og:url" content="http://momoto.github.io/blog/page/5/" />
 
 <meta property="og:site_name" content="momoto.github.io">
-<meta property="og:description" content="OpenSSLは様々な暗号方式での暗号化、復号化をサポートするセキュリティライブラリ。
-使用できる暗号方式はopenssl ciphersで確認できる。 RSA暗号方式の暗号化、復号、署名、検証を利用する場合はopenssl rsautlを使う。 ">
+<meta property="og:description" content="rbenvとruby-buildを使用して、Ubuntu 12.10にRuby 1.9.3をインストールしたときの記録です。
+rbenvとruby-buildはディストリビューションが配布するパッケージに含まれているため、Ubuntuのバージョン管理システム（APT） &hellip;">
 <meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
 <meta property="fb:app_id" content="561979160531119" />
 <link rel="canonical" href="http://momoto.github.io/blog/page/5/">
@@ -45,18 +45,61 @@
       <header role="banner"><hgroup><h1><a href="/">momoto.github.io</a></h1></hgroup></header>
       <nav role="navigation">
         <form action="http://google.com/search" method="get"><fieldset role="search"><input type="hidden" name="q" value="site:momoto.github.io" /><input class="search" type="text" name="q" results="0" placeholder="Search"/></fieldset></form>
-        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li></ul>
+        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li><li><a href="https://github.com/momoto/momoto.github.io/wiki" title="momoto.github.io Wiki">Wiki</a></li></ul>
       </nav>
     </div>
   </div>
 </div>
 <div id="body" class="collapse-sidebar sidebar-footer">
-  <div id="main"><div id="content"><div class="blog-index">
+  <div id="main"><div id="content">
+    <div class="blog-index">
   
   
   
     <article>
-      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/11/23/install-rbenv-and-ruby-build-on-ubuntu-12-dot-10/">Ubuntu 12.10にrbenvとruby-buildをインストール</a></h1>
+    
+    
+      <p class="meta">
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2012-11-23T20:23:00+09:00" pubdate data-updated="true" class="updated">Nov 23<span>rd</span>, 2012</time>
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>rbenvとruby-buildを使用して、Ubuntu 12.10にRuby 1.9.3をインストールしたときの記録です。
+rbenvとruby-buildはディストリビューションが配布するパッケージに含まれているため、Ubuntuのバージョン管理システム（APT）からインストールすることもできますが、次の記録はgithub.comからクローンする方法によるものです。</p>
+
+<p>(* <em><a href="http://packages.ubuntu.com/quantal/rbenv" title="Ubuntu -- quantal の rbenv パッケージに関する詳細">rbenv</a>はprecise (12.04)以降、<a href="http://packages.ubuntu.com/quantal/ruby-build" title="Ubuntu -- quantal の ruby-build パッケージに関する詳細">ruby-build</a>はquantal (12.10)以降にuniverseに追加されたようです</em> )</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/11/23/install-rbenv-and-ruby-build-on-ubuntu-12-dot-10/">Read on &rarr;</a>
+    </footer>
+  
+
+</article>
+  
+  
+    <article>
   <header>
     
       <h1 class="entry-title"><a href="/blog/2012/10/14/rsa-encryption-and-decryption/">OpenSSLを使用してファイルをRSA暗号化する</a></h1>
@@ -96,12 +139,10 @@
     </footer>
   
 
-
-    </article>
+</article>
   
   
     <article>
-      
   <header>
     
       <h1 class="entry-title"><a href="/blog/2012/10/08/encoding-conversion-with-iconv/">Iconvで文字コードを変換する</a></h1>
@@ -128,9 +169,7 @@
   </header>
 
 
-  <div class="entry-content"><p>　文字コードの変換は、変換前の文字コードを<code>--from-code (-f)</code>に、変換後の文字コードを<code>--to-code (-t)</code>を指定して、さらに入力ファイルと出力ファイルを指定して使用する。</p>
-
-</div>
+  <div class="entry-content"><p>　文字コードの変換は、変換前の文字コードを<code>--from-code (-f)</code>に、変換後の文字コードを<code>--to-code (-t)</code>を指定して、さらに入力ファイルと出力ファイルを指定して使用する。</div>
   
   
     <footer>
@@ -138,12 +177,10 @@
     </footer>
   
 
-
-    </article>
+</article>
   
   
     <article>
-      
   <header>
     
       <h1 class="entry-title"><a href="/blog/2012/08/12/install-ram-and-ssd-in-lenovo-ideapad-s205/">IdeaPad S205のメインメモリとストレージデバイスの換装</a></h1>
@@ -172,17 +209,7 @@
 
   <div class="entry-content"><p>　レノボ社のノートパソコン「<a href="http://www.amazon.co.jp/gp/product/BiB004XWLKDC/ref=as_li_ss_tl?ie=UTF8&camp=247&creative=7399&creativeASIN=B004XWLKDC&linkCode=as2&tag=alqet049-22">IdeaPad S205</a><img src="http://www.assoc-amazon.jp/e/ir?t=alqet049-22&l=as2&o=9&a=B004XWLKDC" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />」（2011年4月）のメインメモリとストレージデバイスを換装した。</p>
 
-<p><img src="/blog/images/2012-08-12-install-ram-and-ssd-in-lenovo-ideapad-s205/01.png"></p>
-
-<p>換装する前後の&#8221;ディスクユーティリティ&#8221;ベンチマーク結果</p>
-
-<p>換装前</p>
-
-<p><a href="/blog/images/2012-08-12-install-ram-and-ssd-in-lenovo-ideapad-s205/02.png"><img src="/blog/images/2012-08-12-install-ram-and-ssd-in-lenovo-ideapad-s205/02.png" width="600" title="換装前のベンチマーク結果" ></a></p>
-
-<p>換装後</p>
-
-</div>
+<p><img src="/blog/images/2012-08-12-install-ram-and-ssd-in-lenovo-ideapad-s205/01.png" title="換装したメモリとストレージがUbuntu 12.04に認識されている" ></div>
   
   
     <footer>
@@ -190,12 +217,10 @@
     </footer>
   
 
-
-    </article>
+</article>
   
   
     <article>
-      
   <header>
     
       <h1 class="entry-title"><a href="/blog/2012/08/11/converting-text-to-character-references/">テキストを文字参照記述へ変換する</a></h1>
@@ -273,54 +298,7 @@ s.onchange  = eventhandler;
   
   
 
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/08/04/build-and-install-libvirt-based-virtual-machine/">Libvirtを用いて仮想マシンを構築、インストールする</a></h1>
-    
-    
-      <p class="meta">
-
-
-
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2012-08-04T09:49:00+09:00" pubdate data-updated="true" class="updated">Aug 4<span>th</span>, 2012</time>
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>virt-installを使って、CUIから仮想マシンのディスクイメージを作成する。</p>
-
-<p>動作要件として、ホストOSにハイパーバイザ（KVMやXen）とlibvirtがインストールされていて、libvirtdが起動している必要がある。
-virt-install自体は、RPMでは&#8221;python-virtinst&#8221;パッケージに含まれている。
-（参考：<a href="http://rpmfind.net/linux/rpm2html/search.php?query=virt-install">RPM resource virt-install</a>）</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/08/04/build-and-install-libvirt-based-virtual-machine/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
+</article>
   
   <div class="pagination">
     
@@ -332,15 +310,17 @@ virt-install自体は、RPMでは&#8221;python-virtinst&#8221;パッケージに
     
   </div>
 </div>
-<aside class="sidebar"><section class="vcard">
-<h1>About Me</h1>
-<p>A little something about me.</p>
-<p><a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>
- | <a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>
- | <a href="https://github.com/momoto">GitHub</a>
- | <a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
+
+    <aside class="sidebar"><section class="vcard">
+<h2>About Me</h2>
+<p>
+<a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
+<a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
+<a href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
+<a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
 </section>
-</aside></div></div>
+</aside>
+  </div></div>
   <footer role="contentinfo"><p>Copyright &copy; 2013 - <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a> - <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>. Design by <a href="http://octopressthemes.com">Octopress Themes</a>.</span></p></footer>
 </div>
 <script src="/javascripts/modernizr-2.0.js"></script>

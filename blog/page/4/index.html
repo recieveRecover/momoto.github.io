@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <title>momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-<meta name="description" content="　Arch LinuxのEmacsで日本語を入力するための設定の記録です。この方法では、Emacsの他、UIM等の入力メソッドフレームワークと、AnthyやMozc等の入力メソッドがインストールされている必要があります。 ">
+<meta name="description" content="　FuelPHPのRestコントローラを試用してみます。クラスファイルは、通常のコントローラと同様にfuel/app/classes/controllerへ設置して使用します。まずは次のような内容でapi.phpを作成し、ブラウザから出力を確認してみます。Restコントローラを使用する場合、 &hellip;">
 
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://momoto.github.io/blog/page/4/" />
 
 <meta property="og:site_name" content="momoto.github.io">
-<meta property="og:description" content="　Arch LinuxのEmacsで日本語を入力するための設定の記録です。この方法では、Emacsの他、UIM等の入力メソッドフレームワークと、AnthyやMozc等の入力メソッドがインストールされている必要があります。 ">
+<meta property="og:description" content="　FuelPHPのRestコントローラを試用してみます。クラスファイルは、通常のコントローラと同様にfuel/app/classes/controllerへ設置して使用します。まずは次のような内容でapi.phpを作成し、ブラウザから出力を確認してみます。Restコントローラを使用する場合、 &hellip;">
 <meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
 <meta property="fb:app_id" content="561979160531119" />
 <link rel="canonical" href="http://momoto.github.io/blog/page/4/">
@@ -43,18 +43,66 @@
       <header role="banner"><hgroup><h1><a href="/">momoto.github.io</a></h1></hgroup></header>
       <nav role="navigation">
         <form action="http://google.com/search" method="get"><fieldset role="search"><input type="hidden" name="q" value="site:momoto.github.io" /><input class="search" type="text" name="q" results="0" placeholder="Search"/></fieldset></form>
-        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li></ul>
+        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li><li><a href="https://github.com/momoto/momoto.github.io/wiki" title="momoto.github.io Wiki">Wiki</a></li></ul>
       </nav>
     </div>
   </div>
 </div>
 <div id="body" class="collapse-sidebar sidebar-footer">
-  <div id="main"><div id="content"><div class="blog-index">
+  <div id="main"><div id="content">
+    <div class="blog-index">
   
   
   
     <article>
-      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp/">FuelPHP Restコントローラの使い方</a></h1>
+    
+    
+      <p class="meta">
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-03-03T23:38:00+09:00" pubdate data-updated="true" class="updated">Mar 3<span>rd</span>, 2013</time>
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>　FuelPHPのRestコントローラを試用してみます。クラスファイルは、通常のコントローラと同様に<code>fuel/app/classes/controller</code>へ設置して使用します。まずは次のような内容でapi.phpを作成し、ブラウザから出力を確認してみます。Restコントローラを使用する場合、継承するクラスはControllerではなく<code>Controller_Rest</code>になります。</p>
+
+<pre><code>&lt;?php
+class Controller_Api extends Controller_Rest {
+  public function action_range() {
+    $this-&gt;response(array(1,2,3));
+  }
+}
+</code></pre>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp/">Read on &rarr;</a>
+    </footer>
+  
+
+</article>
+  
+  
+    <article>
   <header>
     
       <h1 class="entry-title"><a href="/blog/2013/02/24/input-japanese-on-emacs-24-dot-2-4/">Arch Linux Extra/emacs 24.2-4で日本語を入力する</a></h1>
@@ -92,12 +140,10 @@
     </footer>
   
 
-
-    </article>
+</article>
   
   
     <article>
-      
   <header>
     
       <h1 class="entry-title"><a href="/blog/2013/01/05/install-arch-linux/">Arch Linux 2012.12.01をインストールする</a></h1>
@@ -124,14 +170,12 @@
   </header>
 
 
-  <div class="entry-content"><p>　Arch Linux 2012.12.01をインストールした際の記録です。
+  <div class="entry-content"><p>　Arch Linux 2012.12.01をインストールした手順の記録です。インストールメディアはarchlinux-2012.12.01-dual.isoを使用しています。
 <a href="https://wiki.archlinux.org/index.php/Installation_Guide_%28%E6%97%A5%E6%9C%AC%E8%AA%9E%29">Installation Guide (日本語) &ndash; ArchWiki</a>の内容と重なる部分が多いですが、自分なりに注釈を加えて記録します。</p>
 
 <p>　インストールにはインターネットに接続できる環境が必要です。
 また、パーティションの構成やインストールするブートローダをあらかじめ決めておく必要があります。
-次の手順ではパーティションテーブルにGPTを使用し、ブートローダにはGRUB2をインストールしています。</p>
-
-</div>
+次の手順ではパーティションテーブルにGPTを使用し、ブートローダにはGRUB2をインストールしています。</div>
   
   
     <footer>
@@ -139,12 +183,10 @@
     </footer>
   
 
-
-    </article>
+</article>
   
   
     <article>
-      
   <header>
     
       <h1 class="entry-title"><a href="/blog/2012/12/06/create-and-ssh-to-ec2-instance/">Amazon EC2インスタンスを作成し、SSH接続する</a></h1>
@@ -181,12 +223,10 @@
     </footer>
   
 
-
-    </article>
+</article>
   
   
     <article>
-      
   <header>
     
       <h1 class="entry-title"><a href="/blog/2012/11/30/install-iis-7-dot-5-on-windows-7/">Windows 7にIIS 7.5をインストール</a></h1>
@@ -223,53 +263,7 @@
     </footer>
   
 
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/11/23/install-rbenv-and-ruby-build-on-ubuntu-12-dot-10/">Ubuntu 12.10にrbenvとruby-buildをインストール</a></h1>
-    
-    
-      <p class="meta">
-
-
-
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2012-11-23T20:23:00+09:00" pubdate data-updated="true" class="updated">Nov 23<span>rd</span>, 2012</time>
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>rbenvとruby-buildを使用して、Ubuntu 12.10にRuby 1.9.3をインストールしたときの記録です。
-rbenvとruby-buildはディストリビューションが配布するパッケージに含まれているため、Ubuntuのバージョン管理システム（APT）からインストールすることもできますが、次の記録はgithub.comからクローンする方法によるものです。</p>
-
-<p>(* <em><a href="http://packages.ubuntu.com/quantal/rbenv" title="Ubuntu -- quantal の rbenv パッケージに関する詳細">rbenv</a>はprecise (12.04)以降、<a href="http://packages.ubuntu.com/quantal/ruby-build" title="Ubuntu -- quantal の ruby-build パッケージに関する詳細">ruby-build</a>はquantal (12.10)以降にuniverseに追加されたようです</em> )</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/11/23/install-rbenv-and-ruby-build-on-ubuntu-12-dot-10/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
+</article>
   
   <div class="pagination">
     
@@ -281,15 +275,17 @@ rbenvとruby-buildはディストリビューションが配布するパッケ�
     
   </div>
 </div>
-<aside class="sidebar"><section class="vcard">
-<h1>About Me</h1>
-<p>A little something about me.</p>
-<p><a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>
- | <a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>
- | <a href="https://github.com/momoto">GitHub</a>
- | <a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
+
+    <aside class="sidebar"><section class="vcard">
+<h2>About Me</h2>
+<p>
+<a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
+<a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
+<a href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
+<a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
 </section>
-</aside></div></div>
+</aside>
+  </div></div>
   <footer role="contentinfo"><p>Copyright &copy; 2013 - <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a> - <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>. Design by <a href="http://octopressthemes.com">Octopress Themes</a>.</span></p></footer>
 </div>
 <script src="/javascripts/modernizr-2.0.js"></script>

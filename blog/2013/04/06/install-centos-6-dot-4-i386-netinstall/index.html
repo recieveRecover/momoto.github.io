@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <title>CentOS 6.4をインストールする - momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-<meta name="description" content="CentOS 6.4インストールの手引きです。">
+<meta name="description" content="CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。">
 <meta name="keywords" content="RHEL, CentOS 6.4, CentOS-6.4-i386-netinstall, GNU/Linux">
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/" />
 <meta property="og:title" content="CentOS 6.4をインストールする" />
 <meta property="og:site_name" content="momoto.github.io">
-<meta property="og:description" content="CentOS 6.4インストールの手引きです。">
+<meta property="og:description" content="CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。">
 <meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
 <meta property="fb:app_id" content="561979160531119" />
 <link rel="canonical" href="http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/">
@@ -43,13 +43,14 @@
       <header role="banner"><hgroup><h1><a href="/">momoto.github.io</a></h1></hgroup></header>
       <nav role="navigation">
         <form action="http://google.com/search" method="get"><fieldset role="search"><input type="hidden" name="q" value="site:momoto.github.io" /><input class="search" type="text" name="q" results="0" placeholder="Search"/></fieldset></form>
-        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li></ul>
+        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li><li><a href="https://github.com/momoto/momoto.github.io/wiki" title="momoto.github.io Wiki">Wiki</a></li></ul>
       </nav>
     </div>
   </div>
 </div>
 <div id="body" class="collapse-sidebar sidebar-footer">
-  <div id="main"><div id="content"><div>
+  <div id="main"><div id="content">
+    <div>
 <article class="hentry" role="article">
   
   <header>
@@ -58,7 +59,11 @@
     
     
       <p class="meta">
+<span class="breadcrumb">
+<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/" itemprop="url"><span itemprop="title">Blog</span></a> › </span>
 
+<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/blog/categories/gnu-slash-linux/" itemprop="url"><span itemprop="title">GNU/Linux</span></a> › </span>
+</span>
 
 
 
@@ -78,7 +83,7 @@
   </header>
 
 
-<div class="entry-content"><p>　CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。インターネットへ接続できる環境を前提にしています。</p>
+<div class="entry-content"><p>　CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。インターネットへ接続できる環境を前提にしています。<!-- more --></p>
 
 <ol>
 <li><h3>Anacondaの起動</h3>
@@ -87,7 +92,7 @@
 
 <p>　インストールメディアからCentOSのインストーラ&#8221;Anaconda&#8221;を起動します。このとき、インストールメディア（光学ドライブやUSB、あるいはISOイメージファイル）が優先的に起動されるようにコンピュータ側（BIOSや仮想化環境）で正しく設定されている必要があります。</p>
 
-<p>　インストールを開始するために、&#8221;Install or upgrade an existing system&#8221;を選択します。<!-- more --></p></li>
+<p>　インストールを開始するために、&#8221;Install or upgrade an existing system&#8221;を選択します。</p></li>
 <li><h3>インストールメディアのチェック</h3>
 
 <p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02_thumbnail.png" title="インストールメディアのチェック" ></a></p>
@@ -233,21 +238,23 @@
         <a class="basic-alignment left" href="/blog/2013/03/27/awesome-tutorials/" title="Previous Post: ウィンドウマネージャawesomeの基本操作">&laquo; ウィンドウマネージャawesomeの基本操作</a>
       
       
-        <a class="basic-alignment right" href="/blog/2013/04/08/install-syslinux-on-gpt-partition-styled-disk/" title="Next Post: GUIDパーティションテーブルでのSyslinuxのインストール">GUIDパーティションテーブルでのSyslinuxのインストール &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2013/04/08/install-syslinux-on-gpt-partition-styled-disk/" title="Next Post: GPT規格のディスクにSyslinuxをインストールする">GPT規格のディスクにSyslinuxをインストールする &raquo;</a>
       
     </p>
   </footer>
 </article>
 </div>
-<aside class="sidebar"><section class="vcard">
-<h1>About Me</h1>
-<p>A little something about me.</p>
-<p><a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>
- | <a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>
- | <a href="https://github.com/momoto">GitHub</a>
- | <a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
+
+    <aside class="sidebar"><section class="vcard">
+<h2>About Me</h2>
+<p>
+<a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
+<a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
+<a href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
+<a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
 </section>
-</aside></div></div>
+</aside>
+  </div></div>
   <footer role="contentinfo"><p>Copyright &copy; 2013 - <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a> - <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>. Design by <a href="http://octopressthemes.com">Octopress Themes</a>.</span></p></footer>
 </div>
 <script src="/javascripts/modernizr-2.0.js"></script>

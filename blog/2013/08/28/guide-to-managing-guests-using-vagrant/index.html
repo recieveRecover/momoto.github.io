@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+<meta charset="utf-8">
+<title>Vagrantをつかって仮想マシンを管理する - momoto.github.io</title>
+<meta name="author" content="Seiji Momoto">
+<meta name="description" content="Vagrantをつかって仮想マシンを管理する手引きです。">
+<meta name="keywords" content="仮想化, Vagrant">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:type" content="website" />
+<meta property="og:url" content="http://momoto.github.io/blog/2013/08/28/guide-to-managing-guests-using-vagrant/" />
+<meta property="og:title" content="Vagrantをつかって仮想マシンを管理する" />
+<meta property="og:site_name" content="momoto.github.io">
+<meta property="og:description" content="Vagrantをつかって仮想マシンを管理する手引きです。">
+<meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
+<meta property="fb:app_id" content="561979160531119" />
+<link rel="canonical" href="http://momoto.github.io/blog/2013/08/28/guide-to-managing-guests-using-vagrant/">
+<link href="/favicon.png" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="momoto.github.io" type="application/atom+xml">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29340465-5']);
+  _gaq.push(['_setDomainName', 'github.io']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+<body>
+<div id="header-container">
+  <div id="header">
+    <div class="wrapper">
+      <header role="banner"><hgroup><h1><a href="/">momoto.github.io</a></h1></hgroup></header>
+      <nav role="navigation">
+        <form action="http://google.com/search" method="get"><fieldset role="search"><input type="hidden" name="q" value="site:momoto.github.io" /><input class="search" type="text" name="q" results="0" placeholder="Search"/></fieldset></form>
+        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li><li><a href="https://github.com/momoto/momoto.github.io/wiki" title="momoto.github.io Wiki">Wiki</a></li></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<div id="body" class="collapse-sidebar sidebar-footer">
+  <div id="main"><div id="content">
+    <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Vagrantをつかって仮想マシンを管理する</h1>
+    
+    
+      <p class="meta">
+<span class="breadcrumb">
+<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/" itemprop="url"><span itemprop="title">Blog</span></a> › </span>
+
+<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/blog/categories/jia-xiang-hua/" itemprop="url"><span itemprop="title">仮想化</span></a> › </span>
+</span>
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-08-28T21:41:00+09:00" pubdate data-updated="true" class="updated">Aug 28<span>th</span>, 2013</time>
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>　Vagrantをつかって仮想マシンを管理する手引きです。Vagrantを利用するにはVirtualBoxやAWSなどのプロバイダを利用できる状態である必要があります。<!-- more --></p>
+
+<ol>
+<li><h3>試してみる</h3>
+
+<p>　<a href="http://www.vagrantbox.es/">Vagrantbox.es</a>で紹介されているBoxファイルから仮想マシンを新しく作成します。
+Boxファイルは次のウェブサイトでも公開されています。</p>
+
+<ul>
+<li><a href="http://www.vagrantbox.es/">Vagrantbox.es</a></li>
+<li><a href="http://www.vagrantup.com/">vagrantup.com</a>
+
+<ul>
+<li><a href="http://files.vagrantup.com/precise64.box">Ubuntu 12.04 precise 64-bit</a> (323MB)</li>
+<li><a href="http://files.vagrantup.com/precise32.box">Ubuntu 12.04 precise 32-bit</a> (299MB)</li>
+</ul>
+</li>
+<li><a href="http://cloud-images.ubuntu.com/">Ubuntu Cloud Images</a>
+
+<ul>
+<li><a href="http://cloud-images.ubuntu.com/vagrant/saucy/current/saucy-server-cloudimg-amd64-vagrant-disk1.box">Ubuntu 13.10 saucy 64-bit</a> (324MB)</li>
+<li><a href="http://cloud-images.ubuntu.com/vagrant/saucy/current/saucy-server-cloudimg-i386-vagrant-disk1.box">Ubuntu 13.10 saucy 32-bit</a> (324MB)</li>
+</ul>
+</li>
+<li><a href="http://nrel.github.io/vagrant-boxes/">米エネルギー省 国立再生可能エネルギー研究所（NREL）GitHub</a>
+
+<ul>
+<li><a href="http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130731.box">CentOS 6.4 x86_64</a> (494MB)</li>
+<li><a href="http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-i386-v20130731.box">CentOS 6.4 i386</a> (459MB)</li>
+</ul>
+</li>
+</ul>
+
+
+<p>　例えばFedora 18 x86 MinimalのBoxファイルをつかう場合、次のように<code>vagrant init [box-name] [box-url]</code>を実行して、Vagrantのプロジェクトを開始します。</p>
+
+<pre><code>$ mkdir vagrant-fedora-18
+$ cd vagrant-fedora-18/
+$ vagrant init fedora-18 http://static.stasiak.at/fedora-18-x86-2.box
+A `Vagrantfile` has been placed in this directory. You are now
+ready to `vagrant up` your first virtual environment! Please read
+the comments in the Vagrantfile as well as documentation on
+`vagrantup.com` for more information on using Vagrant.
+</code></pre>
+
+<p>　次に<code>vagrant up [vm-name]</code>を実行して、作成したVagrantのプロジェクトから仮想マシンを起動します。</p>
+
+<pre><code>vagrant-fedora-18 $ vagrant up
+Bringing machine 'default' up with 'virtualbox' provider...
+[default] Box 'fedora-18' was not found. Fetching box from specified URL for
+the provider 'virtualbox'. Note that if the URL does not have
+a box for this provider, you should interrupt Vagrant now and add
+the box yourself. Otherwise Vagrant will attempt to download the
+full box prior to discovering this error.
+Downloading or copying the box...
+Extracting box...te: 456k/s, Estimated time remaining: 0:00:01))
+Successfully added box 'fedora-18' with provider 'virtualbox'!
+[default] Importing base box 'fedora-18'...
+[default] Matching MAC address for NAT networking...
+[default] Setting the name of the VM...
+[default] Clearing any previously set forwarded ports...
+[default] Creating shared folders metadata...
+[default] Clearing any previously set network interfaces...
+[default] Preparing network interfaces based on configuration...
+[default] Forwarding ports...
+[default] -- 22 =&gt; 2222 (adapter 1)
+[default] Booting VM...
+[default] Waiting for VM to boot. This can take a few minutes.
+[default] VM booted and ready for use!
+[default] Mounting shared folders...
+[default] -- /vagrant
+</code></pre>
+
+<p>　仮想マシンの状態は<code>vagrant status</code>やプロバイダのユーザインタフェースから確かめることができます。</p>
+
+<pre><code>vagrant-fedora-18 $ vagrant status
+Current machine states:
+
+default                   running (virtualbox)
+</code></pre>
+
+<p><img src="/blog/images/2013-08-30-guide-to-managing-guests-using-vagrant/01-verify-the-vm-booted-by-looking-at-the-virtualbox.png" width="600" title="VirtualBoxのGUIから仮想マシンの動作を確認する" ></p>
+
+<p>　起動している仮想マシンへSSH接続するには<code>vagrant ssh</code>を実行します。</p>
+
+<pre><code>$ vagrant ssh
+[vagrant@localhost ~]$
+[vagrant@localhost ~]$ cat /etc/fedora-release
+Fedora release 18 (Spherical Cow)
+</code></pre></li>
+<li><h3>Boxを管理する</h3>
+
+<ul>
+<li>Boxの一覧 <code>vagrant box list</code></li>
+<li>Boxの追加 <code>vagrant box add &lt;name&gt; &lt;url&gt;</code>（VagrantfileをつくらずにBoxの追加だけを行います）</li>
+<li>Boxの削除 <code>vagrant box remove &lt;name&gt;</code></li>
+</ul>
+
+
+<p>　仮想マシンからBoxファイルを作成するには<code>vagrant package</code>をつかいます。
+Boxファイルは仮想マシンディスクイメージ（VMDK）、OVFファイル、そしてVagrantfile等をTAR形式でまとめたものであるようです。</p>
+
+<pre><code>$ vagrant package
+[default] Attempting graceful shutdown of VM...
+[default] Clearing any previously set forwarded ports...
+[default] Creating temporary directory for export...
+[default] Exporting VM...
+[default] Compressing package to: vagrant-fedora-18/package.box
+</code></pre></li>
+<li><h3>仮想マシンを管理する</h3>
+
+<p>　Vagrantのプロジェクトディレクトリ内から、ゲストOSの起動や停止などを操作できます。</p>
+
+<ul>
+<li>仮想マシンの起動 <code>vagrant up</code></li>
+<li>仮想マシンの停止 <code>vagrant halt</code></li>
+<li>仮想マシンの再起動 <code>vagrant reload</code></li>
+<li>仮想マシンの一時停止 <code>vagrant suspend</code></li>
+<li>仮想マシンの再開 <code>vagrant resume</code></li>
+<li>仮想マシンへSSH接続 <code>vagrant ssh</code></li>
+</ul>
+
+
+<p>　仮想マシンの状態を確認するには<code>vagrant status</code>を実行します。</p>
+
+<pre><code>$ vagrant status
+Current machine states:
+
+default                   running (virtualbox)
+</code></pre></li>
+<li><h3>MULTI-MACHINEを利用する</h3>
+
+<p>　複数の仮想マシンをコントロールできるMULTI-MACHINE環境を利用するには、Vagrantfileに仮想マシンの情報を定義します。
+例えば、仮想マシンを２つ、異なるホスト名とBoxで定義する場合、Vagrantfileの<code>Vagrant.configure(VAGRANTFILE_API_VERSION) do |config| ... end</code>の間に、次のように記述します。</p>
+
+<pre><code>config.vm.define :node1 do |node1_config|
+  node1_config.vm.hostname = "node1"
+end
+config.vm.define :node2 do |node2_config|
+  node2_config.vm.box = "centos-6.3"
+  node2_config.vm.hostname = "node2"
+end
+</code></pre>
+
+<p>　上のようにVagrantfileを書き換えたあと<code>vagrant up</code>を実行してみると、ゲストのFedoraとCentOSが同時に起動します。</p>
+
+<pre><code>$ vagrant up
+
+Bringing machine 'node1' up with 'virtualbox' provider...
+Bringing machine 'node2' up with 'virtualbox' provider...
+[node1] Importing base box 'fedora-18'...
+[node1] Matching MAC address for NAT networking...
+[node1] Setting the name of the VM...
+[node1] Clearing any previously set forwarded ports...
+[node1] Creating shared folders metadata...
+[node1] Clearing any previously set network interfaces...
+[node1] Preparing network interfaces based on configuration...
+[node1] Forwarding ports...
+[node1] -- 22 =&gt; 2222 (adapter 1)
+[node1] Booting VM...
+[node1] Waiting for VM to boot. This can take a few minutes.
+[node1] VM booted and ready for use!
+[node1] Setting hostname...
+[node1] Mounting shared folders...
+[node1] -- /vagrant
+[node2] Importing base box 'centos-6.3'...
+[node2] Matching MAC address for NAT networking...
+[node2] Setting the name of the VM...
+[node2] Clearing any previously set forwarded ports...
+[node2] Fixed port collision for 22 =&gt; 2222. Now on port 2200.
+[node2] Creating shared folders metadata...
+[node2] Clearing any previously set network interfaces...
+[node2] Preparing network interfaces based on configuration...
+[node2] Forwarding ports...
+[node2] -- 22 =&gt; 2200 (adapter 1)
+[node2] Booting VM...
+[node2] Waiting for VM to boot. This can take a few minutes.
+[node2] VM booted and ready for use!
+[node2] Setting hostname...
+[node2] Mounting shared folders...
+[node2] -- /vagrant
+
+$ vagrant status
+Current machine states:
+
+node1                     running (virtualbox)
+node2                     running (virtualbox)
+</code></pre>
+
+<p><img src="/blog/images/2013-08-30-guide-to-managing-guests-using-vagrant/02-multi-machine.png" width="600" title="VirtualBoxからMULTI-MACHINEの動作を確認する" ></p>
+
+<p>　Vagrantfileにはホスト名以外にも細かく設定を記述することができます。詳しい設定項目については<a href="http://docs.vagrantup.com/v2/vagrantfile/index.html">Documentation</a>を参照してください。</p></li>
+</ol>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="http://docs.vagrantup.com/v2">Vagrant Documentation</a></li>
+</ul>
+
+
+<h2>関連記事</h2>
+
+<ul>
+<li><a href="/blog/2013/08/17/guide-to-managing-guests-using-virsh/">Virshをつかって仮想マシンを管理する</a></li>
+<li><a href="/blog/2013/08/11/guide-to-creating-virtual-machine-with-qemu/">QEMUをつかって仮想マシンを作成する</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <a href="https://plus.google.com/101153525943529592041?rel=author" class="fn">Seiji Momoto</a></span>
+
+      
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-08-28T21:41:00+09:00" pubdate data-updated="true" class="updated">Aug 28<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/jia-xiang-hua/'>仮想化</a>
+  
+</span>
+
+
+    </p>
+    <div class="sharing">
+<a href="https://coderwall.com/momoto"><img alt="Endorse momoto on Coderwall" src="http://api.coderwall.com/momoto/endorsecount.png" /></a>
+<g:plusone size="medium" annotation="none"></g:plusone>
+<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-url="http://momoto.github.io/blog/2013/08/28/guide-to-managing-guests-using-vagrant/" data-text="Vagrantをつかって仮想マシンを管理する - momoto.github.io" data-count="none">Tweet</a>
+<a href="http://b.hatena.ne.jp/entry/http://momoto.github.io/blog/2013/08/28/guide-to-managing-guests-using-vagrant/" data-hatena-bookmark-title="Vagrantをつかって仮想マシンを管理する - momoto.github.io" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-noballoon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+<fb:like data-href="http://momoto.github.io/blog/2013/08/28/guide-to-managing-guests-using-vagrant/" layout="button_count"></fb:like>
+</div>
+<div class="sharing">
+<br>
+<div id="disqus_thread" aria-live="polite"></div>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/" title="Previous Post: Red Hat OpenShiftにRedmine 2.0を展開する">&laquo; Red Hat OpenShiftにRedmine 2.0を展開する</a>
+      
+      
+    </p>
+  </footer>
+</article>
+</div>
+
+    <aside class="sidebar"><section class="vcard">
+<h2>About Me</h2>
+<p>
+<a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
+<a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
+<a href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
+<a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
+</section>
+</aside>
+  </div></div>
+  <footer role="contentinfo"><p>Copyright &copy; 2013 - <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a> - <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>. Design by <a href="http://octopressthemes.com">Octopress Themes</a>.</span></p></footer>
+</div>
+<script src="/javascripts/modernizr-2.0.js"></script>
+<script src="/javascripts/ender.js"></script>
+<script src="/javascripts/octopress.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'momotogithubio';
+
+    var disqus_identifier = 'http://momoto.github.io/blog/2013/08/28/guide-to-managing-guests-using-vagrant/';
+    var disqus_url = 'http://momoto.github.io/blog/2013/08/28/guide-to-managing-guests-using-vagrant/';
+    var disqus_script = 'embed.js';
+
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+<script type="text/javascript">
+  (function() {
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+  })();
+</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1&appId=561979160531119";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+<script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+
+</body>
+</html>

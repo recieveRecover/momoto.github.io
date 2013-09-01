@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <title>Debian 7.1.0をインストールする - momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-<meta name="description" content="Debian 7.1.0インストールの手引きです。">
+<meta name="description" content="Debian 7.1.0をインストールした手順の記録です。インストールメディアはdebian-7.1.0-amd64-netinst.isoを使用しています。">
 <meta name="keywords" content="GNU/Linux, Debian, Wheezy, debian-7.1.0-amd64-netinst">
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://momoto.github.io/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst/" />
 <meta property="og:title" content="Debian 7.1.0をインストールする" />
 <meta property="og:site_name" content="momoto.github.io">
-<meta property="og:description" content="Debian 7.1.0インストールの手引きです。">
+<meta property="og:description" content="Debian 7.1.0をインストールした手順の記録です。インストールメディアはdebian-7.1.0-amd64-netinst.isoを使用しています。">
 <meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
 <meta property="fb:app_id" content="561979160531119" />
 <link rel="canonical" href="http://momoto.github.io/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst/">
@@ -43,13 +43,14 @@
       <header role="banner"><hgroup><h1><a href="/">momoto.github.io</a></h1></hgroup></header>
       <nav role="navigation">
         <form action="http://google.com/search" method="get"><fieldset role="search"><input type="hidden" name="q" value="site:momoto.github.io" /><input class="search" type="text" name="q" results="0" placeholder="Search"/></fieldset></form>
-        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li></ul>
+        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li><li><a href="https://github.com/momoto/momoto.github.io/wiki" title="momoto.github.io Wiki">Wiki</a></li></ul>
       </nav>
     </div>
   </div>
 </div>
 <div id="body" class="collapse-sidebar sidebar-footer">
-  <div id="main"><div id="content"><div>
+  <div id="main"><div id="content">
+    <div>
 <article class="hentry" role="article">
   
   <header>
@@ -58,7 +59,11 @@
     
     
       <p class="meta">
+<span class="breadcrumb">
+<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/" itemprop="url"><span itemprop="title">Blog</span></a> › </span>
 
+<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/blog/categories/gnu-slash-linux/" itemprop="url"><span itemprop="title">GNU/Linux</span></a> › </span>
+</span>
 
 
 
@@ -130,19 +135,19 @@
 <ol>
 <li><p>　パーティショニングを「ガイド」（自動）で行うか、「手動」で行うかを選択します。パーティション構成を詳しく指定する必要がある場合には「手動」を選択します。この記事では「ガイド &ndash; ディスク全体を使う」でインストールを進めます。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-01.png" width="400"></p></li>
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-01.png" width="400" title="パーティショニングを自動で行うか、手動で行うかを選択する" ></p></li>
 <li><p>　パーティショニングの対象となるストレージデバイスを選択します。デバイスを正しく認識していれば、この画面の選択肢に現れているはずです。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-02.png" width="400"></p></li>
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-02.png" width="400" title="パーティショニングの対象になるストレージデバイスを選択する" ></p></li>
 <li><p>　ガイドに従ってパーティション構成を選択します。ここで選択できるものより複雑なパーティショニングが必要な場合は手動で設定しなければなりません。この記事では「すべてのファイルを１つのパーティションに」を選択してインストールをすすめます。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-03.png" width="400"></p></li>
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-03.png" width="400" title="パーティション構成を選択する" ></p></li>
 <li><p>　ここまでのパーティション設定を確認します。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-04.png" width="400"></p></li>
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-04.png" width="400" title="パーティション設定を確認する" ></p></li>
 <li><p>　ストレージデバイスに対する書込みの最後の確認です。書込みを行うとそれまで記録されていた情報は削除されますので、対象デバイスとパーティションをよく確かめて画面をすすめてください。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-05.png" width="400"></p></li>
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-05.png" width="400" title="ストレージデバイスに対する書込みを確認する" ></p></li>
 </ol>
 </li>
 <li><h3>パッケージマネージャの設定</h3>
@@ -251,15 +256,17 @@
   </footer>
 </article>
 </div>
-<aside class="sidebar"><section class="vcard">
-<h1>About Me</h1>
-<p>A little something about me.</p>
-<p><a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>
- | <a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>
- | <a href="https://github.com/momoto">GitHub</a>
- | <a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
+
+    <aside class="sidebar"><section class="vcard">
+<h2>About Me</h2>
+<p>
+<a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
+<a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
+<a href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
+<a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
 </section>
-</aside></div></div>
+</aside>
+  </div></div>
   <footer role="contentinfo"><p>Copyright &copy; 2013 - <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a> - <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>. Design by <a href="http://octopressthemes.com">Octopress Themes</a>.</span></p></footer>
 </div>
 <script src="/javascripts/modernizr-2.0.js"></script>

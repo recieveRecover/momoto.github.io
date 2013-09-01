@@ -4,21 +4,27 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
 <meta charset="utf-8">
-<title>Category: Unix-like - momoto.github.io</title>
+<title>momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-<meta name="description" content="Category: Unix-like">
+<meta name="description" content="要件 github
+ruby-1.9.2-p290
+(rbenv and ruby-build) || rvm Octopressのセットアップ $ git clone git://github.com/imathis/octopress.git octopress
+$ cd octopress &hellip;">
 
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta property="og:type" content="website" />
-<meta property="og:url" content="http://momoto.github.ioblog/categories/unix-like/" />
-<meta property="og:title" content="Category: Unix-like" />
+<meta property="og:url" content="http://momoto.github.io/blog/page/7/" />
+
 <meta property="og:site_name" content="momoto.github.io">
-<meta property="og:description" content="Category: Unix-like">
+<meta property="og:description" content="要件 github
+ruby-1.9.2-p290
+(rbenv and ruby-build) || rvm Octopressのセットアップ $ git clone git://github.com/imathis/octopress.git octopress
+$ cd octopress &hellip;">
 <meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
 <meta property="fb:app_id" content="561979160531119" />
-<link rel="canonical" href="http://momoto.github.ioblog/categories/unix-like/">
+<link rel="canonical" href="http://momoto.github.io/blog/page/7/">
 <link href="/favicon.png" rel="icon">
 <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 <link href="/atom.xml" rel="alternate" title="momoto.github.io" type="application/atom+xml">
@@ -43,52 +49,131 @@
       <header role="banner"><hgroup><h1><a href="/">momoto.github.io</a></h1></hgroup></header>
       <nav role="navigation">
         <form action="http://google.com/search" method="get"><fieldset role="search"><input type="hidden" name="q" value="site:momoto.github.io" /><input class="search" type="text" name="q" results="0" placeholder="Search"/></fieldset></form>
-        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li></ul>
+        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li><li><a href="https://github.com/momoto/momoto.github.io/wiki" title="momoto.github.io Wiki">Wiki</a></li></ul>
       </nav>
     </div>
   </div>
 </div>
 <div id="body" class="collapse-sidebar sidebar-footer">
-  <div id="main"><div id="content"><div>
-<article role="article">
+  <div id="main"><div id="content">
+    <div class="blog-index">
   
+  
+  
+    <article>
   <header>
-    <h1 class="entry-title">Category: Unix-like</h1>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/31/deployment-octpress-on-github-pages/">OctopressをGithub Pagesにデプロイ</a></h1>
+    
+    
+      <p class="meta">
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2012-07-31T10:14:00+09:00" pubdate data-updated="true" class="updated">Jul 31<span>st</span>, 2012</time>
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+  <div class="entry-content"><h4>要件</h4>
 
-  
-  <h2>2013</h2>
+<ul>
+<li>github</li>
+<li>ruby-1.9.2-p290</li>
+<li>(rbenv and ruby-build) || rvm</li>
+</ul>
 
-<article>
 
-<h1><a href="/blog/2013/03/27/awesome-tutorials/">ウィンドウマネージャawesomeの基本操作</a></h1>
-<time datetime="2013-03-27T21:13:00+09:00" pubdate><span class='month'>Mar</span> <span class='day'>27</span> <span class='year'>2013</span></time>
+<h4>Octopressのセットアップ</h4>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/unix-like/'>Unix-like</a></span>
-</footer>
+<pre><code>$ git clone git://github.com/imathis/octopress.git octopress
+$ cd octopress/
 
-</article>
+$ gem install bundler
+$ bundle install
+
+$ rake install
+$ rake setup_github_pages
+
+  Enter the read/write url for your repository
+  (For example, 'git@github.com:your_username/your_username.github.com)
+  Repository url: 
+
+$ rake generate
+$ rake deploy
+</code></pre>
+
+<h4>&ldquo;source&#8221;ブランチに、ブログのソースを残す</h4>
+
+<pre><code>$ git add .
+$ git commit -m 'your message'
+$ git push origin source
+</code></pre>
+
+<h4>記事を投稿</h4>
+
+<p>$ rake new_post[&ldquo;hello, world&rdquo;]
+$ vi source/_posts/YYYY-MM-DD-hello.world.markdown</p>
+
+<pre><code>---
+layout: post
+title: "hello, world"
+date: YYYY-MM-DD hh:mm
+comments: true
+categories:
+---
+
+hello, world 
+</code></pre>
+
+<p>$ rake generate
+$ rake deploy</p>
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="http://octopress.org/docs/setup/">Octopress Setup &ndash; Octopress</a></li>
+<li><a href="http://octopress.org/docs/deploying/github/">Deploying to Github Pages &ndash; Octopress</a></li>
+<li><a href="http://octopress.org/docs/blogging/">Blogging Basics &ndash; Octopress</a></li>
+</ul>
 
 </div>
-
   
+  
+
 </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/6/">Newer &rarr;</a>
+    
+  </div>
 </div>
-<aside class="sidebar"><section class="vcard">
-<h1>About Me</h1>
-<p>A little something about me.</p>
-<p><a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>
- | <a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>
- | <a href="https://github.com/momoto">GitHub</a>
- | <a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
+
+    <aside class="sidebar"><section class="vcard">
+<h2>About Me</h2>
+<p>
+<a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
+<a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
+<a href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
+<a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
 </section>
-</aside></div></div>
+</aside>
+  </div></div>
   <footer role="contentinfo"><p>Copyright &copy; 2013 - <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a> - <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>. Design by <a href="http://octopressthemes.com">Octopress Themes</a>.</span></p></footer>
 </div>
 <script src="/javascripts/modernizr-2.0.js"></script>
