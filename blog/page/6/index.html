@@ -6,8 +6,9 @@
 <meta charset="utf-8">
 <title>momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-<meta name="description" content="virt-installを使って、CUIから仮想マシンのディスクイメージを作成する。 動作要件として、ホストOSにハイパーバイザ（KVMやXen）とlibvirtがインストールされていて、libvirtdが起動している必要がある。
-virt-install自体は、RPMでは&#8221; &hellip;">
+<meta name="description" content="　入力された文字列の符号位置（Unicode）を出力します。テキストをHTML数値文字参照に変換するように動作します。 形式 HTML文字参照（10進数）HTML文字参照（16進数）符号位置のみ（10進数）符号位置のみ（16進数）
+入力 出力 (function(){
+function &hellip;">
 
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
@@ -16,8 +17,9 @@ virt-install自体は、RPMでは&#8221; &hellip;">
 <meta property="og:url" content="http://momoto.github.io/blog/page/6/" />
 
 <meta property="og:site_name" content="momoto.github.io">
-<meta property="og:description" content="virt-installを使って、CUIから仮想マシンのディスクイメージを作成する。 動作要件として、ホストOSにハイパーバイザ（KVMやXen）とlibvirtがインストールされていて、libvirtdが起動している必要がある。
-virt-install自体は、RPMでは&#8221; &hellip;">
+<meta property="og:description" content="　入力された文字列の符号位置（Unicode）を出力します。テキストをHTML数値文字参照に変換するように動作します。 形式 HTML文字参照（10進数）HTML文字参照（16進数）符号位置のみ（10進数）符号位置のみ（16進数）
+入力 出力 (function(){
+function &hellip;">
 <meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
 <meta property="fb:app_id" content="561979160531119" />
 <link rel="canonical" href="http://momoto.github.io/blog/page/6/">
@@ -59,7 +61,88 @@ virt-install自体は、RPMでは&#8221; &hellip;">
     <article>
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/08/04/build-and-install-libvirt-based-virtual-machine/">Libvirtを用いて仮想マシンを構築、インストールする</a></h1>
+      <h2 class="entry-title">テキストを文字参照記述へ変換する</h2>
+    
+    
+      <p class="meta">
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2012-08-11T00:00:00+09:00" pubdate data-updated="true" class="published">Aug 11<span>th</span>, 2012</time>
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>　入力された文字列の符号位置（Unicode）を出力します。テキストをHTML数値文字参照に変換するように動作します。</p>
+
+<p><form id="convert-text-to-character-references">
+<label>形式 <select><option>HTML文字参照（10進数）</option><option>HTML文字参照（16進数）</option><option>符号位置のみ（10進数）</option><option>符号位置のみ（16進数）</option></select></label><br>
+<label>入力 <textarea rows="4" style="width: 100%;"></textarea></label>
+<label>出力 <output><textarea rows="4" style="width: 100%;" readonly=True></textarea></output></label></p>
+
+<script> (function(){
+function decimal_form(codepoint) { return "&#" + codepoint.toString(10) + ";"; }
+function hexadecimal_form(codepoint) { return "&#x" + codepoint.toString(16) + ";"; }
+function decimal_delimit_space(codepoint) { return codepoint.toString(10) + " "; }
+function hexadecimal_delimit_space(codepoint) { return codepoint.toString(16) + " "; }
+function convert_text_to_character_references(text) {
+  for (var encoded="", i=0; i<text.length; i++)
+    if (s.selectedIndex === 0) encoded += decimal_form(text.charCodeAt(i));
+    else if (s.selectedIndex === 1) encoded += hexadecimal_form(text.charCodeAt(i));
+    else if (s.selectedIndex === 2) encoded += decimal_delimit_space(text.charCodeAt(i));
+    else if (s.selectedIndex === 3) encoded += hexadecimal_delimit_space(text.charCodeAt(i));
+  o.value = encoded;
+}
+function eventhandler(event) {
+  if (text === i.value && event.type !== "change")
+    return;
+  else
+    convert_text_to_character_references(text = i.value);
+}
+var text = "";
+var f = document.getElementById("convert-text-to-character-references");
+var s = f.getElementsByTagName("select")[0];
+var i = f.getElementsByTagName("textarea")[0];
+var o = f.getElementsByTagName("textarea")[1];
+i.onkeydown = eventhandler;
+i.onkeyup   = eventhandler;
+s.onchange  = eventhandler;
+})(); </script>
+
+
+<p></form></p>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://www.unicode.org/Public/UCD/latest/ucd/">The Unicode Character Database (UCD)</a></li>
+<li><a href="http://www.ietf.org/rfc/rfc1815.txt">RFC 1815 &ndash; Character Sets ISO-10646 and ISO-10646-J-1</a></li>
+<li><a href="http://www.w3.org/TR/html5/syntax.html#character-references">8.1.4 Character references — HTML5</a></li>
+</ul>
+
+</div>
+  
+  
+
+</article>
+  
+  
+    <article>
+  <header>
+    
+      <h2 class="entry-title">Libvirtを用いて仮想マシンを構築、インストールする</h2>
     
     
       <p class="meta">
@@ -103,7 +186,7 @@ virt-install自体は、RPMでは&#8221;python-virtinst&#8221;パッケージに
     <article>
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/08/02/overview-uml/">UML 2.0の概要</a></h1>
+      <h2 class="entry-title">UML 2.0の概要</h2>
     
     
       <p class="meta">
@@ -161,7 +244,7 @@ virt-install自体は、RPMでは&#8221;python-virtinst&#8221;パッケージに
     <article>
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/08/02/set-up-udev-rules-to-detect-android-device/">Android端末を検出するためのudevの設定</a></h1>
+      <h2 class="entry-title">Android端末を検出するためのudevの設定</h2>
     
     
       <p class="meta">
@@ -209,7 +292,7 @@ virt-install自体は、RPMでは&#8221;python-virtinst&#8221;パッケージに
     <article>
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/08/01/requirements-for-ruby-libraries/">Ruby各種ライブラリに必要なパッケージ</a></h1>
+      <h2 class="entry-title">Ruby各種ライブラリに必要なパッケージ</h2>
     
     
       <p class="meta">
@@ -316,46 +399,6 @@ virt-install自体は、RPMでは&#8221;python-virtinst&#8221;パッケージに
 
 </div>
   
-  
-
-</article>
-  
-  
-    <article>
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/07/31/overview-markdown/">Markdownの概要</a></h1>
-    
-    
-      <p class="meta">
-
-
-
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2012-07-31T11:06:00+09:00" pubdate data-updated="true" class="updated">Jul 31<span>st</span>, 2012</time>
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>覚えておきたいと思うMarkdown記法の備忘録です。複数の記法がある場合のその記述や、詳しい構文についてはふれていません。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/07/31/overview-markdown/">Read on &rarr;</a>
-    </footer>
   
 
 </article>

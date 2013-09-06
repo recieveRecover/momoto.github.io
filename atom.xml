@@ -4,7 +4,7 @@
   <title><![CDATA[momoto.github.io]]></title>
   <link href="http://momoto.github.io/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-01T20:27:10+09:00</updated>
+  <updated>2013-09-07T00:44:29+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -27,7 +27,6 @@
 Boxファイルは次のウェブサイトでも公開されています。</p>
 
 <ul>
-<li><a href="http://www.vagrantbox.es/">Vagrantbox.es</a></li>
 <li><a href="http://www.vagrantup.com/">vagrantup.com</a>
 
 <ul>
@@ -1827,6 +1826,181 @@ httpd_can_network_connect --&gt; off
   </entry>
   
   <entry>
+    <title type="html"><![CDATA[getEqualSumSubstring関数の問題を考える]]></title>
+    <link href="http://momoto.github.io/blog/2013/06/30/finding-the-longest-contiguous-equal-sum-substring-of-length-2n/"/>
+    <updated>2013-06-30T00:00:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/06/30/finding-the-longest-contiguous-equal-sum-substring-of-length-2n</id>
+    <content type="html"><![CDATA[<p>　getEqualSumSubstring関数の問題を考えてみます。この問題の出典についてはわかりませんが、Stack Overflowには同問題に関する質問がいくつか寄せられているように、プログラミングの分野では有名な問題であるようです。</p>
+
+<h3>問題</h3>
+
+<p>　問題文を日本語に訳してみると、だいたい次のような内容です。</p>
+
+<blockquote><p>　0以外の数字だけを含む文字列sを引数にとるgetEqualSumSubstring関数を定義します。<br>
+　この関数はsの連続する部分列のうち、長さは2*Nで、左側N個の数字の合計と右側N個の数字の合計が等しくなるような最も長い部分列の長さを表示します。<br>
+　適当な部分列がない場合には0と表示します。</p>
+
+<p><a href="http://stackoverflow.com/questions/8469407/to-find-the-longest-substring-with-equal-sum-in-left-and-right-in-c">To find the longest substring with equal sum in left and right in C++ &ndash; Stack Overflow</a></p></blockquote>
+
+<h4>入力例＃１</h4>
+
+<p>　入力された文字列が123231であるとき、連続する最も長い部分列は123231で、出力する部分列の長さは6です。</p>
+
+<h4>入力例＃２</h4>
+
+<p>　入力された文字列が986561517416921217551395112859219257312であるとき、連続する最も長い部分列は656151741692121755139511285921925731で、出力する部分列の長さは36です。</p>
+
+<h3>解答例</h3>
+
+<p>　JavaScriptの解答例です。順を追って問題を理解するためにも、文字列sから適当な部分列を抜き出す処理と、抜き出した部分列から適当な部分列を探す処理とで分けて考えてみます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>function getEqualSumSubstring(s) {
+</span><span class='line'>  var substrings = [], longest = "";
+</span><span class='line'>
+</span><span class='line'>  for (var begin=0; begin&lt;s.length; begin++)
+</span><span class='line'>    for (var end=begin+2; end&lt;=s.length; end=end+2)
+</span><span class='line'>      substrings[substrings.length] = s.slice(begin, end);
+</span><span class='line'>
+</span><span class='line'>  for (var i in substrings)
+</span><span class='line'>    if (substrings[i].length &lt;= longest.length)
+</span><span class='line'>      continue;
+</span><span class='line'>    else if ((function (s) {
+</span><span class='line'>      var begin=0, end=s.length/2, left=0, right=0;
+</span><span class='line'>      for (begin; begin&lt;end; begin++) {
+</span><span class='line'>        left  += parseInt(s[begin]);
+</span><span class='line'>        right += parseInt(s[end + begin]);
+</span><span class='line'>      }
+</span><span class='line'>      return (left === right);
+</span><span class='line'>    })(substrings[i]))
+</span><span class='line'>      longest = substrings[i];
+</span><span class='line'>
+</span><span class='line'>  return longest.length;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　まず、出力するべき部分列の長さは偶数であることが問題文からわかるので、長さが偶数になる部分列だけをsから抜き出して配列に格納しておきます。
+このときに抜き出す部分列の個数は<code>floor((sの長さ+1)/2) * floor(sの長さ/2)</code>となればよさそうです。
+次に、部分列の左側半分の数字の合計と右側半分の数字の合計が等しくなるような部分列の最も長いものを配列から探して、その長さを出力します。</p>
+
+<h4>別解</h4>
+
+<p>　上記の解答例は、文字列sの一文字目から部分列が短い順に適当な部分列を探しているので、この点にリファクタリングの余地がありそうです。
+最も長い部分列を効率よく見つけるために、部分列が長い順に適当な部分列を探すように改善を考えてみます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>function getEqualSumSubstring(s) {
+</span><span class='line'>  var substring="";
+</span><span class='line'>
+</span><span class='line'>  for (var end=s.length-s.length%2; end&gt;0; end=end-2)
+</span><span class='line'>    for (var begin=0; s.length&gt;=(begin+end); begin++)
+</span><span class='line'>      if ((function (s) {
+</span><span class='line'>        var begin=0, end=s.length/2, left=0, right=0;
+</span><span class='line'>        for (begin; begin&lt;end; begin++) {
+</span><span class='line'>          left  += parseInt(s[begin]);
+</span><span class='line'>          right += parseInt(s[end + begin]);
+</span><span class='line'>        }
+</span><span class='line'>        return (left === right);
+</span><span class='line'>      })(substring = s.slice(begin, (end+begin))))
+</span><span class='line'>        return substring.length;
+</span><span class='line'>
+</span><span class='line'>  return 0;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　この別解では、部分列が長い順に適当な部分列を探しているので、候補の部分列を配列に格納する必要がなくなりました。部分列の左右の和が等しいかどうかを調べる部分は変更していません。</p>
+
+<h4>実装</h4>
+
+<p>　上記の解答例にHTMLのユーザインタフェースを加えた実装例です。</p>
+
+<p><form id="finding-the-longest-contiguous-equal-sum-substring-of-length-2n">
+<label>入力 <textarea rows="4" style="width: 100%;"></textarea></label>
+<label>出力 <output><textarea rows="4" style="width: 100%;" readonly=True></textarea></output></label></p>
+
+<script> (function(){
+
+function getEqualSumSubstring(s) {
+  var substring="";
+
+  for (var end=s.length-s.length%2; end>0; end=end-2)
+    for (var begin=0; s.length>=(begin+end); begin++)
+      if ((function (s) {
+        var begin=0, end=s.length/2, left=0, right=0;
+        for (begin; begin<end; begin++) {
+          left  += parseInt(s[begin]);
+          right += parseInt(s[end + begin]);
+        }
+        return (left === right);
+      })(substring = s.slice(begin, (end+begin))))
+        return substring.length;
+
+  return 0;
+}
+
+function eventhandler(event) {
+  if (text === i.value && event.type !== "change") return;
+  else o.value = getEqualSumSubstring(text = i.value);
+}
+var text = "";
+var f = document.getElementById("finding-the-longest-contiguous-equal-sum-substring-of-length-2n");
+var i = f.getElementsByTagName("textarea")[0];
+var o = f.getElementsByTagName("textarea")[1];
+i.onkeydown = eventhandler;
+i.onkeyup   = eventhandler;
+})(); </script>
+
+
+<p></form></p>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://stackoverflow.com/questions/8469407/to-find-the-longest-substring-with-equal-sum-in-left-and-right-in-c">To find the longest substring with equal sum in left and right in C++ &ndash; Stack Overflow</a></li>
+<li><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/slice">Array.slice &ndash; JavaScript | MDN</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Debian 7.1.0をインストールする]]></title>
     <link href="http://momoto.github.io/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst/"/>
     <updated>2013-06-23T05:54:00+09:00</updated>
@@ -3191,65 +3365,6 @@ hwclock --systohc --utc
 
 
 <iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4873115817" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Windows 7にIIS 7.5をインストール]]></title>
-    <link href="http://momoto.github.io/blog/2012/11/30/install-iis-7-dot-5-on-windows-7/"/>
-    <updated>2012-11-30T20:56:00+09:00</updated>
-    <id>http://momoto.github.io/blog/2012/11/30/install-iis-7-dot-5-on-windows-7</id>
-    <content type="html"><![CDATA[<p>　MicrosoftのWebサーバーソフトウェア&#8221;Internet Information Services (IIS)&ldquo;をWindows 7 Home Premiumにインストールした際の手順の記録です。</p>
-
-<!-- more -->
-
-
-<h3>IISのインストール</h3>
-
-<ol>
-<li><p>スタートメニュー等から「コントロールパネル」へ</p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-11-30/01.png"><img src="http://momoto.github.io/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/01.png"></a></p></li>
-<li><p>コントロールパネルから「プログラム」の画面へ</p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-11-30/02.png"><img src="http://momoto.github.io/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/02.png" width="600"></a></p></li>
-<li><p>プログラムから「Windowsの機能の有効化または無効化」の画面へ</p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-11-30/03.png"><img src="http://momoto.github.io/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/03.png" width="600"></a></p></li>
-<li><p>　Windowsの機能から「インターネット インフォメーション サービス」のチェックボックスをオンにする。
-サブフォルダのチェックボックスからはIISの追加機能（FTPサーバーやアプリケーション開発機能など）を指定できる。</p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-11-30/04.png"><img src="http://momoto.github.io/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/04.png" width="600"></a></p>
-
-<p>　必要な機能を選択した後は「OK」を押下するとIISのインストールがはじまる。
-インストールの完了後、ブラウザで自身のアドレス（<a href="http://localhost%EF%BC%89%E3%81%B8%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%81%99%E3%82%8B%E3%81%A8IIS%E3%81%8C%E5%8B%95%E4%BD%9C%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%81%93%E3%81%A8%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%A7%E3%81%8D%E3%82%8B%E3%80%82">http://localhost%EF%BC%89%E3%81%B8%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%81%99%E3%82%8B%E3%81%A8IIS%E3%81%8C%E5%8B%95%E4%BD%9C%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%81%93%E3%81%A8%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%A7%E3%81%8D%E3%82%8B%E3%80%82</a></p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-11-30/05.png"><img src="http://momoto.github.io/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/05.png" width="600"></a></p></li>
-</ol>
-
-
-<h3>IISマネージャーの起動</h3>
-
-<ol>
-<li><p>Webサーバーの状態の確認や、起動/停止を操作できるIISマネージャーは、「ファイル名を指定して実行」から「InetMgr.exe」を指定して起動することができる</p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-11-30/06.png"><img src="http://momoto.github.io/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/06.png" title="&#34;InetMgr.exeを開始する&#34;" alt="&#34;InetMgr.exeを開始する&#34;"></a></p></li>
-<li><a href="http://momoto.github.io/blog/images/2012-11-30/07.png"><img src="http://momoto.github.io/blog/images/2012-11-30-install-iis-7-dot-5-on-windows-7/07.png" width="600" title="&#34;IISマネージャーの起動画面&#34;" alt="&#34;IISマネージャーの起動画面&#34;"></a></li>
-</ol>
-
-
-<h3>参考</h3>
-
-<ul>
-<li><a href="http://technet.microsoft.com/ja-jp/library/cc753433%28v=ws.10%29.aspx">technet.microsoft.com &ndash; Web サーバー (IIS)</a></li>
-</ul>
-
-
-<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4891006129" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
-
-
-<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=489100570X" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
 
 ]]></content>
   </entry>

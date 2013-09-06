@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+<meta charset="utf-8">
+<title>getEqualSumSubstring関数の問題を考える - momoto.github.io</title>
+<meta name="author" content="Seiji Momoto">
+<meta name="description" content="getEqualSumSubstring関数の問題を考えてみます（JavaScript）。">
+<meta name="keywords" content="JavaScript">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:type" content="website" />
+<meta property="og:url" content="http://momoto.github.io/blog/2013/06/30/finding-the-longest-contiguous-equal-sum-substring-of-length-2n/" />
+<meta property="og:title" content="getEqualSumSubstring関数の問題を考える" />
+<meta property="og:site_name" content="momoto.github.io">
+<meta property="og:description" content="getEqualSumSubstring関数の問題を考えてみます（JavaScript）。">
+<meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
+<meta property="fb:app_id" content="561979160531119" />
+<link rel="canonical" href="http://momoto.github.io/blog/2013/06/30/finding-the-longest-contiguous-equal-sum-substring-of-length-2n/">
+<link href="/favicon.png" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="momoto.github.io" type="application/atom+xml">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29340465-5']);
+  _gaq.push(['_setDomainName', 'github.io']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+<body>
+<div id="header-container">
+  <div id="header">
+    <div class="wrapper">
+      <header role="banner"><hgroup><h1><a href="/">momoto.github.io</a></h1></hgroup></header>
+      <nav role="navigation">
+        <form action="http://google.com/search" method="get"><fieldset role="search"><input type="hidden" name="q" value="site:momoto.github.io" /><input class="search" type="text" name="q" results="0" placeholder="Search"/></fieldset></form>
+        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li><li><a href="https://github.com/momoto/momoto.github.io/wiki" title="momoto.github.io Wiki">Wiki</a></li></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<div id="body" class="collapse-sidebar sidebar-footer">
+  <div id="main"><div id="content">
+    <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">getEqualSumSubstring関数の問題を考える</h1>
+    
+    
+      <p class="meta">
+<span class="breadcrumb">
+<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/" itemprop="url"><span itemprop="title">Blog</span></a> › </span>
+
+<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/blog/categories/javascript/" itemprop="url"><span itemprop="title">JavaScript</span></a> › </span>
+</span>
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-06-30T00:00:00+09:00" pubdate data-updated="true" class="updated">Jun 30<span>th</span>, 2013</time>
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>　getEqualSumSubstring関数の問題を考えてみます。この問題の出典についてはわかりませんが、Stack Overflowには同問題に関する質問がいくつか寄せられているように、プログラミングの分野では有名な問題であるようです。</p>
+
+<h3>問題</h3>
+
+<p>　問題文を日本語に訳してみると、だいたい次のような内容です。</p>
+
+<blockquote><p>　0以外の数字だけを含む文字列sを引数にとるgetEqualSumSubstring関数を定義します。<br>
+　この関数はsの連続する部分列のうち、長さは2*Nで、左側N個の数字の合計と右側N個の数字の合計が等しくなるような最も長い部分列の長さを表示します。<br>
+　適当な部分列がない場合には0と表示します。</p>
+
+<p><a href="http://stackoverflow.com/questions/8469407/to-find-the-longest-substring-with-equal-sum-in-left-and-right-in-c">To find the longest substring with equal sum in left and right in C++ &ndash; Stack Overflow</a></p></blockquote>
+
+<h4>入力例＃１</h4>
+
+<p>　入力された文字列が123231であるとき、連続する最も長い部分列は123231で、出力する部分列の長さは6です。</p>
+
+<h4>入力例＃２</h4>
+
+<p>　入力された文字列が986561517416921217551395112859219257312であるとき、連続する最も長い部分列は656151741692121755139511285921925731で、出力する部分列の長さは36です。</p>
+
+<h3>解答例</h3>
+
+<p>　JavaScriptの解答例です。順を追って問題を理解するためにも、文字列sから適当な部分列を抜き出す処理と、抜き出した部分列から適当な部分列を探す処理とで分けて考えてみます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>function getEqualSumSubstring(s) {
+</span><span class='line'>  var substrings = [], longest = "";
+</span><span class='line'>
+</span><span class='line'>  for (var begin=0; begin&lt;s.length; begin++)
+</span><span class='line'>    for (var end=begin+2; end&lt;=s.length; end=end+2)
+</span><span class='line'>      substrings[substrings.length] = s.slice(begin, end);
+</span><span class='line'>
+</span><span class='line'>  for (var i in substrings)
+</span><span class='line'>    if (substrings[i].length &lt;= longest.length)
+</span><span class='line'>      continue;
+</span><span class='line'>    else if ((function (s) {
+</span><span class='line'>      var begin=0, end=s.length/2, left=0, right=0;
+</span><span class='line'>      for (begin; begin&lt;end; begin++) {
+</span><span class='line'>        left  += parseInt(s[begin]);
+</span><span class='line'>        right += parseInt(s[end + begin]);
+</span><span class='line'>      }
+</span><span class='line'>      return (left === right);
+</span><span class='line'>    })(substrings[i]))
+</span><span class='line'>      longest = substrings[i];
+</span><span class='line'>
+</span><span class='line'>  return longest.length;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　まず、出力するべき部分列の長さは偶数であることが問題文からわかるので、長さが偶数になる部分列だけをsから抜き出して配列に格納しておきます。
+このときに抜き出す部分列の個数は<code>floor((sの長さ+1)/2) * floor(sの長さ/2)</code>となればよさそうです。
+次に、部分列の左側半分の数字の合計と右側半分の数字の合計が等しくなるような部分列の最も長いものを配列から探して、その長さを出力します。</p>
+
+<h4>別解</h4>
+
+<p>　上記の解答例は、文字列sの一文字目から部分列が短い順に適当な部分列を探しているので、この点にリファクタリングの余地がありそうです。
+最も長い部分列を効率よく見つけるために、部分列が長い順に適当な部分列を探すように改善を考えてみます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>function getEqualSumSubstring(s) {
+</span><span class='line'>  var substring="";
+</span><span class='line'>
+</span><span class='line'>  for (var end=s.length-s.length%2; end&gt;0; end=end-2)
+</span><span class='line'>    for (var begin=0; s.length&gt;=(begin+end); begin++)
+</span><span class='line'>      if ((function (s) {
+</span><span class='line'>        var begin=0, end=s.length/2, left=0, right=0;
+</span><span class='line'>        for (begin; begin&lt;end; begin++) {
+</span><span class='line'>          left  += parseInt(s[begin]);
+</span><span class='line'>          right += parseInt(s[end + begin]);
+</span><span class='line'>        }
+</span><span class='line'>        return (left === right);
+</span><span class='line'>      })(substring = s.slice(begin, (end+begin))))
+</span><span class='line'>        return substring.length;
+</span><span class='line'>
+</span><span class='line'>  return 0;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　この別解では、部分列が長い順に適当な部分列を探しているので、候補の部分列を配列に格納する必要がなくなりました。部分列の左右の和が等しいかどうかを調べる部分は変更していません。</p>
+
+<h4>実装</h4>
+
+<p>　上記の解答例にHTMLのユーザインタフェースを加えた実装例です。</p>
+
+<p><form id="finding-the-longest-contiguous-equal-sum-substring-of-length-2n">
+<label>入力 <textarea rows="4" style="width: 100%;"></textarea></label>
+<label>出力 <output><textarea rows="4" style="width: 100%;" readonly=True></textarea></output></label></p>
+
+<script> (function(){
+
+function getEqualSumSubstring(s) {
+  var substring="";
+
+  for (var end=s.length-s.length%2; end>0; end=end-2)
+    for (var begin=0; s.length>=(begin+end); begin++)
+      if ((function (s) {
+        var begin=0, end=s.length/2, left=0, right=0;
+        for (begin; begin<end; begin++) {
+          left  += parseInt(s[begin]);
+          right += parseInt(s[end + begin]);
+        }
+        return (left === right);
+      })(substring = s.slice(begin, (end+begin))))
+        return substring.length;
+
+  return 0;
+}
+
+function eventhandler(event) {
+  if (text === i.value && event.type !== "change") return;
+  else o.value = getEqualSumSubstring(text = i.value);
+}
+var text = "";
+var f = document.getElementById("finding-the-longest-contiguous-equal-sum-substring-of-length-2n");
+var i = f.getElementsByTagName("textarea")[0];
+var o = f.getElementsByTagName("textarea")[1];
+i.onkeydown = eventhandler;
+i.onkeyup   = eventhandler;
+})(); </script>
+
+
+<p></form></p>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://stackoverflow.com/questions/8469407/to-find-the-longest-substring-with-equal-sum-in-left-and-right-in-c">To find the longest substring with equal sum in left and right in C++ &ndash; Stack Overflow</a></li>
+<li><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/slice">Array.slice &ndash; JavaScript | MDN</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <a href="https://plus.google.com/101153525943529592041?rel=author" class="fn">Seiji Momoto</a></span>
+
+      
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-06-30T00:00:00+09:00" pubdate data-updated="true" class="updated">Jun 30<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>JavaScript</a>
+  
+</span>
+
+
+    </p>
+    <div class="sharing">
+<a href="https://coderwall.com/momoto"><img alt="Endorse momoto on Coderwall" src="http://api.coderwall.com/momoto/endorsecount.png" /></a>
+<g:plusone size="medium" annotation="none"></g:plusone>
+<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-url="http://momoto.github.io/blog/2013/06/30/finding-the-longest-contiguous-equal-sum-substring-of-length-2n/" data-text="getEqualSumSubstring関数の問題を考える" data-count="none">Tweet</a>
+<a href="http://b.hatena.ne.jp/entry/http://momoto.github.io/blog/2013/06/30/finding-the-longest-contiguous-equal-sum-substring-of-length-2n/" data-hatena-bookmark-title="getEqualSumSubstring関数の問題を考える - momoto.github.io" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-noballoon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+<fb:like data-href="http://momoto.github.io/blog/2013/06/30/finding-the-longest-contiguous-equal-sum-substring-of-length-2n/" layout="button_count"></fb:like>
+</div>
+<div class="sharing">
+<br>
+<div id="disqus_thread" aria-live="polite"></div>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst/" title="Previous Post: Debian 7.1.0をインストールする">&laquo; Debian 7.1.0をインストールする</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/07/31/guide-to-compiling-and-installing-apache-http-server-2-dot-4-6/" title="Next Post: Apache HTTP Server 2.4.6をインストールする（ソースからビルドする方法）">Apache HTTP Server 2.4.6をインストールする（ソースからビルドする方法） &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+</div>
+
+    <aside class="sidebar"><section class="vcard">
+<h2>About Me</h2>
+<p>
+<a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
+<a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
+<a href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
+<a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
+</section>
+</aside>
+  </div></div>
+  <footer role="contentinfo"><p>Copyright &copy; 2013 - <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a> - <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>. Design by <a href="http://octopressthemes.com">Octopress Themes</a>.</span></p></footer>
+</div>
+<script src="/javascripts/modernizr-2.0.js"></script>
+<script src="/javascripts/ender.js"></script>
+<script src="/javascripts/octopress.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'momotogithubio';
+
+    var disqus_identifier = 'http://momoto.github.io/blog/2013/06/30/finding-the-longest-contiguous-equal-sum-substring-of-length-2n/';
+    var disqus_url = 'http://momoto.github.io/blog/2013/06/30/finding-the-longest-contiguous-equal-sum-substring-of-length-2n/';
+    var disqus_script = 'embed.js';
+
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+<script type="text/javascript">
+  (function() {
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+  })();
+</script>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1&appId=561979160531119";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+<script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+
+</body>
+</html>
