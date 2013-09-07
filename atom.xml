@@ -4,7 +4,7 @@
   <title><![CDATA[momoto.github.io]]></title>
   <link href="http://momoto.github.io/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-07T00:44:29+09:00</updated>
+  <updated>2013-09-08T04:03:31+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -12,6 +12,175 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Apache HTTP ServerのSSL/TLSサポートを有効化する]]></title>
+    <link href="http://momoto.github.io/blog/2013/09/08/enabling-ssl-for-apache-http-server/"/>
+    <updated>2013-09-08T00:00:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/09/08/enabling-ssl-for-apache-http-server</id>
+    <content type="html"><![CDATA[<p>　mod_sslをつかってApache HTTP ServerのSSL/TLSサポートを有効にします。
+SSLを有効にするために必要なRSA秘密鍵と公開鍵証明書のうち、公開鍵証明書は第三者の認証局に署名してもらうのが通常ですが、この記事では検証のため自己発行証明書をつかいます。<!-- more --></p>
+
+<p>　手順としては(1) RSA秘密鍵を生成、(2) 証明書署名要求（CSR）を作成、(3) 公開鍵証明書を発行、その後、ウェブサーバでSSL/TLSを設定します。(3)の「公開鍵証明書の発行」は本来、認証局で行う手順です。</p>
+
+<ol>
+<li><h3>OpenSSLをつかってRSA秘密鍵と証明書署名要求を用意する（申請者）</h3>
+
+<p>　RSA秘密鍵の生成には<code>openssl genrsa -out &lt;秘密鍵ファイル名&gt; &lt;鍵長&gt;</code>のコマンドをつかいます。</p>
+
+<pre><code>$ openssl genrsa -out localhost.key 2048
+Generating RSA private key, 2048 bit long modulus
+...................................................+++
+...............+++
+e is 65537 (0x10001)
+</code></pre>
+
+<p>　2013年9月現在、1024bit鍵長のCSRの受付を停止した認証局もあるように、鍵長は2048bitが一般的であるようです。</p>
+
+<ul>
+<li><a href="https://www.verisign.co.jp/ssl/about/20120531.html">旧来仕様のサーバIDおよび公開鍵長1024bitのCSRの受付停止について｜日本ベリサイン</a></li>
+<li><a href="https://jp.globalsign.com/knowledge/ssl/use/1024bit.html">1024bitの証明書について｜グローバルサイン (旧日本ジオトラスト株式会社)</a></li>
+</ul>
+
+
+<p>　<code>openssl genrsa</code>のオプションによって、生成したRSA秘密鍵を別の暗号方式で暗号化することや、乱数生成につかわれるシード値をファイルで指定することもできます。
+RSA秘密鍵をAESやDESなどの共通鍵暗号方式で暗号化する場合は秘密鍵にパスフレーズを設定します。このパスフレーズはウェブサーバの起動時や証明書署名要求ファイル作成時に入力が必要になります。</p>
+
+<p>　続いて、RSA秘密鍵をもとに証明書署名要求ファイルを作成します。OpenSSLコマンドは<code>openssl req -new -key &lt;秘密鍵ファイル名&gt; -out &lt;証明書署名要求ファイル名&gt;</code>をつかいます。
+CSRの作成にはディスティングイッシュネームの入力が必要です。</p>
+
+<pre><code>$ openssl req -new -key localhost.key -out localhost.csr
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:JP
+State or Province Name (full name) []:Tokyo
+Locality Name (eg, city) [Default City]:Shinjuku
+Organization Name (eg, company) [Default Company Ltd]:Localhost, Local Area Network
+Organizational Unit Name (eg, section) []:
+Common Name (eg, your name or your server's hostname) []:localhost
+Email Address []:
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+</code></pre>
+
+<ul>
+<li><a href="https://www.verisign.co.jp/ssl/help/faq/110041/">ディスティングイッシュネームとは何ですか | 日本ベリサイン</a></li>
+<li><a href="https://jp.globalsign.com/support/faq/74.html">ディスティングイッシュネームとは何ですか | グローバルサイン</a></li>
+<li><a href="https://crosstrust.co.jp/support/faq/faq08/a002">ディスティングイッシュネームとは何ですか？ | クロストラスト </a></li>
+</ul>
+</li>
+<li><h3>公開鍵証明書を発行する（認証局）</h3>
+
+<p>　証明書署名要求ファイルと認証局の私有鍵をもとに公開鍵証明書を発行します。
+OpenSSLコマンドは<code>openssl ca -in &lt;証明書署名要求ファイル名&gt; -out &lt;公開鍵証明書ファイル名&gt;</code>をつかいます。</p>
+
+<pre><code>$ openssl ca -in localhost.csr -out localhost.self-signed.crt
+Using configuration from /etc/pki/tls/openssl.cnf
+Enter pass phrase for /etc/pki/CA/private/cakey.pem:
+Check that the request matches the signature
+Signature ok
+Certificate Details:
+        Serial Number:
+            ec:65:47:48:ff:6d:ff:cc
+        Validity
+            Not Before: Sep  7 00:00:00 2013 GMT
+            Not After : Sep  7 00:00:00 2014 GMT
+        Subject:
+            countryName               = JP
+            stateOrProvinceName       = Tokyo
+            organizationName          = Localhost, Local Area Network
+            commonName                = localhost
+        X509v3 extensions:
+            X509v3 Basic Constraints:
+                CA:TRUE
+            Netscape Comment:
+                OpenSSL Generated Certificate
+            X509v3 Subject Key Identifier:
+                02:B3:E2:99:8B:C9:E8:F2:33:A7:27:1B:FD:D6:9E:64:C9:12:D2:7E
+            X509v3 Authority Key Identifier:
+                keyid:15:F3:B6:82:FD:BB:41:AF:F2:AE:D9:BD:E1:C0:2E:B6:A5:23:C6:FA
+
+Certificate is to be certified until Sep  7 00:00:00 2014 GMT (365 days)
+Sign the certificate? [y/n]:y
+
+
+1 out of 1 certificate requests certified, commit? [y/n]y
+Write out database with 1 new entries
+Data Base Updated
+</code></pre>
+
+<p>　認証局は発行した公開鍵証明書を申請者に渡して、申請者は公開鍵証明書をウェブサーバに移動します。</p></li>
+<li><h3>mod_sslを設定する（Apache HTTP Server）</h3>
+
+<p>　<a href="http://www.modssl.org/source/">www.modssl.org</a>やディストリビューションからmod_sslをインストールします。</p>
+
+<pre><code>$ sudo yum install mod_ssl
+</code></pre>
+
+<p>　上記の手順で用意したRSA秘密鍵と公開鍵証明書を、Apache実行ユーザが読み込めるファイルパスに設置します。同様にパーミッションも適宜、設定します。</p>
+
+<pre><code>$ sudo mv localhost.key /etc/pki/tls/private/
+$ sudo mv localhost.self-signed.crt /etc/pki/tls/certs/
+$ sudo chmod 0600 /etc/pki/tls/certs/localhost.self-signed.crt
+$ sudo chmod 0600 /etc/pki/tls/private/localhost.key
+</code></pre>
+
+<p>　Apacheの設定ファイル（<code>&lt;ServerRoot&gt;/conf.d/ssl.conf</code>など）を編集して、SSLCertificateFileディレクティブとSSLCertificateKeyFileディレクティブを設定します。</p>
+
+<pre><code>SSLCertificateFile /etc/pki/tls/certs/localhost.self-signed.crt
+SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+</code></pre>
+
+<p>　Apacheを再起動します。RSA秘密鍵を暗号化している場合はパスフレーズの入力が必要です。</p>
+
+<pre><code>$ sudo apachectl -t
+Syntax OK
+$ sudo /etc/init.d/httpd restart
+Stopping httpd:                                            [  OK  ]
+Starting httpd: Apache/2.2.15 mod_ssl/2.2.15 (Pass Phrase Dialog)
+Some of your private key files are encrypted for security reasons.
+In order to read them you have to provide the pass phrases.
+
+Server localhost:443 (RSA)
+Enter pass phrase:
+
+OK: Pass Phrase Dialog successful.
+                                                           [  OK  ]
+</code></pre></li>
+</ol>
+
+
+<p>　ウェブサーバにアクセスしてみると、発行者不明（sec_error_unknown_issuer）のため接続を信頼されていませんが、接続は暗号化されているようです。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-09-08-enabling-ssl-for-apache-http-server/01-untrusted-connection.png" width="500" title="安全性を確認できない接続" ></p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-09-08-enabling-ssl-for-apache-http-server/02-connection-encrypted.png" width="500" title="暗号化された接続" ></p>
+
+<p>　証明書情報を表示すると入力したディスティングイッシュネームを確認することができます。また、この記事の例では主体者と発行者が同一になっていることも確認できます。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-09-08-enabling-ssl-for-apache-http-server/03-could-not-verify-this-certificate.png" width="500" title="信頼性を検証できない証明書" ></p>
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://www.verisign.co.jp/ssl/pdf/baseline_requirements1.0_jp.pdf">CA/ブラウザフォーラム パブリック証明書の発行および管理に関する基本要件v.1.0 | www.verisign.co.jp</a></li>
+<li><a href="https://jp.globalsign.com/repository/baseline_requirements_ja.pdf">CA/ブラウザフォーラム パブリック証明書発行及びマネジメントの基本要件 ver1.0 | jp.globalsign.com</a></li>
+<li><a href="http://httpd.apache.org/docs/2.2/mod/mod_ssl.html">mod_ssl &ndash; Apache HTTP Server</a></li>
+<li><a href="http://www.openssl.org/docs/">OpenSSL: Documents, Misc</a></li>
+<li><a href="http://x68000.q-e-d.net/~68user/unix/pickup?openssl">UNIXの部屋 コマンド検索:openssl (*BSD/Linux)</a></li>
+<li><a href="https://support.mozilla.org/ja/kb/Secure%20Connection%20Failed">安全な接続ができませんでした | Firefox ヘルプ</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Vagrantをつかって仮想マシンを管理する]]></title>
@@ -3285,86 +3454,6 @@ hwclock --systohc --utc
 </ul>
 </li>
 </ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Amazon EC2インスタンスを作成し、SSH接続する]]></title>
-    <link href="http://momoto.github.io/blog/2012/12/06/create-and-ssh-to-ec2-instance/"/>
-    <updated>2012-12-06T00:00:00+09:00</updated>
-    <id>http://momoto.github.io/blog/2012/12/06/create-and-ssh-to-ec2-instance</id>
-    <content type="html"><![CDATA[<p>　Amazon EC2インスタンスを作成し、SSH接続するまでの手順の記録です。</p>
-
-<!-- more -->
-
-
-<ol>
-<li><p>　Amazon EC2 Console Dashboardから「Launch Instance」を選択する。
-必要な操作はすべてウェブインタフェースから行うので、ブラウザさえあればEC2インスタンスを作成することができる。</p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-12-06/01.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/01.png" width="600"></a></p></li>
-<li><p>　インスタンス作成ウィザードの種類を選択する。
-2012年12月現在、選択できる種類はClassic、Quick Launch、AWS Marketplaceの三通り。
-以下、Classic Wizardでインスタンスの作成を行う。</p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-12-06/02.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/02.png" width="600"></a></p></li>
-<li><p>　AMI（Amazon Machine Image）を選択する。
-選択できる主なOSにはRed Hat Enterprise、Ubuntu、Microsoft Windowsなどがある。</p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-12-06/03.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/03.png" width="600"></a></p></li>
-<li><p>　インスタンスの詳細を設定する。
-設定できる項目は、インスタンスタイプ、カーネルID、RAMディスク、ストレージデバイスなど。</p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-12-06/04-01.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/04-01.png" width="300"></a></p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-12-06/04-02.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/04-02.png" width="300"></a></p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-12-06/04-03.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/04-03.png" width="300"></a></p>
-
-<p>　インスタンスタイプは、その種類によって性能（CPUやI/O）や発生する費用が異なってくるため、稼働させるアプリケーションや予算にあわせて選択する。</p></li>
-<li><p>　公開鍵暗号の鍵のペアを作成する。
-ウィザードには鍵の名前を入力するだけでRSA暗号方式の鍵のペアが生成され、pemファイルをダウンロードできる。
-このpemファイルがSSH接続に必要な秘密鍵になる。</p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-12-06/05.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/05.png" width="600"></a></p></li>
-<li><p>　EC2のファイアウォール「Security Groups」を設定する。
-グループごとにプロトコル（HTTPやSMTP）、ポート番号、IPアドレスを指定してインバウンドルールを設定することができる。</p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-12-06/06.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/06.png" width="600"></a></p></li>
-<li><p>　EC2インスタンスが完成。ダッシュボードの&#8221;Instances&#8221;から起動状態や公開ドメイン名などを確認できる。</p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-12-06/07-01.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/07-01.png" width="600"></a></p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-12-06/07-02.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/07-02.png" width="600"></a></p></li>
-</ol>
-
-
-<h3>SSH接続</h3>
-
-<p>　SSHクライアントからEC2インスタンスへSSH接続を行う。
-接続先に公開ドメイン名（Public DNS : ec2-***&ndash;***&ndash;***&ndash;***.compute-1.amazonaws.com）と、秘密鍵には先に取得したpemファイルを指定して、EC2インスタンスへ接続する。</p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-12-06/08.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/08.png" width="600"></a></p>
-
-<h3>EC2インスタンスの終了</h3>
-
-<p>　EC2インスタンスの利用を終える場合は、終了（Terminate）を指定する。停止（Stop）ではインスタンスは削除されない。
-逆に、利用を一時的に停止するだけであればTerminateではなくStopを指定する。</p>
-
-<p><a href="http://momoto.github.io/blog/images/2012-12-06/09.png"><img src="http://momoto.github.io/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/09.png" width="600"></a></p>
-
-<h3>参考</h3>
-
-<ul>
-<li><a href="http://aws.amazon.com/jp/ec2/">Amazon EC2 (仮想サーバー Amazon Elastic Compute Cloud) | アマゾン ウェブ サービス（AWS 日本語）</a></li>
-</ul>
-
-
-<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4822211983" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
-
-
-<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4873115817" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
 
 ]]></content>
   </entry>
