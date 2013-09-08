@@ -4,7 +4,7 @@
   <title><![CDATA[momoto.github.io]]></title>
   <link href="http://momoto.github.io/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-08T04:03:31+09:00</updated>
+  <updated>2013-09-08T20:33:54+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -14,11 +14,93 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Apache HTTP ServerのSPDYサポートを有効化する]]></title>
+    <link href="http://momoto.github.io/blog/2013/09/08/enabling-spdy-for-apache-http-server/"/>
+    <updated>2013-09-08T01:00:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/09/08/enabling-spdy-for-apache-http-server</id>
+    <content type="html"><![CDATA[<p>　mod_spdyをつかってApache HTTP ServerのSPDYサポートを有効化します。mod_spdyは<a href="http://code.google.com/p/mod-spdy/">code.google.com</a>で配布されています。<!-- more --></p>
+
+<h4>mod_spdyのRPMパッケージ 64ビットをインストールする場合</h4>
+
+<pre><code>$ wget https://dl-ssl.google.com/dl/linux/direct/mod-spdy-beta_current_x86_64.rpm
+$ rpm -U mod-spdy-*.rpm
+</code></pre>
+
+<p>　at, httpd, mod_sslなどに依存しているようです。</p>
+
+<h4>mod-spdyが提供するファイル</h4>
+
+<pre><code>$ rpm -ql mod-spdy-beta
+/etc/cron.daily/mod-spdy
+/etc/httpd/conf.d/load_ssl_with_npn.conf
+/etc/httpd/conf.d/spdy.conf
+/usr/lib64/httpd/modules/mod_spdy.so
+/usr/lib64/httpd/modules/mod_ssl_with_npn.so
+</code></pre>
+
+<p>　設定ファイルはload_ssl_with_npn.confとspdy.confです。SSL/TLSが有効になっていること、spdy.confの<code>SpdyEnabled</code>がonになっていること等を確認したらApacheを再起動します。</p>
+
+<pre><code>$ apachectl -M | grep -E "spdy|ssl"
+ ssl_module (shared)
+ spdy_module (shared)
+Syntax OK
+$ /etc/init.d/httpd restart
+Stopping httpd:                                            [  OK  ]
+Starting httpd:                                            [  OK  ]
+</code></pre>
+
+<h4>画像表示の比較</h4>
+
+<p>　同じドメインの画像ファイル20個をブラウザに表示する様子を簡単に比較してみます。
+正確な比較ではありませんが、リクエストのタイムラインが変化している様子をブラウザの開発ツールからも確認できます。</p>
+
+<ul>
+<li><h5>通常のHTTPS</h5>
+
+<p>　左がFirefoxのネットワークモニタ、右がChrome DevToolsのネットワークパネルです。</p>
+
+<p><img class="left" src="http://momoto.github.io/blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0101-ssl-with-firefox.png" width="500">
+<img src="http://momoto.github.io/blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0102-ssl-with-chrome.png" width="500"></p></li>
+<li><h5>SPDYが有効</h5>
+
+<p>　通常のHTTPSからSPDYを有効に切り替えて、同じコンテンツをリクエストした様子です。</p>
+
+<p><img class="left" src="http://momoto.github.io/blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0201-spdy-with-firefox.png" width="500">
+<img src="http://momoto.github.io/blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0202-spdy-with-chrome.png" width="500"></p>
+
+<p>　Firefoxでは画像ファイルのSending（リクエスト送信にかかる時間）がほとんどなくなってWaiting（イニシャルレスポンスを待つ時間）に入れ替わっています。
+Chromeでは画像ファイルのサイズが0Bになっています（code.google.comのChromiumプロジェクトにバグとして報告されているようです<a href="https://code.google.com/p/chromium/issues/detail?id=154706">Issue #154706</a>）。</p></li>
+<li><h5>SPDYが有効（画像ファイルをサーバープッシュ）</h5>
+
+<p>　画像ファイルをX-Associated-Contentでサーバープッシュしています。</p>
+
+<p><img class="left" src="http://momoto.github.io/blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0301-server-push-with-firefox.png" width="500">
+<img src="http://momoto.github.io/blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0302-server-push-with-chrome.png" width="500"></p>
+
+<p>　Chromeでは画像ファイルがCacheからの読み込みとなってタイムラインが大幅に短くなりました（キャッシュはちゃんと消してアクセスしたと思います・・・）。
+X-Associated-Contentを追加した代わりにHTMLファイルの読み込み時間は伸びています。</p></li>
+</ul>
+
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="https://developers.google.com/speed/spdy/">SPDY &ndash; SPDY &mdash; Google Developers</a></li>
+<li><a href="http://code.google.com/p/mod-spdy/wiki/OptimizingForSpdy">How to tune your server to serve pages over SPDY efficiently &ndash; Apache SPDY module &ndash; Google Project Hosting</a></li>
+<li><a href="http://www.iij.ad.jp/company/development/tech/activities/spdy/">Web表示の高速化を実現するSPDYとHTTP/2.0の標準化 | 最新の技術動向 | IIJ</a></li>
+<li><a href="https://developer.mozilla.org/ja/docs/Tools/Network_Monitor">ネットワークモニタ &ndash; 開発ツール | MDN</a></li>
+<li><a href="https://developers.google.com/chrome-developer-tools/docs/network">Evaluating network performance &ndash; Chrome DevTools &mdash; Google Developers</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Apache HTTP ServerのSSL/TLSサポートを有効化する]]></title>
     <link href="http://momoto.github.io/blog/2013/09/08/enabling-ssl-for-apache-http-server/"/>
     <updated>2013-09-08T00:00:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/09/08/enabling-ssl-for-apache-http-server</id>
-    <content type="html"><![CDATA[<p>　mod_sslをつかってApache HTTP ServerのSSL/TLSサポートを有効にします。
+    <content type="html"><![CDATA[<p>　mod_sslをつかってApache HTTP ServerのSSL/TLSサポートを有効化します。
 SSLを有効にするために必要なRSA秘密鍵と公開鍵証明書のうち、公開鍵証明書は第三者の認証局に署名してもらうのが通常ですが、この記事では検証のため自己発行証明書をつかいます。<!-- more --></p>
 
 <p>　手順としては(1) RSA秘密鍵を生成、(2) 証明書署名要求（CSR）を作成、(3) 公開鍵証明書を発行、その後、ウェブサーバでSSL/TLSを設定します。(3)の「公開鍵証明書の発行」は本来、認証局で行う手順です。</p>
@@ -3324,136 +3406,6 @@ pnsft-pur/mozc 1.6.1187.102-4 (mozc-im)
 
 
 <iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&npa=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774150029" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Arch Linux 2012.12.01をインストールする]]></title>
-    <link href="http://momoto.github.io/blog/2013/01/05/install-arch-linux/"/>
-    <updated>2013-01-05T00:00:00+09:00</updated>
-    <id>http://momoto.github.io/blog/2013/01/05/install-arch-linux</id>
-    <content type="html"><![CDATA[<p>　Arch Linux 2012.12.01をインストールした手順の記録です。インストールメディアはarchlinux-2012.12.01-dual.isoを使用しています。
-<a href="https://wiki.archlinux.org/index.php/Installation_Guide_%28%E6%97%A5%E6%9C%AC%E8%AA%9E%29">Installation Guide (日本語) &ndash; ArchWiki</a>の内容と重なる部分が多いですが、自分なりに注釈を加えて記録します。</p>
-
-<p>　インストールにはインターネットに接続できる環境が必要です。
-また、パーティションの構成やインストールするブートローダをあらかじめ決めておく必要があります。
-次の手順ではパーティションテーブルにGPTを使用し、ブートローダにはGRUB2をインストールしています。<!-- more --></p>
-
-<h3>1. キーボード配列の指定</h3>
-
-<p>使用しているキーボード配列を指定する。ここで行う設定は一時的なものであるため、インストール後には改めて設定する必要がある。</p>
-
-<pre><code>root@archiso ~ # loadkeys jp106
-</code></pre>
-
-<h3>2. ストレージデバイスの設定</h3>
-
-<p>接続しているストレージデバイスのパーティショニング、フォーマット、マウントを行う。</p>
-
-<p>パーティショニングはインストールメディアに含まれているパーティショニングツールを使用して行う。その際、パーティションテーブルの規格（MBR、GPT）によって使用するツールは異なる。</p>
-
-<pre><code>root@archiso ~ # gdisk /dev/sdx
-</code></pre>
-
-<p>フォーマットはmkfsを使用して行う。ここでフォーマット対象のパーティションとファイルシステムを指定する。</p>
-
-<pre><code>root@archiso ~ # mkfs.ext4 /dev/sdx1
-</code></pre>
-
-<p>マウントは/mntにrootパーティションが対応するようにして行う。bootパーティションであれば/mnt/bootへマウントする。</p>
-
-<pre><code>root@archiso ~ # mount /dev/sdx1 /mnt
-</code></pre>
-
-<h3>3. システムのインストール</h3>
-
-<p>　Arch Linuxのシステムをインストールする。インストール後に行える設定（ホスト名やタイムゾーンの設定）については省略する。</p>
-
-<p>　pacstrapを使用して、<a href="https://www.archlinux.org/groups/i686/base/">base</a>と<a href="https://www.archlinux.org/groups/i686/base-devel/">base-devel</a>のパッケージをインストールする。
-その際、国内のミラーサーバーからパッケージをダウンロードするようにmirrorlistを編集する。
-日本のミラーサーバーには<a href="http://ftp.tsukuba.wide.ad.jp/Linux/archlinux/">tsukuba.wide.ad.jp</a>と<a href="http://ftp.jaist.ac.jp/pub/Linux/ArchLinux/">jaist.ac.jp</a>がある。</p>
-
-<pre><code>root@archiso ~ # vi /etc/pacman.d/mirrorlist
-root@archiso ~ # pacstrap /mnt base base-devel
-</code></pre>
-
-<p>genfstabを使用して、fstabを生成する。</p>
-
-<pre><code>root@archiso ~ # genfstab -U -p /mnt &gt;&gt; /mnt/etc/fstab
-</code></pre>
-
-<p>arch-chrootを使用して、新しいシステムの環境へ移動する。移動後には再度、使用しているキーボード配列を指定する。</p>
-
-<pre><code>root@archiso ~ # arch-chroot /mnt
-</code></pre>
-
-<p>ブートローダのインストールと設定を行う。ここでの手順はブートローダによって異なる。</p>
-
-<h4>GRUB2</h4>
-
-<pre><code>sh-4.2# pacman -S grub2-bios
-sh-4.2# grub-install /dev/sda
-sh-4.2# grub-mkconfig -o /boot/grub/grub.cfg
-</code></pre>
-
-<h4>Syslinux</h4>
-
-<pre><code>sh-4.2# pacman -S syslinux gptfdisk
-sh-4.2# vi /boot/syslinux/syslinux.cfg
-sh-4.2# syslinux-install_update -i -a -m
-</code></pre>
-
-<h3>4. アンマウントと再起動</h3>
-
-<p>chroot環境を終了させて、上の手順でマウントしたパーティションをアンマウントする。その後、システムを再起動してインストールが完了する。</p>
-
-<pre><code>sh-4.2# exit
-root@archiso ~ # umount /mnt
-root@archiso ~ # reboot
-</code></pre>
-
-<h3>システムの設定</h3>
-
-<p>再起動の後、インストール時に省略した設定を行う。</p>
-
-<h4>ホスト名の設定</h4>
-
-<pre><code>echo myarchlinux &gt; /etc/hostname
-</code></pre>
-
-<h4>タイムゾーンとハードウェアクロックの設定</h4>
-
-<pre><code>ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
-hwclock --systohc --utc
-</code></pre>
-
-<h4>新しいユーザーの追加とそのパスワードの設定</h4>
-
-<pre><code># useradd -m -g users -G wheel -s /bin/bash guest
-# passwd guest
-</code></pre>
-
-<h3>参考</h3>
-
-<ul>
-<li><a href="https://wiki.archlinux.org/index.php/Installation_Guide_%28%E6%97%A5%E6%9C%AC%E8%AA%9E%29">Installation Guide (日本語) &ndash; ArchWiki</a></li>
-<li><a href="https://wiki.archlinux.org/index.php/Beginners%27_Guide_%28%E6%97%A5%E6%9C%AC%E8%AA%9E%29">Beginners&#8217; Guide (日本語) &ndash; ArchWiki</a></li>
-<li>パーティション
-
-<ul>
-<li><a href="https://wiki.archlinux.org/index.php/Master_Boot_Record_%28%E6%97%A5%E6%9C%AC%E8%AA%9E%29">Master Boot Record (日本語) &ndash; ArchWiki</a></li>
-<li><a href="https://wiki.archlinux.org/index.php/GUID_Partition_Table">GUID Partition Table &ndash; ArchWiki</a></li>
-</ul>
-</li>
-<li>ブートローダ
-
-<ul>
-<li><a href="https://wiki.archlinux.org/index.php/Syslinux">Syslinux &ndash; ArchWiki</a></li>
-<li><a href="https://wiki.archlinux.org/index.php/GRUB2">GRUB2 &ndash; ArchWiki</a></li>
-</ul>
-</li>
-</ul>
 
 ]]></content>
   </entry>
