@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <title>momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-<meta name="description" content="　CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。インターネットへ接続できる環境を前提にしています。">
+<meta name="description" content="　GUIDパーティションテーブル（GPT）規格のディスクにSyslinuxをインストールした手順の記録です。OSはArch Linux、パーティショニングにはgptfdisk（gdisk）を使用しています。GPTの利点は2TiBを超える記憶容量を管理できることにありますが、 &hellip;">
 
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://momoto.github.io/blog/page/4/" />
 
 <meta property="og:site_name" content="momoto.github.io">
-<meta property="og:description" content="　CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。インターネットへ接続できる環境を前提にしています。">
+<meta property="og:description" content="　GUIDパーティションテーブル（GPT）規格のディスクにSyslinuxをインストールした手順の記録です。OSはArch Linux、パーティショニングにはgptfdisk（gdisk）を使用しています。GPTの利点は2TiBを超える記憶容量を管理できることにありますが、 &hellip;">
 <meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
 <meta property="fb:app_id" content="561979160531119" />
 <link rel="canonical" href="http://momoto.github.io/blog/page/4/">
@@ -52,6 +52,51 @@
   <div id="main"><div id="content">
     <div class="blog-index">
   
+  
+  
+    <article>
+  <header>
+    
+      <h2 class="entry-title">GPT規格のディスクにSyslinuxをインストールする</h2>
+    
+    
+      <p class="meta">
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-04-08T20:46:00+09:00" pubdate data-updated="true" class="updated">Apr 8<span>th</span>, 2013</time>
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>　GUIDパーティションテーブル（GPT）規格のディスクにSyslinuxをインストールした手順の記録です。OSはArch Linux、パーティショニングにはgptfdisk（gdisk）を使用しています。GPTの利点は2TiBを超える記憶容量を管理できることにありますが、ここでは練習のため8GBの仮想ディスクを使用します。パーティションは以下のようにrootとbootだけに分割します。</p>
+
+<pre><code>Number  Start (sector)    End (sector)  Size       Code  Name
+   1            2048          206847   100.0 MiB   EF02  BIOS boot partition
+   2          206848        16777182   7.9 GiB     8300  Linux filesystem
+</code></pre>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/04/08/install-syslinux-on-gpt-partition-styled-disk/">Read on &rarr;</a>
+    </footer>
+  
+
+</article>
   
   
     <article>
@@ -222,47 +267,6 @@ class Controller_Api extends Controller_Rest {
   
     <footer>
       <a rel="full-article" href="/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp/">Read on &rarr;</a>
-    </footer>
-  
-
-</article>
-  
-  
-    <article>
-  <header>
-    
-      <h2 class="entry-title">Arch Linux Extra/emacs 24.2-4で日本語を入力する</h2>
-    
-    
-      <p class="meta">
-
-
-
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2013-02-24T14:44:00+09:00" pubdate data-updated="true" class="updated">Feb 24<span>th</span>, 2013</time>
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>　Arch LinuxのEmacsで日本語を入力するための設定の記録です。この方法では、Emacsの他、UIM等の入力メソッドフレームワークと、AnthyやMozc等の入力メソッドがインストールされている必要があります。
-<img src="/blog/images/2013-02-24-input-japanese-on-emacs-24-dot-2-4/01.png" title="Mozcを使用して、Emacsで日本語を入力する" ></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/02/24/input-japanese-on-emacs-24-dot-2-4/">Read on &rarr;</a>
     </footer>
   
 
