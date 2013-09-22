@@ -4,7 +4,7 @@
   <title><![CDATA[momoto.github.io]]></title>
   <link href="http://momoto.github.io/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-16T00:08:08+09:00</updated>
+  <updated>2013-09-22T23:12:04+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -91,6 +91,12 @@ X-Associated-Contentを追加した代わりにHTMLファイルの読み込み�
 <li><a href="https://developer.mozilla.org/ja/docs/Tools/Network_Monitor">ネットワークモニタ &ndash; 開発ツール | MDN</a></li>
 <li><a href="https://developers.google.com/chrome-developer-tools/docs/network">Evaluating network performance &ndash; Chrome DevTools &mdash; Google Developers</a></li>
 </ul>
+
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774150363" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=477415783X" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
 
 ]]></content>
   </entry>
@@ -260,6 +266,358 @@ OK: Pass Phrase Dialog successful.
 <li><a href="http://x68000.q-e-d.net/~68user/unix/pickup?openssl">UNIXの部屋 コマンド検索:openssl (*BSD/Linux)</a></li>
 <li><a href="https://support.mozilla.org/ja/kb/Secure%20Connection%20Failed">安全な接続ができませんでした | Firefox ヘルプ</a></li>
 </ul>
+
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=490531822X" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=477415783X" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CentOS 6のシステム設定を確認する]]></title>
+    <link href="http://momoto.github.io/blog/2013/09/01/system-administration-for-centos-6/"/>
+    <updated>2013-09-01T00:00:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/09/01/system-administration-for-centos-6</id>
+    <content type="html"><![CDATA[<p>　CentOS 6の基本的なシステム設定を確認します。
+ここでいうシステム設定は、地域化、ネットワーク、セキュリティ、サービス管理などの設定を対象にしています。デスクトップ環境や外観の設定は含みません。
+また、各機能については基本的な設定までを概観するにとどめて、詳細な設定までは踏み込みません。<!-- more --></p>
+
+<h2>地域化</h2>
+
+<h4>言語の設定（/etc/sysconfig/i18n）</h4>
+
+<p>　言語情報は地域、文字セットとともにLocaleとして設定します。
+現在のLocaleの設定や利用できるLocale名を表示するには<a href="http://www.gnu.org/software/libc/">GNU Cライブラリ</a>の<a href="http://www.gnu.org/software/libc/manual/html_node/Locales.html">locale</a>をつかいます。</p>
+
+<pre><code>$ locale
+LANG=C
+LC_CTYPE="C"
+LC_NUMERIC="C"
+LC_TIME="C"
+LC_COLLATE="C"
+LC_MONETARY="C"
+LC_MESSAGES="C"
+LC_PAPER="C"
+LC_NAME="C"
+LC_ADDRESS="C"
+LC_TELEPHONE="C"
+LC_MEASUREMENT="C"
+LC_IDENTIFICATION="C"
+LC_ALL=
+$ locale -a | grep -Ei "ja|jp"
+ja_JP
+ja_JP.eucjp
+ja_JP.ujis
+ja_JP.utf8
+japanese
+japanese.euc
+</code></pre>
+
+<p>　LocaleはLANG変数に設定します。
+一時的な変更であれば<code>$ export LANG=ja_JP.UTF-8</code>のようにコマンドで定義するか、永続的な変更であればファイルに変数を定義します。
+変数を定義するファイルは、システム全体に適用する場合は/etc/sysconfig/i18n、ユーザごとに適用する場合は~/.bashrcなどです。</p>
+
+<pre><code>$ LANG=ja_JP.UTF-8
+$ locale | sudo tee /etc/sysconfig/i18n
+LANG=ja_JP.UTF-8
+LC_CTYPE="ja_JP.UTF-8"
+LC_NUMERIC="ja_JP.UTF-8"
+LC_TIME="ja_JP.UTF-8"
+LC_COLLATE="ja_JP.UTF-8"
+LC_MONETARY="ja_JP.UTF-8"
+LC_MESSAGES="ja_JP.UTF-8"
+LC_PAPER="ja_JP.UTF-8"
+LC_NAME="ja_JP.UTF-8"
+LC_ADDRESS="ja_JP.UTF-8"
+LC_TELEPHONE="ja_JP.UTF-8"
+LC_MEASUREMENT="ja_JP.UTF-8"
+LC_IDENTIFICATION="ja_JP.UTF-8"
+LC_ALL=
+</code></pre>
+
+<p>　日本語を設定する場合の注意点として、Locale名はja_JP.utf8ではなくja_JP.UTF-8を使用したほうが良いようです。</p>
+
+<h5>参考</h5>
+
+<ul>
+<li><a href="http://blog.at-dk.info/2011/03/jajputf-8-vs-jajputf8.html">ただのメモ: ja_JP.UTF-8 vs ja_JP.utf8</a></li>
+<li><a href="http://www.gnu.org/software/libc/manual/html_node/Locales.html#Locales">Locales &ndash; The GNU C Library</a></li>
+</ul>
+
+
+<h4>システム時刻の設定（/etc/sysconfig/clock）</h4>
+
+<p>　時刻系やタイムゾーンは/etc/sysconfig/clockに設定します。また、タイムゾーン情報は<a href="https://www.iana.org/time-zones">tzdata</a>のバイナリファイルを/etc/localtimeに保存します。</p>
+
+<pre><code>$ sudo vi /etc/sysconfig/clock
+
+ZONE="Asia/Tokyo"
+UTC=false
+
+$ sudo ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+</code></pre>
+
+<h5>参考</h5>
+
+<ul>
+<li><a href="http://www.redhat.com/advice/tips/timezone.html">Tips &amp; Tricks: Changing timezone | Red Hat</a></li>
+<li><a href="http://www.gnu.org/software/libc/manual/html_node/Date-and-Time.html#Date-and-Time">Date and Time &ndash; The GNU C Library</a></li>
+</ul>
+
+
+<h4>キー配列の設定（/etc/sysconfig/keyboard）</h4>
+
+<p>　キー配列は/etc/sysconfig/keyboardに設定します。KEYTABLEに指定できる値は/lib/kbd/keymaps/i386/&lt;<em>配列</em>>/&lt;<em>表名</em>>.map.gzにある表名です。日本語106であればjp106を設定します。</p>
+
+<pre><code>$ sudo vi /etc/sysconfig/keyboard
+
+KEYTABLE="jp106"
+KEYBOARDTYPE="pc"
+</code></pre>
+
+<p>　<a href="http://www.kbd-project.org/">kbd</a>の<a href="http://www.kbd-project.org/manpages/man1/loadkeys.1.html">loadkeys</a>をつかって一時的に変更することもできます。</p>
+
+<pre><code>$ loadkeys jp106
+Loading /lib/kbd/keymaps/i386/qwerty/jp106.map.gz
+</code></pre>
+
+<p>　/etc/sysconfig/keyboardの設定はX Window Systemのキーボード設定とは異なります。</p>
+
+<h5>参考</h5>
+
+<ul>
+<li><a href="http://www.kbd-project.org/manpages/index.html">man pages | KBD</a></li>
+</ul>
+
+
+<h2>ネットワーク</h2>
+
+<h4>ネットワークの設定（/etc/sysconfig/network、/etc/sysconfig/network-scripts/ifcfg-&lt;<em>interface</em>>）</h4>
+
+<p>　RHEL 6のクローンでは、ネットワークインタフェースによらない設定とインタフェースごとの設定とで、設定ファイルがわかれています。</p>
+
+<p>　グローバルな設定では、ホスト名やゲートウェイなどの情報を/etc/sysconfig/networkに設定します。</p>
+
+<pre><code>$ sudo vi /etc/sysconfig/network
+
+NETWORKING=yes
+HOSTNAME=localhost.localdomain
+</code></pre>
+
+<p>　インタフェースごとの設定では、DHCPの利用するかどうか、DHCPを利用しない場合のIPなどの情報を/etc/sysconfig/ifcfg-&lt;<em>interface</em>>に設定します。</p>
+
+<pre><code>$ sudo vi /etc/sysconfig/network-scripts/ifcfg-eth0
+
+DEVICE="eth0"
+BOOTPROTO="dhcp"
+NM_CONTROLLED="yes"
+ONBOOT="yes"
+TYPE="Ethernet"
+</code></pre>
+
+<p>　設定ファイルを書き換えたらネットワークサービスを再起動して変更を反映します。</p>
+
+<pre><code>$ sudo service network restart
+インターフェース eth0 を終了中:                            [  OK  ]
+ループバックインターフェースを終了中                       [  OK  ]
+ループバックインターフェイスを呼び込み中                   [  OK  ]
+インターフェース eth0 を活性化中:
+eth0 のIP情報を検出中... 完了。
+                                                           [  OK  ]
+</code></pre>
+
+<h5>参考</h5>
+
+<ul>
+<li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/part-Networking.html">パート III. ネットワーキング – Red Hat Customer Portal</a></li>
+</ul>
+
+
+<h4>名前解決の設定（nsswitch.conf、host.conf、hosts、resolv.conf）</h4>
+
+<ul>
+<li><p>　名前解決の方法の順序は/etc/nsswitch.confに設定します。</p>
+
+<pre><code>  $ sudo vi /etc/nsswitch.conf
+
+  ...
+  #hosts:     db files nisplus nis dns
+  hosts:      files dns
+  ...
+</code></pre>
+
+<p>　/etc/host.confにも同様の設定がありますが、CentOS 6ではnsswitch.confが優先されるようです（System V系とBSD系のちがい？）。</p></li>
+<li><p>　ローカルホストでのみ有効なホストテーブルは/etc/hostsに設定します。</p>
+
+<pre><code>  $ sudo vi /etc/hosts
+
+  127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+  ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+</code></pre></li>
+<li><p>　ネームサーバのIPアドレスは/etc/resolv.confに設定します。</p>
+
+<pre><code>  $ sudo vi /etc/resolv.conf
+  ; generated by /sbin/dhclient-script
+  nameserver 10.0.2.3
+</code></pre></li>
+</ul>
+
+
+<h5>参考</h5>
+
+<ul>
+<li><a href="http://linuxjm.sourceforge.jp/html/LDP_man-pages/man5/nsswitch.conf.5.html">Man page of NSSWITCH.CONF</a></li>
+<li><a href="http://linuxjm.sourceforge.jp/html/LDP_man-pages/man5/host.conf.5.html">Man page of HOST.CONF</a></li>
+<li><a href="http://linuxjm.sourceforge.jp/html/LDP_man-pages/man5/hosts.5.html">Man page of HOSTS</a></li>
+<li><a href="http://linuxjm.sourceforge.jp/html/LDP_man-pages/man5/resolver.5.html">Man page of RESOLV.CONF</a></li>
+</ul>
+
+
+<h2>セキュリティ</h2>
+
+<h4>SELinuxの設定（/etc/sysconfig/selinux）</h4>
+
+<p>　現在のSELinuxの状態を表示するには<code>getenforce</code>をつかいます。
+SELinuxの状態はEnforcing（SELinuxが有効、ポリシーは強制される）、Permissive（SELinuxが有効、ポリシーは強制されない）、Disabled（SELinuxが無効）のいずれかです。
+ポリシーが強制されるとルールに基づいてアクセスが制限されます。強制されない場合はアクセスの制限はありませんが、ルールに反するアクセスがログに記録されます。</p>
+
+<pre><code>$ getenforce
+Enforcing
+</code></pre>
+
+<p>　一時的にEnforcing、Permissiveを切替えるには<code>setenforce</code>をつかいます。<code>setenforce 0</code>でPermissiveへ、<code>setenforce 1</code>でEnforcingへ切り替わります。</p>
+
+<pre><code>$ sudo setenforce 0
+$ getenforce
+Permissive
+</code></pre>
+
+<p>　永続的に状態を切り替えるには/etc/sysconfig/selinuxのSELINUX=&lt;<em>状態</em>>を設定して、システムを再起動します。SELinuxを無効化する場合はSELINUX=disabledを設定します。</p>
+
+<pre><code>$ sudo vi /etc/sysconfig/selinux
+
+# This file controls the state of SELinux on the system.
+# SELINUX= can take one of these three values:
+#       enforcing - SELinux security policy is enforced.
+#       permissive - SELinux prints warnings instead of enforcing.
+#       disabled - SELinux is fully disabled.
+SELINUX=disabled
+
+$ sudo reboot
+</code></pre>
+
+<p>　SELinuxには、ポリシー記述の知識がなくても変数のon/offを切り替えるだけでポリシーを変更できるブール値が用意されています。このブール値の一覧を表示するには<code>getsebool -a</code>をつかいます。</p>
+
+<pre><code>$ getsebool -a | head
+abrt_anon_write --&gt; off
+abrt_handle_event --&gt; off
+allow_console_login --&gt; on
+allow_cvs_read_shadow --&gt; off
+allow_daemons_dump_core --&gt; on
+...
+</code></pre>
+
+<p>　ブール値を変更するには<code>setsebool -P &lt;*ブール値名*&gt; &lt;*値*&gt;</code>をつかいます。</p>
+
+<pre><code>$ sudo setsebool -P httpd_can_network_connect_db on
+</code></pre>
+
+<h5>参考</h5>
+
+<ul>
+<li><a href="http://itpro.nikkeibp.co.jp/article/COLUMN/20070827/280411/">第一人者がやさしく教える新SELinux入門 &ndash; 第一人者がやさしく教える新SELinux入門&mdash;-目次：ITpro</a></li>
+<li><a href="http://rewse.jp/blog/p/4825">Scientific Linux 6 でのSELinux管理コマンドまとめ | 複眼中心</a></li>
+<li><a href="http://morphmorph.com/archives/103">コマンドラインでちょっとSELinux  |  MorphMorph</a></li>
+</ul>
+
+
+<h2>サービス管理</h2>
+
+<!-- #### パッケージ管理 -->
+
+
+<h4>自動起動の設定（chkconfig）</h4>
+
+<p>　サービスの自動起動はchkconfigで設定します。サービスと現在の設定の一覧を表示するには<code>chkconfig --list</code>をつかいます。</p>
+
+<pre><code>$ chkconfig --list
+NetworkManager  0:off   1:off   2:on    3:on    4:on    5:on    6:off
+abrtd           0:off   1:off   2:off   3:on    4:off   5:on    6:off
+acpid           0:off   1:off   2:on    3:on    4:on    5:on    6:off
+anamon          0:off   1:off   2:off   3:off   4:off   5:off   6:off
+atd             0:off   1:off   2:off   3:on    4:on    5:on    6:off
+auditd          0:off   1:off   2:on    3:on    4:on    5:on    6:off
+...
+</code></pre>
+
+<p>　上記の一覧は一行ずつ、サービス名とどのランレベル（0〜6）で起動するか（on/off）を示しています。</p>
+
+<p>　サービスの自動起動を有効にするには<code>chkconfig &lt;サービス名&gt; on</code>をつかいます。無効にするには<code>chkconfig &lt;サービス名&gt; off</code>にしてください。</p>
+
+<pre><code>$ sudo chkconfig httpd on
+$ chkconfig --list httpd
+httpd          0:off   1:off   2:on    3:on    4:on    5:on    6:off
+</code></pre>
+
+<p>　ランレベルとは、システムの状態（シングルユーザモードかマルチユーザモードなど）によって切り替わる数字です。CUIのマルチユーザモードであれば3、GUIのマルチユーザモードであれば5が、CentOS 6のデフォルトです。
+ランレベルについて詳しく踏み込みませんが、/etc/inittabのコメントで少し説明されています。現在のランレベルを確認するには<code>runlevel</code>をつかいます。</p>
+
+<pre><code>$ tail /etc/inittab
+
+# Default runlevel. The runlevels used are:
+#   0 - halt (Do NOT set initdefault to this)
+#   1 - Single user mode
+#   2 - Multiuser, without NFS (The same as 3, if you do not have networking)
+#   3 - Full multiuser mode
+#   4 - unused
+#   5 - X11
+#   6 - reboot (Do NOT set initdefault to this)
+#
+id:3:initdefault:
+
+$ runlevel
+N 3
+</code></pre>
+
+<h5>参考</h5>
+
+<ul>
+<li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/s2-services-chkconfig.html">10.2.3. chkconfig &#12518;&#12540;&#12486;&#12451;&#12522;&#12486;&#12451;&#12398;&#20351;&#29992; &ndash; Red Hat Customer Portal</a></li>
+</ul>
+
+
+<!-- ## リソース管理 -->
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/index.html">導入ガイド &ndash; Red Hat Customer Portal</a></li>
+<li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Security_Guide/index.html">セキュリティガイド – Red Hat Customer Portal</a></li>
+<li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Security-Enhanced_Linux/index.html">Security-Enhanced Linux &ndash; Red Hat Customer Portal</a></li>
+</ul>
+
+
+<h2>関連記事</h2>
+
+<ul>
+<li><a href="http://momoto.github.io/2013/04/06/install-centos-6-dot-4-i386-netinstall/">CentOS 6.4をインストールする</a></li>
+</ul>
+
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774146757" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774158135" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=B00BWCSUYS" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774155934" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
 
 ]]></content>
   </entry>
@@ -477,6 +835,15 @@ node2                     running (virtualbox)
 <li><a href="http://momoto.github.io/blog/2013/08/11/guide-to-creating-virtual-machine-with-qemu/">QEMUをつかって仮想マシンを作成する</a></li>
 </ul>
 
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4798121401" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=477415038X" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4822262731" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
 ]]></content>
   </entry>
   
@@ -615,6 +982,12 @@ remote: Fetching gem metadata from http://rubygems.org/.........
 <li><a href="http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku/">HerokuにRedmine 2.3.1を展開する</a></li>
 </ul>
 
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4822211983" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774155934" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
 ]]></content>
   </entry>
   
@@ -750,6 +1123,12 @@ quota           list disk usage
 <ul>
 <li><a href="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/">Red Hat OpenShiftにRedmine 2.0を展開する</a></li>
 </ul>
+
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4798121622" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+
+
+<iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4798034401" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
 
 ]]></content>
   </entry>
@@ -3411,91 +3790,6 @@ livecd ~ # reboot
 <li><a href="http://www.gentoo.org/doc/ja/handbook/">Gentooハンドブック（日本語）</a></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[FuelPHP Restコントローラの使い方]]></title>
-    <link href="http://momoto.github.io/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp/"/>
-    <updated>2013-03-03T23:38:00+09:00</updated>
-    <id>http://momoto.github.io/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp</id>
-    <content type="html"><![CDATA[<p>　FuelPHPのRestコントローラを試用してみます。クラスファイルは、通常のコントローラと同様に<code>fuel/app/classes/controller</code>へ設置して使用します。まずは次のような内容でapi.phpを作成し、ブラウザから出力を確認してみます。Restコントローラを使用する場合、継承するクラスはControllerではなく<code>Controller_Rest</code>になります。</p>
-
-<pre><code>&lt;?php
-class Controller_Api extends Controller_Rest {
-  public function action_range() {
-    $this-&gt;response(array(1,2,3));
-  }
-}
-</code></pre>
-
-<!-- more -->
-
-
-<p>　ブラウザから<code>http://localhost/api/range</code>へアクセスをしてみると、responseメソッドへ引数として渡した配列がPHPが整形する形式（Content-type:text/html）で出力されます。</p>
-
-<pre><code>array(3) {
-  [0]=&gt;
-  string(1) "1"
-  [1]=&gt;
-  string(1) "2"
-  [2]=&gt;
-  string(1) "3"
-}
-</code></pre>
-
-<p>　このままでは他のプログラムからデータを読み込めんでもらえないので、JSONやXMLなどの一般的な形式で出力するため、次のプロパティを加えて出力形式を指定します。</p>
-
-<pre><code>&lt;?php
-class Controller_Api extends Controller_Rest {
-  protected $format = 'json';
-  public function post_q() {
-    $this-&gt;response(array(1,2,3));
-  }
-}
----
-Content-Type:application/json
-
-[1,2,3]
-</code></pre>
-
-<p>　そうするとHTTP応答ヘッダが変わり、出力もJSON形式へと変換されます。PHPの定義済み変数である$_SERVERを、XML形式で出力してみると次のようになります。</p>
-
-<pre><code>&lt;?php
-class Controller_Api extends Controller_Rest {
-  protected $format = 'xml';
-  public function action_server() {
-    $this-&gt;response($_SERVER);
-  }
-}
----
-Content-Type:application/xml
-
-&lt;xml&gt;
-&lt;SERVER_SOFTWARE&gt;PHP 5.4.12 Development Server&lt;/SERVER_SOFTWARE&gt;
-&lt;SERVER_PROTOCOL&gt;HTTP/1.1&lt;/SERVER_PROTOCOL&gt;
-&lt;SERVER_NAME&gt;localhost&lt;/SERVER_NAME&gt;
-&lt;SERVER_PORT&gt;8000&lt;/SERVER_PORT&gt;
-&lt;REQUEST_URI&gt;/api/server&lt;/REQUEST_URI&gt;
-&lt;REQUEST_METHOD&gt;GET&lt;/REQUEST_METHOD&gt;
-&lt;HTTP_HOST&gt;localhost:8000&lt;/HTTP_HOST&gt;
-&lt;HTTP_USER_AGENT&gt;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.97 Safari/537.22&lt;/HTTP_USER_AGENT&gt;
-...(略)
-</code></pre>
-
-<p>　FuelPHP 1.4で対応されている形式については<code>fuel/core/classes/controller/rest.php</code>の<code>$_supported_formats</code>変数に設定されています。</p>
-
-<pre><code>protected $_supported_formats = array(
-        'xml' =&gt; 'application/xml',
-        'rawxml' =&gt; 'application/xml',
-        'json' =&gt; 'application/json',
-        'jsonp'=&gt; 'text/javascript',
-        'serialized' =&gt; 'application/vnd.php.serialized',
-        'php' =&gt; 'text/plain',
-        'html' =&gt; 'text/html',
-        'csv' =&gt; 'application/csv',
-);
-</code></pre>
 ]]></content>
   </entry>
   

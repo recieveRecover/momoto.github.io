@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <title>momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-<meta name="description" content="　Arch LinuxのEmacsで日本語を入力するための設定の記録です。この方法では、Emacsの他、UIM等の入力メソッドフレームワークと、AnthyやMozc等の入力メソッドがインストールされている必要があります。 ">
+<meta name="description" content="　FuelPHPのRestコントローラを試用してみます。クラスファイルは、通常のコントローラと同様にfuel/app/classes/controllerへ設置して使用します。まずは次のような内容でapi.phpを作成し、ブラウザから出力を確認してみます。Restコントローラを使用する場合、 &hellip;">
 
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://momoto.github.io/blog/page/5/" />
 
 <meta property="og:site_name" content="momoto.github.io">
-<meta property="og:description" content="　Arch LinuxのEmacsで日本語を入力するための設定の記録です。この方法では、Emacsの他、UIM等の入力メソッドフレームワークと、AnthyやMozc等の入力メソッドがインストールされている必要があります。 ">
+<meta property="og:description" content="　FuelPHPのRestコントローラを試用してみます。クラスファイルは、通常のコントローラと同様にfuel/app/classes/controllerへ設置して使用します。まずは次のような内容でapi.phpを作成し、ブラウザから出力を確認してみます。Restコントローラを使用する場合、 &hellip;">
 <meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
 <meta property="fb:app_id" content="561979160531119" />
 <link rel="canonical" href="http://momoto.github.io/blog/page/5/">
@@ -49,9 +49,57 @@
   </div>
 </div>
 <div id="body" class="collapse-sidebar sidebar-footer">
-  <div id="main"><div id="content">
-    <div class="blog-index">
+  <div id="main">
+    <div id="content"><div class="blog-index">
   
+  
+  
+    <article>
+  <header>
+    
+      <h2 class="entry-title">FuelPHP Restコントローラの使い方</h2>
+    
+    
+      <p class="meta">
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-03-03T23:38:00+09:00" pubdate data-updated="true" class="updated">Mar 3<span>rd</span>, 2013</time>
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>　FuelPHPのRestコントローラを試用してみます。クラスファイルは、通常のコントローラと同様に<code>fuel/app/classes/controller</code>へ設置して使用します。まずは次のような内容でapi.phpを作成し、ブラウザから出力を確認してみます。Restコントローラを使用する場合、継承するクラスはControllerではなく<code>Controller_Rest</code>になります。</p>
+
+<pre><code>&lt;?php
+class Controller_Api extends Controller_Rest {
+  public function action_range() {
+    $this-&gt;response(array(1,2,3));
+  }
+}
+</code></pre>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp/">Read on &rarr;</a>
+    </footer>
+  
+
+</article>
   
   
     <article>
@@ -217,49 +265,6 @@
 
 </article>
   
-  
-    <article>
-  <header>
-    
-      <h2 class="entry-title">Ubuntu 12.10にrbenvとruby-buildをインストール</h2>
-    
-    
-      <p class="meta">
-
-
-
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2012-11-23T20:23:00+09:00" pubdate data-updated="true" class="updated">Nov 23<span>rd</span>, 2012</time>
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>rbenvとruby-buildを使用して、Ubuntu 12.10にRuby 1.9.3をインストールしたときの記録です。
-rbenvとruby-buildはディストリビューションが配布するパッケージに含まれているため、Ubuntuのバージョン管理システム（APT）からインストールすることもできますが、次の記録はgithub.comからクローンする方法によるものです。</p>
-
-<p>(* <em><a href="http://packages.ubuntu.com/quantal/rbenv" title="Ubuntu -- quantal の rbenv パッケージに関する詳細">rbenv</a>はprecise (12.04)以降、<a href="http://packages.ubuntu.com/quantal/ruby-build" title="Ubuntu -- quantal の ruby-build パッケージに関する詳細">ruby-build</a>はquantal (12.10)以降にuniverseに追加されたようです</em> )</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/11/23/install-rbenv-and-ruby-build-on-ubuntu-12-dot-10/">Read on &rarr;</a>
-    </footer>
-  
-
-</article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/6/">&larr; Older</a>
@@ -270,8 +275,7 @@ rbenvとruby-buildはディストリビューションが配布するパッケ�
     
   </div>
 </div>
-
-    <aside class="sidebar"><section class="vcard">
+<aside class="sidebar"><section class="vcard">
 <h2>About Me</h2>
 <p>
 <a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
@@ -279,34 +283,14 @@ rbenvとruby-buildはディストリビューションが配布するパッケ�
 <a href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
 <a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
 </section>
-</aside>
-  </div></div>
-  <footer role="contentinfo"><p>Copyright &copy; 2013 - <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a> - <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>. Design by <a href="http://octopressthemes.com">Octopress Themes</a>.</span></p></footer>
+</aside></div>
+  </div>
+  <footer role="contentinfo"><p>&copy; Copyright 2013, <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a>. <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> and <a href="http://pages.github.com/">GitHub Pages</a>.</span></p></footer>
 </div>
 <script src="/javascripts/modernizr-2.0.js"></script>
 <script src="/javascripts/ender.js"></script>
 <script src="/javascripts/octopress.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-    var disqus_shortname = 'momotogithubio';
-
-    var disqus_script = 'count.js';
-
-    (function () {
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
-
-<script type="text/javascript">
-  (function() {
-    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
-    script.src = 'https://apis.google.com/js/plusone.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
-  })();
-</script>
-
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 <div id="fb-root"></div>
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
@@ -315,10 +299,16 @@ rbenvとruby-buildはディストリビューションが配布するパッケ�
   js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1&appId=561979160531119";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
-
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-
+<script type="text/javascript">
+  (function() {
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+  })();
+</script>
+<script src="//platform.linkedin.com/in.js" type="text/javascript"> lang: ja_JP </script>
 <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+
 
 </body>
 </html>

@@ -6,16 +6,8 @@
 <meta charset="utf-8">
 <title>momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-<meta name="description" content="統一モデリング言語（UML）は、システムの構造や振る舞いを図で表現するために標準化されたモデリング言語の一つ。
-規定されている13種類の図を必要に応じて使い分ける。 クラス図
-複合構造図
-コンポーネント図
-配置図
-オブジェクト図
-パッケージ図
-アクティビティ図
-ユースケース図
-ステートマシン図 &hellip;">
+<meta name="description" content="virt-installを使って、CUIから仮想マシンのディスクイメージを作成する。 動作要件として、ホストOSにハイパーバイザ（KVMやXen）とlibvirtがインストールされていて、libvirtdが起動している必要がある。
+virt-install自体は、RPMでは&#8221; &hellip;">
 
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
@@ -24,16 +16,8 @@
 <meta property="og:url" content="http://momoto.github.io/blog/page/7/" />
 
 <meta property="og:site_name" content="momoto.github.io">
-<meta property="og:description" content="統一モデリング言語（UML）は、システムの構造や振る舞いを図で表現するために標準化されたモデリング言語の一つ。
-規定されている13種類の図を必要に応じて使い分ける。 クラス図
-複合構造図
-コンポーネント図
-配置図
-オブジェクト図
-パッケージ図
-アクティビティ図
-ユースケース図
-ステートマシン図 &hellip;">
+<meta property="og:description" content="virt-installを使って、CUIから仮想マシンのディスクイメージを作成する。 動作要件として、ホストOSにハイパーバイザ（KVMやXen）とlibvirtがインストールされていて、libvirtdが起動している必要がある。
+virt-install自体は、RPMでは&#8221; &hellip;">
 <meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
 <meta property="fb:app_id" content="561979160531119" />
 <link rel="canonical" href="http://momoto.github.io/blog/page/7/">
@@ -67,9 +51,53 @@
   </div>
 </div>
 <div id="body" class="collapse-sidebar sidebar-footer">
-  <div id="main"><div id="content">
-    <div class="blog-index">
+  <div id="main">
+    <div id="content"><div class="blog-index">
   
+  
+  
+    <article>
+  <header>
+    
+      <h2 class="entry-title">Libvirtを用いて仮想マシンを構築、インストールする</h2>
+    
+    
+      <p class="meta">
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2012-08-04T09:49:00+09:00" pubdate data-updated="true" class="updated">Aug 4<span>th</span>, 2012</time>
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>virt-installを使って、CUIから仮想マシンのディスクイメージを作成する。</p>
+
+<p>動作要件として、ホストOSにハイパーバイザ（KVMやXen）とlibvirtがインストールされていて、libvirtdが起動している必要がある。
+virt-install自体は、RPMでは&#8221;python-virtinst&#8221;パッケージに含まれている。
+（参考：<a href="http://rpmfind.net/linux/rpm2html/search.php?query=virt-install">RPM resource virt-install</a>）</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/08/04/build-and-install-libvirt-based-virtual-machine/">Read on &rarr;</a>
+    </footer>
+  
+
+</article>
   
   
     <article>
@@ -332,103 +360,9 @@
 
 </article>
   
-  
-    <article>
-  <header>
-    
-      <h2 class="entry-title">OctopressをGithub Pagesにデプロイ</h2>
-    
-    
-      <p class="meta">
-
-
-
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2012-07-31T10:14:00+09:00" pubdate data-updated="true" class="updated">Jul 31<span>st</span>, 2012</time>
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h4>要件</h4>
-
-<ul>
-<li>github</li>
-<li>ruby-1.9.2-p290</li>
-<li>(rbenv and ruby-build) || rvm</li>
-</ul>
-
-
-<h4>Octopressのセットアップ</h4>
-
-<pre><code>$ git clone git://github.com/imathis/octopress.git octopress
-$ cd octopress/
-
-$ gem install bundler
-$ bundle install
-
-$ rake install
-$ rake setup_github_pages
-
-  Enter the read/write url for your repository
-  (For example, 'git@github.com:your_username/your_username.github.com)
-  Repository url: 
-
-$ rake generate
-$ rake deploy
-</code></pre>
-
-<h4>&ldquo;source&#8221;ブランチに、ブログのソースを残す</h4>
-
-<pre><code>$ git add .
-$ git commit -m 'your message'
-$ git push origin source
-</code></pre>
-
-<h4>記事を投稿</h4>
-
-<p>$ rake new_post[&ldquo;hello, world&rdquo;]
-$ vi source/_posts/YYYY-MM-DD-hello.world.markdown</p>
-
-<pre><code>---
-layout: post
-title: "hello, world"
-date: YYYY-MM-DD hh:mm
-comments: true
-categories:
----
-
-hello, world 
-</code></pre>
-
-<p>$ rake generate
-$ rake deploy</p>
-
-<h4>参考</h4>
-
-<ul>
-<li><a href="http://octopress.org/docs/setup/">Octopress Setup &ndash; Octopress</a></li>
-<li><a href="http://octopress.org/docs/deploying/github/">Deploying to Github Pages &ndash; Octopress</a></li>
-<li><a href="http://octopress.org/docs/blogging/">Blogging Basics &ndash; Octopress</a></li>
-</ul>
-
-</div>
-  
-  
-
-</article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/8/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -436,8 +370,7 @@ $ rake deploy</p>
     
   </div>
 </div>
-
-    <aside class="sidebar"><section class="vcard">
+<aside class="sidebar"><section class="vcard">
 <h2>About Me</h2>
 <p>
 <a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
@@ -445,34 +378,14 @@ $ rake deploy</p>
 <a href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
 <a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
 </section>
-</aside>
-  </div></div>
-  <footer role="contentinfo"><p>Copyright &copy; 2013 - <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a> - <span class="credit">Powered by <a href="http://octopress.org">Octopress</a>. Design by <a href="http://octopressthemes.com">Octopress Themes</a>.</span></p></footer>
+</aside></div>
+  </div>
+  <footer role="contentinfo"><p>&copy; Copyright 2013, <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a>. <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> and <a href="http://pages.github.com/">GitHub Pages</a>.</span></p></footer>
 </div>
 <script src="/javascripts/modernizr-2.0.js"></script>
 <script src="/javascripts/ender.js"></script>
 <script src="/javascripts/octopress.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-    var disqus_shortname = 'momotogithubio';
-
-    var disqus_script = 'count.js';
-
-    (function () {
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
-
-<script type="text/javascript">
-  (function() {
-    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
-    script.src = 'https://apis.google.com/js/plusone.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
-  })();
-</script>
-
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 <div id="fb-root"></div>
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
@@ -481,10 +394,16 @@ $ rake deploy</p>
   js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1&appId=561979160531119";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
-
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-
+<script type="text/javascript">
+  (function() {
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+  })();
+</script>
+<script src="//platform.linkedin.com/in.js" type="text/javascript"> lang: ja_JP </script>
 <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+
 
 </body>
 </html>
