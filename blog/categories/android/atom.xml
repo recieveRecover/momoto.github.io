@@ -4,7 +4,7 @@
   <title><![CDATA[Android | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/android/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-23T07:54:45+09:00</updated>
+  <updated>2013-09-23T07:56:30+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -54,7 +54,7 @@ $ ~/android-sdks/platform-tools/adb devices</p>
 
 <p>adbから検出できれば、EclipseプラグインADTの「Device Chooser」からも同様に認識できる。</p>
 
-<p>{% img /blog/images/2012-08-02-set-up-udev-rules-to-detect-android-device/01.png %}</p>
+<p><img src="/blog/images/2012-08-02-set-up-udev-rules-to-detect-android-device/01.png"></p>
 
 <h4>参考</h4>
 

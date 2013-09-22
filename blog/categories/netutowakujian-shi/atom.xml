@@ -4,7 +4,7 @@
   <title><![CDATA[ネットワーク監視 | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/netutowakujian-shi/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-23T07:54:45+09:00</updated>
+  <updated>2013-09-23T07:56:30+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -143,9 +143,9 @@ Starting nagios:                                           [  OK  ]
 
 <p>　Nagiosのウェブインタフェースへアクセスして動作を確かめてみます。認証には上のhtpasswdで設定したユーザ名とパスワードを入力します。</p>
 
-<p>{% img /blog/images/2013-09-22-installing-nagios-core-4-dot-0-0-from-source/01-nagios-access.png 500 Nagios Access %}</p>
+<p><img src="/blog/images/2013-09-22-installing-nagios-core-4-dot-0-0-from-source/01-nagios-access.png" width="500" title="Nagios Access" ></p>
 
-<p>{% img /blog/images/2013-09-22-installing-nagios-core-4-dot-0-0-from-source/02-nagios-web-interface.png 500 Nagiosのウェブインタフェース %}</p></li>
+<p><img src="/blog/images/2013-09-22-installing-nagios-core-4-dot-0-0-from-source/02-nagios-web-interface.png" width="500" title="Nagiosのウェブインタフェース" ></p></li>
 <li><h4>自動起動を設定する</h4>
 
 <p>　必要に応じて、Nagiosの自動起動を設定します。</p>

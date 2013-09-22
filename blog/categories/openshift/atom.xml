@@ -4,7 +4,7 @@
   <title><![CDATA[OpenShift | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/openshift/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-23T07:54:45+09:00</updated>
+  <updated>2013-09-23T07:56:30+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -122,7 +122,7 @@ remote: Fetching gem metadata from http://rubygems.org/.........
 
 <p>　<code>git push</code>の処理が終わったら、ウェブブラウザからアプリケーションのURLへアクセスして動作を確認します。アプリケーションのURLは<code>rhc show-app &lt;app&gt;</code>からも確認できます。</p>
 
-<p>{% img /blog/images/2013-08-24-deploying-redmine-2-dot-0-on-openshift/redmine-home.png 500 Red Hat OpenShiftにRedmine 2.0を展開する %}</p></li>
+<p><img src="/blog/images/2013-08-24-deploying-redmine-2-dot-0-on-openshift/redmine-home.png" width="500" title="Red Hat OpenShiftにRedmine 2.0を展開する" ></p></li>
 </ol>
 
 

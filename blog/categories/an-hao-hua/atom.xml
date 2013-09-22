@@ -4,7 +4,7 @@
   <title><![CDATA[暗号化 | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/an-hao-hua/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-23T07:54:45+09:00</updated>
+  <updated>2013-09-23T07:56:30+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -160,13 +160,13 @@ OK: Pass Phrase Dialog successful.
 
 <p>　ウェブサーバにアクセスしてみると、発行者不明（sec_error_unknown_issuer）のため接続を信頼されていませんが、接続は暗号化されているようです。</p>
 
-<p>{% img /blog/images/2013-09-08-enabling-ssl-for-apache-http-server/01-untrusted-connection.png 500 安全性を確認できない接続 %}</p>
+<p><img src="/blog/images/2013-09-08-enabling-ssl-for-apache-http-server/01-untrusted-connection.png" width="500" title="安全性を確認できない接続" ></p>
 
-<p>{% img /blog/images/2013-09-08-enabling-ssl-for-apache-http-server/02-connection-encrypted.png 500 暗号化された接続 %}</p>
+<p><img src="/blog/images/2013-09-08-enabling-ssl-for-apache-http-server/02-connection-encrypted.png" width="500" title="暗号化された接続" ></p>
 
 <p>　証明書情報を表示すると入力したディスティングイッシュネームを確認することができます。また、この記事の例では主体者と発行者が同一になっていることも確認できます。</p>
 
-<p>{% img /blog/images/2013-09-08-enabling-ssl-for-apache-http-server/03-could-not-verify-this-certificate.png 500 信頼性を検証できない証明書 %}</p>
+<p><img src="/blog/images/2013-09-08-enabling-ssl-for-apache-http-server/03-could-not-verify-this-certificate.png" width="500" title="信頼性を検証できない証明書" ></p>
 
 <h2>参考</h2>
 

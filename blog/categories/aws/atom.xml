@@ -4,7 +4,7 @@
   <title><![CDATA[AWS | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-23T07:54:45+09:00</updated>
+  <updated>2013-09-23T07:56:30+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -27,40 +27,40 @@
 <li><p>　Amazon EC2 Console Dashboardから「Launch Instance」を選択する。
 必要な操作はすべてウェブインタフェースから行うので、ブラウザさえあればEC2インスタンスを作成することができる。</p>
 
-<p><a href="/blog/images/2012-12-06/01.png">{% img /blog/images/2012-12-06-create-and-ssh-to-ec2-instance/01.png 600 %}</a></p></li>
+<p><a href="/blog/images/2012-12-06/01.png"><img src="/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/01.png" width="600"></a></p></li>
 <li><p>　インスタンス作成ウィザードの種類を選択する。
 2012年12月現在、選択できる種類はClassic、Quick Launch、AWS Marketplaceの三通り。
 以下、Classic Wizardでインスタンスの作成を行う。</p>
 
-<p><a href="/blog/images/2012-12-06/02.png">{% img /blog/images/2012-12-06-create-and-ssh-to-ec2-instance/02.png 600 %}</a></p></li>
+<p><a href="/blog/images/2012-12-06/02.png"><img src="/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/02.png" width="600"></a></p></li>
 <li><p>　AMI（Amazon Machine Image）を選択する。
 選択できる主なOSにはRed Hat Enterprise、Ubuntu、Microsoft Windowsなどがある。</p>
 
-<p><a href="/blog/images/2012-12-06/03.png">{% img /blog/images/2012-12-06-create-and-ssh-to-ec2-instance/03.png 600 %}</a></p></li>
+<p><a href="/blog/images/2012-12-06/03.png"><img src="/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/03.png" width="600"></a></p></li>
 <li><p>　インスタンスの詳細を設定する。
 設定できる項目は、インスタンスタイプ、カーネルID、RAMディスク、ストレージデバイスなど。</p>
 
-<p><a href="/blog/images/2012-12-06/04-01.png">{% img /blog/images/2012-12-06-create-and-ssh-to-ec2-instance/04-01.png 300 %}</a></p>
+<p><a href="/blog/images/2012-12-06/04-01.png"><img src="/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/04-01.png" width="300"></a></p>
 
-<p><a href="/blog/images/2012-12-06/04-02.png">{% img /blog/images/2012-12-06-create-and-ssh-to-ec2-instance/04-02.png 300 %}</a></p>
+<p><a href="/blog/images/2012-12-06/04-02.png"><img src="/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/04-02.png" width="300"></a></p>
 
-<p><a href="/blog/images/2012-12-06/04-03.png">{% img /blog/images/2012-12-06-create-and-ssh-to-ec2-instance/04-03.png 300 %}</a></p>
+<p><a href="/blog/images/2012-12-06/04-03.png"><img src="/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/04-03.png" width="300"></a></p>
 
 <p>　インスタンスタイプは、その種類によって性能（CPUやI/O）や発生する費用が異なってくるため、稼働させるアプリケーションや予算にあわせて選択する。</p></li>
 <li><p>　公開鍵暗号の鍵のペアを作成する。
 ウィザードには鍵の名前を入力するだけでRSA暗号方式の鍵のペアが生成され、pemファイルをダウンロードできる。
 このpemファイルがSSH接続に必要な秘密鍵になる。</p>
 
-<p><a href="/blog/images/2012-12-06/05.png">{% img /blog/images/2012-12-06-create-and-ssh-to-ec2-instance/05.png 600 %}</a></p></li>
+<p><a href="/blog/images/2012-12-06/05.png"><img src="/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/05.png" width="600"></a></p></li>
 <li><p>　EC2のファイアウォール「Security Groups」を設定する。
 グループごとにプロトコル（HTTPやSMTP）、ポート番号、IPアドレスを指定してインバウンドルールを設定することができる。</p>
 
-<p><a href="/blog/images/2012-12-06/06.png">{% img /blog/images/2012-12-06-create-and-ssh-to-ec2-instance/06.png 600 %}</a></p></li>
+<p><a href="/blog/images/2012-12-06/06.png"><img src="/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/06.png" width="600"></a></p></li>
 <li><p>　EC2インスタンスが完成。ダッシュボードの"Instances"から起動状態や公開ドメイン名などを確認できる。</p>
 
-<p><a href="/blog/images/2012-12-06/07-01.png">{% img /blog/images/2012-12-06-create-and-ssh-to-ec2-instance/07-01.png 600 %}</a></p>
+<p><a href="/blog/images/2012-12-06/07-01.png"><img src="/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/07-01.png" width="600"></a></p>
 
-<p><a href="/blog/images/2012-12-06/07-02.png">{% img /blog/images/2012-12-06-create-and-ssh-to-ec2-instance/07-02.png 600 %}</a></p></li>
+<p><a href="/blog/images/2012-12-06/07-02.png"><img src="/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/07-02.png" width="600"></a></p></li>
 </ol>
 
 
@@ -69,14 +69,14 @@
 <p>　SSHクライアントからEC2インスタンスへSSH接続を行う。
 接続先に公開ドメイン名（Public DNS : ec2-***&ndash;***&ndash;***&ndash;***.compute-1.amazonaws.com）と、秘密鍵には先に取得したpemファイルを指定して、EC2インスタンスへ接続する。</p>
 
-<p><a href="/blog/images/2012-12-06/08.png">{% img /blog/images/2012-12-06-create-and-ssh-to-ec2-instance/08.png 600 %}</a></p>
+<p><a href="/blog/images/2012-12-06/08.png"><img src="/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/08.png" width="600"></a></p>
 
 <h3>EC2インスタンスの終了</h3>
 
 <p>　EC2インスタンスの利用を終える場合は、終了（Terminate）を指定する。停止（Stop）ではインスタンスは削除されない。
 逆に、利用を一時的に停止するだけであればTerminateではなくStopを指定する。</p>
 
-<p><a href="/blog/images/2012-12-06/09.png">{% img /blog/images/2012-12-06-create-and-ssh-to-ec2-instance/09.png 600 %}</a></p>
+<p><a href="/blog/images/2012-12-06/09.png"><img src="/blog/images/2012-12-06-create-and-ssh-to-ec2-instance/09.png" width="600"></a></p>
 
 <h3>参考</h3>
 
