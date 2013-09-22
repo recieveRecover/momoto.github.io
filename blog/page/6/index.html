@@ -6,8 +6,7 @@
 <meta charset="utf-8">
 <title>momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-<meta name="description" content="rbenvとruby-buildを使用して、Ubuntu 12.10にRuby 1.9.3をインストールしたときの記録です。
-rbenvとruby-buildはディストリビューションが配布するパッケージに含まれているため、Ubuntuのバージョン管理システム（APT） &hellip;">
+<meta name="description" content="　MicrosoftのWebサーバーソフトウェア&#8221;Internet Information Services (IIS)&ldquo;をWindows 7 Home Premiumにインストールした際の手順の記録です。 ">
 
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
@@ -16,8 +15,7 @@ rbenvとruby-buildはディストリビューションが配布するパッケ�
 <meta property="og:url" content="http://momoto.github.io/blog/page/6/" />
 
 <meta property="og:site_name" content="momoto.github.io">
-<meta property="og:description" content="rbenvとruby-buildを使用して、Ubuntu 12.10にRuby 1.9.3をインストールしたときの記録です。
-rbenvとruby-buildはディストリビューションが配布するパッケージに含まれているため、Ubuntuのバージョン管理システム（APT） &hellip;">
+<meta property="og:description" content="　MicrosoftのWebサーバーソフトウェア&#8221;Internet Information Services (IIS)&ldquo;をWindows 7 Home Premiumにインストールした際の手順の記録です。 ">
 <meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
 <meta property="fb:app_id" content="561979160531119" />
 <link rel="canonical" href="http://momoto.github.io/blog/page/6/">
@@ -54,6 +52,46 @@ rbenvとruby-buildはディストリビューションが配布するパッケ�
   <div id="main">
     <div id="content"><div class="blog-index">
   
+  
+  
+    <article>
+  <header>
+    
+      <h2 class="entry-title">Windows 7にIIS 7.5をインストール</h2>
+    
+    
+      <p class="meta">
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2012-11-30T20:56:00+09:00" pubdate data-updated="true" class="updated">Nov 30<span>th</span>, 2012</time>
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>　MicrosoftのWebサーバーソフトウェア&#8221;Internet Information Services (IIS)&ldquo;をWindows 7 Home Premiumにインストールした際の手順の記録です。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/11/30/install-iis-7-dot-5-on-windows-7/">Read on &rarr;</a>
+    </footer>
+  
+
+</article>
   
   
     <article>
@@ -215,87 +253,6 @@ rbenvとruby-buildはディストリビューションが配布するパッケ�
     <footer>
       <a rel="full-article" href="/blog/2012/08/12/install-ram-and-ssd-in-lenovo-ideapad-s205/">Read on &rarr;</a>
     </footer>
-  
-
-</article>
-  
-  
-    <article>
-  <header>
-    
-      <h2 class="entry-title">テキストを文字参照記述へ変換する</h2>
-    
-    
-      <p class="meta">
-
-
-
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2012-08-11T00:00:00+09:00" pubdate data-updated="true" class="published">Aug 11<span>th</span>, 2012</time>
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>　入力された文字列の符号位置（Unicode）を出力します。テキストをHTML数値文字参照に変換するように動作します。</p>
-
-<p><form id="convert-text-to-character-references">
-<label>形式 <select><option>HTML文字参照（10進数）</option><option>HTML文字参照（16進数）</option><option>符号位置のみ（10進数）</option><option>符号位置のみ（16進数）</option></select></label><br>
-<label>入力 <textarea rows="4" style="width: 100%;"></textarea></label>
-<label>出力 <output><textarea rows="4" style="width: 100%;" readonly=True></textarea></output></label></p>
-
-<script> (function(){
-function decimal_form(codepoint) { return "&#" + codepoint.toString(10) + ";"; }
-function hexadecimal_form(codepoint) { return "&#x" + codepoint.toString(16) + ";"; }
-function decimal_delimit_space(codepoint) { return codepoint.toString(10) + " "; }
-function hexadecimal_delimit_space(codepoint) { return codepoint.toString(16) + " "; }
-function convert_text_to_character_references(text) {
-  for (var encoded="", i=0; i<text.length; i++)
-    if (s.selectedIndex === 0) encoded += decimal_form(text.charCodeAt(i));
-    else if (s.selectedIndex === 1) encoded += hexadecimal_form(text.charCodeAt(i));
-    else if (s.selectedIndex === 2) encoded += decimal_delimit_space(text.charCodeAt(i));
-    else if (s.selectedIndex === 3) encoded += hexadecimal_delimit_space(text.charCodeAt(i));
-  o.value = encoded;
-}
-function eventhandler(event) {
-  if (text === i.value && event.type !== "change")
-    return;
-  else
-    convert_text_to_character_references(text = i.value);
-}
-var text = "";
-var f = document.getElementById("convert-text-to-character-references");
-var s = f.getElementsByTagName("select")[0];
-var i = f.getElementsByTagName("textarea")[0];
-var o = f.getElementsByTagName("textarea")[1];
-i.onkeydown = eventhandler;
-i.onkeyup   = eventhandler;
-s.onchange  = eventhandler;
-})(); </script>
-
-
-<p></form></p>
-
-<h3>参考</h3>
-
-<ul>
-<li><a href="http://www.unicode.org/Public/UCD/latest/ucd/">The Unicode Character Database (UCD)</a></li>
-<li><a href="http://www.ietf.org/rfc/rfc1815.txt">RFC 1815 &ndash; Character Sets ISO-10646 and ISO-10646-J-1</a></li>
-<li><a href="http://www.w3.org/TR/html5/syntax.html#character-references">8.1.4 Character references — HTML5</a></li>
-</ul>
-
-</div>
-  
   
 
 </article>

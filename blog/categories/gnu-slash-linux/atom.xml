@@ -4,7 +4,7 @@
   <title><![CDATA[GNU/Linux | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/gnu-slash-linux/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-22T23:12:04+09:00</updated>
+  <updated>2013-09-23T07:54:45+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -366,7 +366,7 @@ N 3
     <id>http://momoto.github.io/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst</id>
     <content type="html"><![CDATA[<p>　Debian 7.1.0をインストールした手順の記録です。インストールメディアはdebian-7.1.0-amd64-netinst.isoを使用しています。インターネットへ接続できる環境を前提にしています。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/01.png" width="400" title="インストーラの起動" ><!-- more --></p>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/01.png 400 インストーラの起動 %}<!-- more --></p>
 
 <ol>
 <li><h3>言語、地域、キーボードの選択</h3>
@@ -374,13 +374,13 @@ N 3
 <ol>
 <li><p>　インストーラで使用される言語とベースシステムに含める言語パッケージを選択します。この記事では日本語を選択してインストールをすすめます。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/02-01.png" width="400" title="言語の選択" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/02-01.png 400 言語の選択 %}</p></li>
 <li><p>　次に、地域を選択します。先に選択した言語に関連する地域にあらかじめ焦点があてられています。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/02-02.png" width="400" title="場所の選択" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/02-02.png 400 場所の選択 %}</p></li>
 <li><p>　続いて、キーボード配列を選択します。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/02-03.png" width="400" title="キーボードの設定" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/02-03.png 400 キーボードの設定 %}</p></li>
 </ol>
 </li>
 <li><h3>ネットワークの設定</h3>
@@ -388,10 +388,10 @@ N 3
 <ol>
 <li><p>ホスト名を入力します。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/03-01.png" width="400" title="ホスト名の入力" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/03-01.png 400 ホスト名の入力 %}</p></li>
 <li><p>ドメイン名を入力します。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/03-02.png" width="400" title="ドメイン名の入力" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/03-02.png 400 ドメイン名の入力 %}</p></li>
 </ol>
 </li>
 <li><h3>ユーザとパスワードのセットアップ</h3>
@@ -399,16 +399,16 @@ N 3
 <ol>
 <li><p>rootのパスワードを入力します。確認のため入力は二度、必要です。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-01.png" width="400" title="rootのパスワードを設定" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-01.png 400 rootのパスワードを設定 %}</p></li>
 <li><p>一般ユーザの名前を入力します。名前は次の画面でも入力しますが、ここで入力する名前はGUIのログイン画面等で表示されます。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-02.png" width="400" title="非管理者権限ユーザの名前（本名）を入力" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-02.png 400 非管理者権限ユーザの名前（本名）を入力 %}</p></li>
 <li><p>続いて、ホームディレクトリのディレクトリ名にもなるユーザ名を入力します。前の画面で入力した名前よりも、使用出来る文字は制限されます。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-03.png" width="400" title="非管理者権限ユーザの名前（ログイン名）を入力" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-03.png 400 非管理者権限ユーザの名前（ログイン名）を入力 %}</p></li>
 <li><p>一般ユーザのパスワードを入力します。rootのときと同様に入力は二度、必要です。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-04.png" width="400" title="非管理者権限ユーザのパスワードを設定" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/04-04.png 400 非管理者権限ユーザのパスワードを設定 %}</p></li>
 </ol>
 </li>
 <li><h3>ディスクのパーティション分割</h3>
@@ -419,19 +419,19 @@ N 3
 <li><p>　パーティション分割をガイドで行うか、手動で行うかを選択します。ガイドで行う場合はさらに、LVMを設定するかどうか、LVMを設定する場合はLUKSによる暗号化を設定するかどうかを選択します。
 この記事では「ガイド &ndash; ディスク全体を使う」でインストールを進めます。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-01.png" width="400" title="パーティショニングを自動で行うか、手動で行うかを選択する" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-01.png 400 パーティショニングを自動で行うか、手動で行うかを選択する %}</p></li>
 <li><p>　パーティショニングの対象となるストレージデバイスを選択します。デバイスを正しく認識していれば、この画面の選択肢に現れているはずです。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-02.png" width="400" title="パーティショニングの対象になるストレージデバイスを選択する" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-02.png 400 パーティショニングの対象になるストレージデバイスを選択する %}</p></li>
 <li><p>　ガイドに従ってパーティション構成を選択します。ここで選択できるものより複雑なパーティショニングが必要な場合は手動で設定しなければなりません。この記事では「すべてのファイルを１つのパーティションに」を選択してインストールをすすめます。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-03.png" width="400" title="パーティション構成を選択する" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-03.png 400 パーティション構成を選択する %}</p></li>
 <li><p>　ここまでのパーティション設定を確認します。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-04.png" width="400" title="パーティション設定を確認する" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-04.png 400 パーティション設定を確認する %}</p></li>
 <li><p>　ストレージデバイスに対する書込みの最後の確認です。書込みを行うとそれまで記録されていた情報は削除されますので、対象デバイスとパーティションをよく確かめて画面をすすめてください。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-05.png" width="400" title="ストレージデバイスに対する書込みを確認する" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/05-05.png 400 ストレージデバイスに対する書込みを確認する %}</p></li>
 </ol>
 </li>
 <li><h3>パッケージマネージャの設定</h3>
@@ -439,16 +439,16 @@ N 3
 <ul>
 <li><p>　Debianアーカイブミラーをホストしている地域を選択します。「自国でさえ最適の選択とは限らない」とありますが、国内で利用する場合においては「日本」を選択するのが最も適当です。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-01.png" width="400" title="Debianアーカイブミラーをホストしている地域を選択する" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-01.png 400 Debianアーカイブミラーをホストしている地域を選択する %}</p></li>
 <li><p>　選択した地域からミラーサーバを選択します。<a href="ftp://ftp.jp.debian.org/">ftp.jp.debian.org</a>と<a href="ftp://ftp.jaist.ac.jp/">ftp.jaist.ac.jp</a>については、管理者のブログが公開されています（<a href="http://debiancdn.wordpress.com/">debiancdn | AWS, Content Delivery Network and Debian</a>、<a href="http://ftp-admin.blogspot.jp/">ftp-adminの憂鬱</a>）。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-02.png" width="400" title="Debianアーカイブミラーサーバを選択する" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-02.png 400 Debianアーカイブミラーサーバを選択する %}</p></li>
 <li><p>　HTTPプロキシをつかう必要がある場合はプロキシ情報を入力します。必要ない場合は空のまま画面をすすめます。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-03.png" width="400" title="HTTPプロキシ情報を入力する" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-03.png 400 HTTPプロキシ情報を入力する %}</p></li>
 <li><p>　Debianパッケージ利用調査へ参加するかどうかを選択します。この調査結果は<a href="http://popcon.debian.org/">Debian Popularity Contest</a>で公開されています。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-04.png" width="400" title="Debianパッケージ利用調査への参加" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/06-04.png 400 Debianパッケージ利用調査への参加 %}</p></li>
 </ul>
 </li>
 <li><h3>ソフトウェアの選択</h3>
@@ -456,17 +456,17 @@ N 3
 <p>　ベースシステムと同時にインストールするソフトウェアスイートを選択します。ここで表示されるリストは<a href="http://wiki.debian.org/tasksel">tasksel</a>によって抽象化された「タスク」です。
 どのパッケージをインストールするか、を具体的に指定する必要がある場合（インストールしたいのはmysql-serverではなくpostgresqlである等）は、ここでは選択せずに、ベースシステムのインストール後にインストールします。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/07.png" width="400" title="ソフトウェアの選択" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/07.png 400 ソフトウェアの選択 %}</p></li>
 <li><h3>ブートローダのインストール</h3>
 
 <p>　GRUBブートローダをインストールします。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/08.png" width="400" title="ブートローダのインストール" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/08.png 400 ブートローダのインストール %}</p></li>
 <li><h3>インストールの完了</h3>
 
 <p>　インストールが完了したら、システムを再起動します。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/09.png" width="400" title="インストールの完了" ></p></li>
+<p>{% img /blog/images/2013-06-23-debian-7.1.0-amd64-netinst/09.png 400 インストールの完了 %}</p></li>
 </ol>
 
 
@@ -508,28 +508,28 @@ Ubuntuのドキュメントには、インストールイメージのDVDへの�
 </ul>
 
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/01.png" width="500" title="Ubuntu Server 13.04 インストーラの起動" ></p></li>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/01.png 500 Ubuntu Server 13.04 インストーラの起動 %}</p></li>
 <li><h4>言語、地域、キーボードの設定</h4>
 
 <ul>
 <li><p>　インストーラでつかわれる言語を選択します。ここで選択した言語はこれからインストールするUbuntuの標準言語にもなります。日本語を選択することもできますが、この記事では英語を選択してインストールをすすめます。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-01.png" width="500" title="言語の選択" ></p>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-01.png 500 言語の選択 %}</p>
 
 <p>　適当な言語を選択するか、または地域化を行わない場合はC (No localization)を選択します。</p></li>
 <li><p>　次に、地域を選択します。ここで選択した地域がタイムゾーンの基準になります。</p>
 
-<p><img class="left" src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-02.png" width="300" title="選択した「言語」に基づく地域の一覧" >
-<img class="left" src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-03.png" width="300" title="地域の選択" >
-<img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-04.png" width="300" title="国の選択" ></p></li>
+<p>{% img left /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-02.png 300 選択した「言語」に基づく地域の一覧 %}
+{% img left /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-03.png 300 地域の選択 %}
+{% img      /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-04.png 300 国の選択 %}</p></li>
 <li><p>　次に、キーボード配列を選択します。</p>
 
-<p><img class="left" src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-05.png" width="300" title="キーボード配列の検出" >
-<img class="left" src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-06.png" width="300" title="使用しているキー配列が一般的な国を選択" >
-<img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-07.png" width="300" title="キーボード配列の選択" ></p></li>
+<p>{% img left /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-05.png 300 キーボード配列の検出 %}
+{% img left /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-06.png 300 使用しているキー配列が一般的な国を選択 %}
+{% img      /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-07.png 300 キーボード配列の選択 %}</p></li>
 <li><p>　適当なLocale情報がない場合（上記のように、言語は英語、地域は日本を選択したような場合）、有効なLocales情報から選ぶことができます。ここではen_US.UTF-8を選択します。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-08.png" width="500" title="Locale情報の選択" ></p>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/02-08.png 500 Locale情報の選択 %}</p>
 
 <p>　ここまでに選択した地域情報は/etc/default/localeに設定されます。インストール後に設定を変更する場合は<a href="http://packages.ubuntu.com/raring/locales">Locales</a>をつかいます。</p></li>
 </ul>
@@ -538,25 +538,25 @@ Ubuntuのドキュメントには、インストールイメージのDVDへの�
 
 <p>　ネットワークインタフェースの自動検出の後、ホスト名を設定します。ホスト名は/etc/hostnameに設定されます。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/03.png" width="500" title="ホスト名の設定" ></p>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/03.png 500 ホスト名の設定 %}</p>
 
 <p>　インストール後に設定を変更する場合は<a href="http://packages.ubuntu.com/raring/hostname">hostname</a>をつかいます。</p></li>
 <li><h4>ユーザとパスワードの設定</h4>
 
 <p>　ユーザ名、ログイン名、パスワードを設定します。ユーザ名は<a href="http://manpages.ubuntu.com/manpages/raring/en/man1/pinky.1.html">pinky</a>の書式で、ログイン名とともに/etc/passwdに設定されます。</p>
 
-<p><img class="left" src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/04-01.png" width="300" title="ユーザ名の設定" >
-<img class="left" src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/04-02.png" width="300" title="ログイン名の設定" >
-<img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/04-03.png" width="300" title="パスワードの設定" ></p>
+<p>{% img left /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/04-01.png 300 ユーザ名の設定 %}
+{% img left /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/04-02.png 300 ログイン名の設定 %}
+{% img      /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/04-03.png 300 パスワードの設定 %}</p>
 
 <p>　ホームディレクトリを暗号化するかどうかを選択します。<a href="https://help.ubuntu.com/13.04/serverguide/ecryptfs.html">eCryptfs</a>による暗号化のようです。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/04-04.png" width="500" title="ホームディレクトリの暗号化" ></p></li>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/04-04.png 500 ホームディレクトリの暗号化 %}</p></li>
 <li><h4>時刻の設定</h4>
 
 <p>　タイムゾーンを設定します。タイムゾーン情報は/etc/timezoneに設定されます。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/05.png" width="500" title="タイムゾーンの設定" ></p>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/05.png 500 タイムゾーンの設定 %}</p>
 
 <p>　インストール後に設定を変更する場合は<code>dpkg-reconfigure tzdata</code>をつかいます。</p></li>
 <li><h4>ディスクのパーティション分割</h4>
@@ -567,49 +567,49 @@ Ubuntuのドキュメントには、インストールイメージのDVDへの�
 <li><p>　パーティション分割をガイドで行うか、手動で行うかを選択します。ガイドで行う場合はさらに、LVMを設定するかどうか、LVMを設定する場合はLUKSによる暗号化を設定するかどうかを選択します。
 この記事では"Guided &ndash; use entire disk and set up LVM"を選択してインストールをつづけます。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/06-01.png" width="300" title="パーティショニング方法の選択" ></p></li>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/06-01.png 300 パーティショニング方法の選択 %}</p></li>
 <li><p>　パーティショニングの対象となるストレージデバイスを選択します。デバイスを正しく認識していれば、この画面の選択肢に現れているはずです。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/06-02.png" width="300" title="パーティショニング対象のストレージデバイスの選択" ></p></li>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/06-02.png 300 パーティショニング対象のストレージデバイスの選択 %}</p></li>
 <li><p>　LVMを設定する前に、パーティションテーブルの変更をディスクに書き込みます。書込み対象のデバイスをよく確かめて次の画面へすすんでください。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/06-03.png" width="300" title="パーティションテーブルの変更の書込み" ></p></li>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/06-03.png 300 パーティションテーブルの変更の書込み %}</p></li>
 <li><p>　LVMのボリュームグループ（VG）に割り当てる容量を指定します。GB単位で指定するか、パーセンテージまたは<code>max</code>などで指定できます。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/06-04.png" width="300" title="ボリューム・グループ（VG）に割り当てる容量の指定" ></p></li>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/06-04.png 300 ボリューム・グループ（VG）に割り当てる容量の指定 %}</p></li>
 <li><p>　ここまでに設定したパーティションとマウントポイントを確認します。設定を終了し、変更を書き込むには Finish partitioning and write changes to disk を選択します。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/06-05.png" width="300" title="パーティションとマウントポイントの確認" ></p></li>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/06-05.png 300 パーティションとマウントポイントの確認 %}</p></li>
 <li><p>　ストレージデバイスに対する書込みを確認します。書込みを行うとそれまで記録されていた情報は削除されますので、対象デバイスとパーティションをよく確かめて画面をすすめてください。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/06-06.png" width="300" title="ストレージデバイスへの書込みの確認" ></p></li>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/06-06.png 300 ストレージデバイスへの書込みの確認 %}</p></li>
 </ol>
 </li>
 <li><h4>パッケージマネージャの設定</h4>
 
 <p>　HTTPプロキシをつかう必要がある場合はプロキシ情報を入力します。必要ない場合は空のまま画面をすすめます。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/07-01.png" width="500" title="HTTPプロキシの設定" ></p>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/07-01.png 500 HTTPプロキシの設定 %}</p>
 
 <p>　アップデートを自動で適用するかどうかを選択します。また、Canonical社の<a href="https://landscape.canonical.com/">Landscape</a>を使用する場合の選択肢も用意されています。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/07-02.png" width="500" title="自動アップデートの設定" ></p></li>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/07-02.png 500 自動アップデートの設定 %}</p></li>
 <li><h4>ソフトウェアの選択</h4>
 
 <p>　ベースシステムと同時にインストールするソフトウェアスイートを選択します。ここで表示されるリストは<a href="http://packages.ubuntu.com/raring/tasksel">tasksel</a>によって抽象化された「タスク」です。
 どのパッケージをインストールするか、を具体的に指定する必要がある場合（インストールしたいのはmysql-serverではなくpostgresqlである等）は、ここでは選択せずに、ベースシステムのインストール後にインストールします。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/08.png" width="500" title="追加ソフトウェアの選択" ></p></li>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/08.png 500 追加ソフトウェアの選択 %}</p></li>
 <li><h4>ブートローダのインストール</h4>
 
 <p>　GRUBブートローダをインストールします。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/09.png" width="500" title="GRUBブートローダのインストール" ></p></li>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/09.png 500 GRUBブートローダのインストール %}</p></li>
 <li><h4>インストールの完了</h4>
 
 <p>　インストールが完了したら、システムを再起動します。</p>
 
-<p><img src="/blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/10.png" width="500" title="インストールの完了" ></p></li>
+<p>{% img /blog/images/2013-06-23-installing-ubuntu-13-dot-04-server-amd64/10.png 500 インストールの完了 %}</p></li>
 </ol>
 
 
@@ -801,86 +801,86 @@ The operation has completed successfully.
 <ol>
 <li><h3>Anacondaの起動</h3>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/01.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/01_thumbnail.png" title="Anacondaの起動" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/01.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/01_thumbnail.png Anacondaの起動 %}</a></p>
 
 <p>　インストールメディアからCentOSのインストーラ"Anaconda"を起動します。このとき、インストールメディア（光学ドライブやUSB、あるいはISOイメージファイル）が優先的に起動されるようにコンピュータ側（BIOSや仮想化環境）で正しく設定されている必要があります。</p>
 
 <p>　インストールを開始するために、"Install or upgrade an existing system"を選択します。</p></li>
 <li><h3>インストールメディアのチェック</h3>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02_thumbnail.png" title="インストールメディアのチェック" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02_thumbnail.png インストールメディアのチェック %}</a></p>
 
 <p>　必要に応じてメディアチェックを行います。このチェックはインストールに必ずしも必要ではありません。チェックを行う場合は「OK」を、チェックを省略してインストールを開始する場合は「Skip」を選択します。</p></li>
 <li><h3>言語の選択</h3>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/03.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/03_thumbnail.png" title="言語の選択" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/03.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/03_thumbnail.png 言語の選択 %}</a></p>
 
 <p>　インストーラで使用される言語とベースシステムに含める言語パッケージを選択します。日本語も用意されていますが、翻訳が未対応の箇所では原文が表示されます。この記事では英語を選択してインストールを進めます。</p></li>
 <li><h3>キーボード配列の選択</h3>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/04.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/04_thumbnail.png" title="キーボード配列の選択" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/04.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/04_thumbnail.png キーボード配列の選択 %}</a></p>
 
 <p>使用しているキーボードにあわせて、キーボード配列を選択します。日本語キーボードであれば"jp106"を選択します。</p></li>
 <li><h3>インストール方法の選択</h3>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/05.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/05_thumbnail.png" title="インストール方法の選択" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/05.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/05_thumbnail.png インストール方法の選択 %}</a></p>
 
 <p>ネットワークインストールの場合、"URL"を選択します。</p>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/06.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/06_thumbnail.png" title="TCP&frasl;IPの設定" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/06.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/06_thumbnail.png TCP&frasl;IPの設定 %}</a></p>
 
 <p>　続いて、TCP/IPを設定します。IPv4、IPv6サポートの有無と、それぞれのプロトコルにおいて動的IP（DHCP）を使用するかどうかを選択します。この記事ではIPv4のみ有効化し、動的IPを使用するように設定してインストールを進めます。</p>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/07.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/07_thumbnail.png" title="ネットワークインストールのURLの設定" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/07.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/07_thumbnail.png ネットワークインストールのURLの設定 %}</a></p>
 
 <p>　<a href="http://www.centos.org/modules/tinycontent/index.php?id=32">CentOS Mirrors</a>にあるミラー等を参考に、対象アーキテクチャの"images/install.img"のURLを入力します。例えば、アーキテクチャが"i386"で、<a href="http://www.riken.jp/">理研</a>のミラーを使用する場合のURLは <a href="http://ftp.riken.jp/Linux/centos/6.4/os/i386/images/install.img">http://ftp.riken.jp/Linux/centos/6.4/os/i386/images/install.img</a> になります。</p>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/08.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/08_thumbnail.png" title="ネットワークインストールのURLの入力" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/08.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/08_thumbnail.png ネットワークインストールのURLの入力 %}</a></p>
 
 <p>　<code>OSError: /lib64/libudev.so.0: wrong ELF class: ELFCLASS64</code>と表示されて処理が止まった場合は、install.imgのアーキテクチャが正しいかどうか確認してください。</p></li>
 <li><h3>グラフィカルインストールの開始</h3>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/09.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/09_thumbnail.png" title="Anacondaのグラフィカルユーザインタフェース" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/09.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/09_thumbnail.png Anacondaのグラフィカルユーザインタフェース %}</a></p>
 
 <p>　続いて、AnacondaのGUIにしたがってインストールを進めていきます。ブートメニューに指定するオプション（<code>boot: linux text</code>）によって、テキストモードインストールを使用することも可能ですが、テキストモードでは設定できない項目もあるため、通常はグラフィカルモードを使用します。</p></li>
 <li><h3>ストレージ形式の選択</h3>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/10.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/10_thumbnail.png" title="ストレージ形式の選択" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/10.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/10_thumbnail.png ストレージ形式の選択 %}</a></p>
 
 <p>特殊なストレージを使用する必要がなければ"Basic Storage Devices"を選択します。</p></li>
 <li><h3>ホスト名の入力</h3>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/11.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/11_thumbnail.png" title="ホスト名の入力" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/11.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/11_thumbnail.png ホスト名の入力 %}</a></p>
 
 <p>ホスト名を入力します。</p></li>
 <li><h3>タイムゾーンの指定</h3>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/12.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/12_thumbnail.png" title="タイムゾーンの指定" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/12.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/12_thumbnail.png タイムゾーンの指定 %}</a></p>
 
 <p>タイムゾーンの指定と、システムクロックにUTCを使用するかどうかを選択します。</p></li>
 <li><h3>rootパスワードの設定</h3>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/13.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/13_thumbnail.png" title="rootパスワードの設定" ></a></p></li>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/13.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/13_thumbnail.png rootパスワードの設定 %}</a></p></li>
 <li><h3>パーティションの設定</h3>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/14.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/14_thumbnail.png" title="パーティションの設定" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/14.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/14_thumbnail.png パーティションの設定 %}</a></p>
 
 <p>　ストレージデバイスのパーティション設定を行います。上４つの選択肢を選んだ場合、自動的にデフォルトのパーティションが構成されます。手動でパーティション構成を設定する場合は一番下の"Create Custom Layout"を選択します。
 また、LUKS（Linux Unified Key Setup）による暗号化を行うかどうかを、この画面で指定出来ます。</p>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/15.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/15_thumbnail.png" title="ストレージへの書き込みに対する警告" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/15.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/15_thumbnail.png ストレージへの書き込みに対する警告 %}</a></p>
 
 <p>　この画面以降、ストレージデバイスへの書込みが行われます。この時点で接続しているストレージデバイスや上書きが行われる記憶領域をよく確かめて、次の画面へ進んでください。</p></li>
 <li><h3>パッケージグループの選択</h3>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/16.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/16_thumbnail.png" title="パッケージグループの選択" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/16.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/16_thumbnail.png パッケージグループの選択 %}</a></p>
 
 <p>　用途にあわせてパッケージグループを選択します。パッケージはOSインストール後にも当然、インストールすることができます。単一目的サーバーの土台として、最小限のパッケージのみをインストールする場合は"Minimal"を選択します。</p>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/17.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/17_thumbnail.png" title="ベースシステムのインストール" ></a></p></li>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/17.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/17_thumbnail.png ベースシステムのインストール %}</a></p></li>
 <li><h3>再起動</h3>
 
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/18.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/18_thumbnail.png" title="インストールの完了" ></a></p>
+<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/18.png">{% img /blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/18_thumbnail.png インストールの完了 %}</a></p>
 
 <p>　インストールが完了し、システムを再起動します。</p></li>
 </ol>

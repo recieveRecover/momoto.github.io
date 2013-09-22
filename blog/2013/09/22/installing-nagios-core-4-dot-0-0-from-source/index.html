@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+<meta charset="utf-8">
+<title>Nagios Core 4.0.0をソースからインストールする - momoto.github.io</title>
+<meta name="author" content="Seiji Momoto">
+<meta name="description" content="Nagios Core 4.0.0とNagios Plugins 1.4.16をソースからインストールします。OSはCentOS 6.4を使用しています。">
+<meta name="keywords" content="ネットワーク監視, Nagios Core 4.0.0, Nagios Plugins 1.4.16">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:type" content="website" />
+<meta property="og:url" content="http://momoto.github.io/blog/2013/09/22/installing-nagios-core-4-dot-0-0-from-source/" />
+<meta property="og:title" content="Nagios Core 4.0.0をソースからインストールする" />
+<meta property="og:site_name" content="momoto.github.io">
+<meta property="og:description" content="Nagios Core 4.0.0とNagios Plugins 1.4.16をソースからインストールします。OSはCentOS 6.4を使用しています。">
+<meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
+<meta property="fb:app_id" content="561979160531119" />
+<link rel="canonical" href="http://momoto.github.io/blog/2013/09/22/installing-nagios-core-4-dot-0-0-from-source/">
+<link href="/favicon.png" rel="icon">
+<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/atom.xml" rel="alternate" title="momoto.github.io" type="application/atom+xml">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29340465-5']);
+  _gaq.push(['_setDomainName', 'github.io']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+<body>
+<div id="header-container">
+  <div id="header">
+    <div class="wrapper">
+      <header role="banner"><hgroup><h1><a href="/">momoto.github.io</a></h1></hgroup></header>
+      <nav role="navigation">
+        <form action="http://google.com/search" method="get"><fieldset role="search"><input type="hidden" name="q" value="site:momoto.github.io" /><input class="search" type="text" name="q" results="0" placeholder="Search"/></fieldset></form>
+        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li><li><a href="https://github.com/momoto/momoto.github.io/wiki" title="momoto.github.io Wiki">Wiki</a></li></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<div id="body" class="collapse-sidebar sidebar-footer">
+  <div id="main">
+    <div id="content"><div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Nagios Core 4.0.0をソースからインストールする</h1>
+    
+    
+      <p class="meta">
+<span class="breadcrumb">
+<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/" itemprop="url"><span itemprop="title">Blog</span></a> › </span>
+
+<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/blog/categories/kuraudokonpiyuteingu/" itemprop="url"><span itemprop="title">ネットワーク監視</span></a> › </span>
+</span>
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-09-22T22:32:00+09:00" pubdate data-updated="true" class="updated">Sep 22<span>nd</span>, 2013</time>
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>　Nagios Core 4.0.0とNagios Plugins 1.4.16をソースからインストールします。OSはCentOS 6.4を使用しています。<!-- more --></p>
+
+<ol>
+<li><h4>ソースコードを取得する</h4>
+
+<p>　<a href="http://www.nagios.org/download">www.nagios.org</a>からNagios Core 4.0.0とNagios Plugins 1.4.16のソースコードを取得します。</p>
+
+<pre><code>$ cd /usr/local/src/
+$ sudo wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-4.0.0.tar.gz
+$ sudo wget http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-1.4.16.tar.gz
+$ sudo tar xfz nagios-4.0.0.tar.gz
+$ sudo tar xfz nagios-plugins-1.4.16.tar.gz
+</code></pre></li>
+<li><h4>要件を満たす</h4>
+
+<p>　<a href="http://assets.nagios.com/downloads/nagioscore/docs/Installing_Nagios_Core_From_Source.pdf">Documentation</a>に従って、必要なパッケージをインストールします。</p>
+
+<pre><code># RHEL/CentOSの場合
+$ sudo yum install wget httpd php gcc glibc glibc-common gd gd-devel make net-snmp
+
+# Ubuntuの場合
+$ sudo apt-get install wget build-essential apache2 php5-gd libgd2-xpm libgd2-xpm-dev libapache2-mod-php5
+</code></pre>
+
+<p>　続いて、Nagiosのプロセスを実行するユーザとグループを用意します。</p>
+
+<pre><code>$ sudo useradd nagios
+$ sudo groupadd nagcmd
+$ sudo usermod -a -G nagcmd nagios
+</code></pre></li>
+<li><h4>Nagios Coreをインストールする</h4>
+
+<p>　ソースコードを展開したディレクトリに移ってNagios Coreをインストールしていきます。</p>
+
+<pre><code># cd nagios
+
+# RHEL/CentOSの場合
+# ./configure --with-command-group=nagcmd
+
+# Ubuntuの場合
+# ./configure --with-nagios-group=nagios --with-command-group=nagcmd -–with-mail=/usr/bin/sendmail
+
+*** Configuration summary for nagios 4.0.0 09-20-2013 ***:
+
+ General Options:
+ -------------------------
+        Nagios executable:  nagios
+        Nagios user/group:  nagios,nagios
+       Command user/group:  nagios,nagcmd
+             Event Broker:  yes
+        Install ${prefix}:  /usr/local/nagios
+    Install ${includedir}:  /usr/local/nagios/include/nagios
+                Lock file:  ${prefix}/var/nagios.lock
+   Check result directory:  ${prefix}/var/spool/checkresults
+           Init directory:  /etc/rc.d/init.d
+  Apache conf.d directory:  /etc/httpd/conf.d
+             Mail program:  /bin/mail
+                  Host OS:  linux-gnu
+
+ Web Interface Options:
+ ------------------------
+                 HTML URL:  http://localhost/nagios/
+                  CGI URL:  http://localhost/nagios/cgi-bin/
+ Traceroute (used by WAP):
+</code></pre>
+
+<p>　configureが終わると、Nagiosの構成の要約を表示してくれます。</p>
+
+<pre><code># make all
+</code></pre>
+
+<p>　コンパイルまで済んだら、次のmakeオプションでインストールを続けていきます。</p>
+
+<ul>
+<li><code>make install</code> メインプログラム、CGI、HTMLファイルをインストール</li>
+<li><code>make install-init</code> /etc/rc.d/init.dの起動スクリプトをインストール</li>
+<li><code>make install-commandmode</code> ディレクトリの権限のインストールと設定</li>
+<li><code>make install-config</code> /usr/local/nagios/etcの設定ファイルのサンプルをインストール</li>
+<li><code>make install-webconf</code> ウェブインタフェースのためのApache設定ファイルをインストール</li>
+<li><code>make install-exfoliation</code> ウェブインタフェースのExfoliationテーマをインストール</li>
+<li><code>make install-classicui</code> ウェブインタフェースのクラシックテーマをインストール</li>
+</ul>
+
+
+<p>　ウェブインタフェースのテーマは必要なければ省略できるようです。</p>
+
+<pre><code># make install
+# make install-init
+# make install-config
+# make install-commandmode
+# make install-webconf
+# cp -R contrib/eventhandlers/ /usr/local/nagios/libexec/
+# chown -R nagios:nagios /usr/local/nagios/libexec/eventhandlers/
+</code></pre></li>
+<li><h4>Nagios Pluginをインストールする</h4>
+
+<p>　ソースコードを展開したディレクトリに移ってNagios Pluginをインストールしていきます。</p>
+
+<pre><code># cd ../nagios-plugins-1.4.16
+# ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+# make
+# make install
+</code></pre></li>
+<li><h4>NagiosとApacheを起動する</h4>
+
+<p>　ウェブインタフェースの認証につかうApacheのパスワードファイルを用意します。</p>
+
+<pre><code># htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+New password:
+Re-type new password:
+Adding password for user nagiosadmin
+</code></pre>
+
+<p>　Nagiosの設定ファイルを検証した後、Nagios、Apacheを起動します。</p>
+
+<pre><code># /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+# service nagios start
+nagios is stopped
+Starting nagios:                                           [  OK  ]
+# service httpd start
+                                                           [  OK  ]
+</code></pre>
+
+<p>　Nagiosのウェブインタフェースへアクセスして動作を確かめてみます。認証には上のhtpasswdで設定したユーザ名とパスワードを入力します。</p>
+
+<p><img src="/blog/images/2013-09-22-installing-nagios-core-4-dot-0-0-from-source/01-nagios-access.png" width="500" title="Nagios Access" ></p>
+
+<p><img src="/blog/images/2013-09-22-installing-nagios-core-4-dot-0-0-from-source/02-nagios-web-interface.png" width="500" title="Nagiosのウェブインタフェース" ></p></li>
+<li><h4>自動起動を設定する</h4>
+
+<p>　必要に応じて、Nagiosの自動起動を設定します。</p>
+
+<pre><code># chkconfig --add nagios
+# chkconfig nagios on
+# chkconfig httpd on
+</code></pre></li>
+</ol>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="http://assets.nagios.com/downloads/nagioscore/docs/Installing_Nagios_Core_From_Source.pdf">Nagios – Installing Nagios Core From Source</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <a href="https://plus.google.com/101153525943529592041?rel=author" class="fn">Seiji Momoto</a></span>
+
+      
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-09-22T22:32:00+09:00" pubdate data-updated="true" class="updated">Sep 22<span>nd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/netutowakujian-shi/'>ネットワーク監視</a>
+  
+</span>
+
+
+    </p>
+    <div class="sharing">
+
+<g:plusone size="medium" annotation="none"></g:plusone>
+<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-url="http://momoto.github.io/blog/2013/09/22/installing-nagios-core-4-dot-0-0-from-source/" data-text="Nagios Core 4.0.0をソースからインストールする" data-count="none">Tweet</a>
+<fb:like data-href="http://momoto.github.io/blog/2013/09/22/installing-nagios-core-4-dot-0-0-from-source/" layout="button_count"></fb:like>
+<script type="IN/Share" data-url="http://momoto.github.io/blog/2013/09/22/installing-nagios-core-4-dot-0-0-from-source/"></script>
+<a href="http://b.hatena.ne.jp/entry/http://momoto.github.io/blog/2013/09/22/installing-nagios-core-4-dot-0-0-from-source/" data-hatena-bookmark-title="Nagios Core 4.0.0をソースからインストールする - momoto.github.io" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-noballoon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+
+</div>
+
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/09/08/enabling-spdy-for-apache-http-server/" title="Previous Post: Apache HTTP ServerのSPDYサポートを有効化する">&laquo; Apache HTTP ServerのSPDYサポートを有効化する</a>
+      
+      
+    </p>
+  </footer>
+</article>
+</div>
+<aside class="sidebar"><section class="vcard">
+<h2>About Me</h2>
+<p>
+<a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
+<a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
+<a href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
+<a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
+</section>
+</aside></div>
+  </div>
+  <footer role="contentinfo"><p>&copy; Copyright 2013, <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a>. <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> and <a href="http://pages.github.com/">GitHub Pages</a>.</span></p></footer>
+</div>
+<script src="/javascripts/modernizr-2.0.js"></script>
+<script src="/javascripts/ender.js"></script>
+<script src="/javascripts/octopress.js" type="text/javascript"></script>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1&appId=561979160531119";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<script type="text/javascript">
+  (function() {
+    var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+    script.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+  })();
+</script>
+<script src="//platform.linkedin.com/in.js" type="text/javascript"> lang: ja_JP </script>
+<script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+
+
+</body>
+</html>

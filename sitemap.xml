@@ -173,19 +173,25 @@
         <lastmod>2013-09-22T22:53:22+09:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://momoto.github.io/blog/2013/09/22/installing-nagios-core-4-dot-0-0-from-source/
+        </loc>
+        <lastmod>2013-09-23T07:50:51+09:00</lastmod>
+    </url>
+    <url>
         <loc>http://momoto.github.io/robots.txt</loc>
         <lastmod>2013-07-25T21:04:15+09:00</lastmod>
     </url>
     <url>
         <loc>http://momoto.github.io/</loc>
-        <lastmod>2013-09-22T23:06:12+09:00</lastmod>
+        <lastmod>2013-09-23T07:50:51+09:00</lastmod>
     </url>
     <url>
         <loc>http://momoto.github.io/blog/categories/</loc>
-        <lastmod>2013-09-22T23:06:12+09:00</lastmod>
+        <lastmod>2013-09-23T07:50:51+09:00</lastmod>
     </url>
     <url>
         <loc>http://momoto.github.io/blog/archives/</loc>
-        <lastmod>2013-09-22T23:06:12+09:00</lastmod>
+        <lastmod>2013-09-23T07:50:51+09:00</lastmod>
     </url>
 </urlset>

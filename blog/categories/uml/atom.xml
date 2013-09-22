@@ -4,7 +4,7 @@
   <title><![CDATA[UML | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/uml/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-22T23:12:04+09:00</updated>
+  <updated>2013-09-23T07:54:45+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -47,7 +47,7 @@
 <li><p>クラス図</p>
 
 <p> システムの静的な構造を記述する。構成される主な要素は<strong>クラス</strong>と、それらの<strong>関連</strong>。
- <img src="/blog/images/2012-08-02-overview-uml/01-classdiagram.png"></p></li>
+ {% img /blog/images/2012-08-02-overview-uml/01-classdiagram.png %}</p></li>
 <li><p>複合構造図</p></li>
 <li><p>コンポーネント図</p></li>
 <li><p>配置図</p></li>
@@ -55,12 +55,12 @@
 
 <p> システムの特定の状況での静的な構造を記述する。構成される主な要素は<strong>オブジェクト</strong>と、それらの<strong>リンク</strong>。</p>
 
-<p> <img src="/blog/images/2012-08-02-overview-uml/02-objectdiagram.png"></p></li>
+<p> {% img /blog/images/2012-08-02-overview-uml/02-objectdiagram.png %}</p></li>
 <li><p>パッケージ図</p>
 
 <p> クラスなどの要素をグループ化し、階層構造を記述できる。</p>
 
-<p> <img src="/blog/images/2012-08-02-overview-uml/03-packagediagram.png"></p></li>
+<p> {% img /blog/images/2012-08-02-overview-uml/03-packagediagram.png %}</p></li>
 <li><p>アクティビティ図</p>
 
 <p> オブジェクトの振る舞いとその遷移を記述する。構成される主な要素は<strong>Activity</strong>と<strong>Activity Edge</strong>。</p></li>

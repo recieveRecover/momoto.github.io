@@ -4,7 +4,7 @@
   <title><![CDATA[仮想化 | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/jia-xiang-hua/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-22T23:12:04+09:00</updated>
+  <updated>2013-09-23T07:54:45+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -98,7 +98,7 @@ Current machine states:
 default                   running (virtualbox)
 </code></pre>
 
-<p><img src="/blog/images/2013-08-30-guide-to-managing-guests-using-vagrant/01-verify-the-vm-booted-by-looking-at-the-virtualbox.png" width="600" title="VirtualBoxのGUIから仮想マシンの動作を確認する" ></p>
+<p>{% img /blog/images/2013-08-30-guide-to-managing-guests-using-vagrant/01-verify-the-vm-booted-by-looking-at-the-virtualbox.png 600 VirtualBoxのGUIから仮想マシンの動作を確認する %}</p>
 
 <p>　起動している仮想マシンへSSH接続するには<code>vagrant ssh</code>を実行します。</p>
 
@@ -206,7 +206,7 @@ node1                     running (virtualbox)
 node2                     running (virtualbox)
 </code></pre>
 
-<p><img src="/blog/images/2013-08-30-guide-to-managing-guests-using-vagrant/02-multi-machine.png" width="600" title="VirtualBoxからMULTI-MACHINEの動作を確認する" ></p>
+<p>{% img /blog/images/2013-08-30-guide-to-managing-guests-using-vagrant/02-multi-machine.png 600 VirtualBoxからMULTI-MACHINEの動作を確認する %}</p>
 
 <p>　Vagrantfileにはホスト名以外にも細かく設定を記述することができます。詳しい設定項目については<a href="http://docs.vagrantup.com/v2/vagrantfile/index.html">Documentation</a>を参照してください。</p></li>
 </ol>

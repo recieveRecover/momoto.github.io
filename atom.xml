@@ -4,7 +4,7 @@
   <title><![CDATA[momoto.github.io]]></title>
   <link href="http://momoto.github.io/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-22T23:12:04+09:00</updated>
+  <updated>2013-09-23T07:53:57+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -12,6 +12,159 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Nagios Core 4.0.0をソースからインストールする]]></title>
+    <link href="http://momoto.github.io/blog/2013/09/22/installing-nagios-core-4-dot-0-0-from-source/"/>
+    <updated>2013-09-22T22:32:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/09/22/installing-nagios-core-4-dot-0-0-from-source</id>
+    <content type="html"><![CDATA[<p>　Nagios Core 4.0.0とNagios Plugins 1.4.16をソースからインストールします。OSはCentOS 6.4を使用しています。<!-- more --></p>
+
+<ol>
+<li><h4>ソースコードを取得する</h4>
+
+<p>　<a href="http://www.nagios.org/download">www.nagios.org</a>からNagios Core 4.0.0とNagios Plugins 1.4.16のソースコードを取得します。</p>
+
+<pre><code>$ cd /usr/local/src/
+$ sudo wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-4.0.0.tar.gz
+$ sudo wget http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-1.4.16.tar.gz
+$ sudo tar xfz nagios-4.0.0.tar.gz
+$ sudo tar xfz nagios-plugins-1.4.16.tar.gz
+</code></pre></li>
+<li><h4>要件を満たす</h4>
+
+<p>　<a href="http://assets.nagios.com/downloads/nagioscore/docs/Installing_Nagios_Core_From_Source.pdf">Documentation</a>に従って、必要なパッケージをインストールします。</p>
+
+<pre><code># RHEL/CentOSの場合
+$ sudo yum install wget httpd php gcc glibc glibc-common gd gd-devel make net-snmp
+
+# Ubuntuの場合
+$ sudo apt-get install wget build-essential apache2 php5-gd libgd2-xpm libgd2-xpm-dev libapache2-mod-php5
+</code></pre>
+
+<p>　続いて、Nagiosのプロセスを実行するユーザとグループを用意します。</p>
+
+<pre><code>$ sudo useradd nagios
+$ sudo groupadd nagcmd
+$ sudo usermod -a -G nagcmd nagios
+</code></pre></li>
+<li><h4>Nagios Coreをインストールする</h4>
+
+<p>　ソースコードを展開したディレクトリに移ってNagios Coreをインストールしていきます。</p>
+
+<pre><code># cd nagios
+
+# RHEL/CentOSの場合
+# ./configure --with-command-group=nagcmd
+
+# Ubuntuの場合
+# ./configure --with-nagios-group=nagios --with-command-group=nagcmd -–with-mail=/usr/bin/sendmail
+
+*** Configuration summary for nagios 4.0.0 09-20-2013 ***:
+
+ General Options:
+ -------------------------
+        Nagios executable:  nagios
+        Nagios user/group:  nagios,nagios
+       Command user/group:  nagios,nagcmd
+             Event Broker:  yes
+        Install ${prefix}:  /usr/local/nagios
+    Install ${includedir}:  /usr/local/nagios/include/nagios
+                Lock file:  ${prefix}/var/nagios.lock
+   Check result directory:  ${prefix}/var/spool/checkresults
+           Init directory:  /etc/rc.d/init.d
+  Apache conf.d directory:  /etc/httpd/conf.d
+             Mail program:  /bin/mail
+                  Host OS:  linux-gnu
+
+ Web Interface Options:
+ ------------------------
+                 HTML URL:  http://localhost/nagios/
+                  CGI URL:  http://localhost/nagios/cgi-bin/
+ Traceroute (used by WAP):
+</code></pre>
+
+<p>　configureが終わると、Nagiosの構成の要約を表示してくれます。</p>
+
+<pre><code># make all
+</code></pre>
+
+<p>　コンパイルまで済んだら、次のmakeオプションでインストールを続けていきます。</p>
+
+<ul>
+<li><code>make install</code> メインプログラム、CGI、HTMLファイルをインストール</li>
+<li><code>make install-init</code> /etc/rc.d/init.dの起動スクリプトをインストール</li>
+<li><code>make install-commandmode</code> ディレクトリの権限のインストールと設定</li>
+<li><code>make install-config</code> /usr/local/nagios/etcの設定ファイルのサンプルをインストール</li>
+<li><code>make install-webconf</code> ウェブインタフェースのためのApache設定ファイルをインストール</li>
+<li><code>make install-exfoliation</code> ウェブインタフェースのExfoliationテーマをインストール</li>
+<li><code>make install-classicui</code> ウェブインタフェースのクラシックテーマをインストール</li>
+</ul>
+
+
+<p>　ウェブインタフェースのテーマは必要なければ省略できるようです。</p>
+
+<pre><code># make install
+# make install-init
+# make install-config
+# make install-commandmode
+# make install-webconf
+# cp -R contrib/eventhandlers/ /usr/local/nagios/libexec/
+# chown -R nagios:nagios /usr/local/nagios/libexec/eventhandlers/
+</code></pre></li>
+<li><h4>Nagios Pluginをインストールする</h4>
+
+<p>　ソースコードを展開したディレクトリに移ってNagios Pluginをインストールしていきます。</p>
+
+<pre><code># cd ../nagios-plugins-1.4.16
+# ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+# make
+# make install
+</code></pre></li>
+<li><h4>NagiosとApacheを起動する</h4>
+
+<p>　ウェブインタフェースの認証につかうApacheのパスワードファイルを用意します。</p>
+
+<pre><code># htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+New password:
+Re-type new password:
+Adding password for user nagiosadmin
+</code></pre>
+
+<p>　Nagiosの設定ファイルを検証した後、Nagios、Apacheを起動します。</p>
+
+<pre><code># /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+# service nagios start
+nagios is stopped
+Starting nagios:                                           [  OK  ]
+# service httpd start
+                                                           [  OK  ]
+</code></pre>
+
+<p>　Nagiosのウェブインタフェースへアクセスして動作を確かめてみます。認証には上のhtpasswdで設定したユーザ名とパスワードを入力します。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-09-22-installing-nagios-core-4-dot-0-0-from-source/01-nagios-access.png" width="500" title="Nagios Access" ></p>
+
+<p><img src="http://momoto.github.io/blog/images/2013-09-22-installing-nagios-core-4-dot-0-0-from-source/02-nagios-web-interface.png" width="500" title="Nagiosのウェブインタフェース" ></p></li>
+<li><h4>自動起動を設定する</h4>
+
+<p>　必要に応じて、Nagiosの自動起動を設定します。</p>
+
+<pre><code># chkconfig --add nagios
+# chkconfig nagios on
+# chkconfig httpd on
+</code></pre></li>
+</ol>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="http://assets.nagios.com/downloads/nagioscore/docs/Installing_Nagios_Core_From_Source.pdf">Nagios – Installing Nagios Core From Source</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Apache HTTP ServerのSPDYサポートを有効化する]]></title>
@@ -3520,274 +3673,6 @@ The operation has completed successfully.
 <ul>
 <li><a href="http://awesome.naquadah.org/wiki/Getting_started">Getting started &ndash; awesome</a></li>
 <li><a href="http://awesome.naquadah.org/doc/manpages/awesome.1.html">doc &ndash; awesome window manager</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Gentoo Linux 20121213をインストールする]]></title>
-    <link href="http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213/"/>
-    <updated>2013-03-16T09:00:00+09:00</updated>
-    <id>http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213</id>
-    <content type="html"><![CDATA[<p>　Gentoo Linux 20121213をインストールした手順の記録です。インストールメディアはinstall-x86-minimal-20121213.isoを使用しています。DHCPによりネットワークは既に接続できる状態を前提にしています。<!-- more --></p>
-
-<h3>1. 起動</h3>
-
-<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/01.png" width="600" title="インストールメディアを起動する" ></p>
-
-<p>　カーネルとブートオプションの指定画面では、特に何も指定しないままEnterキーを押してインストールを始める。すぐにキーボード配列の選択画面が現れるので、日本語配列のキーボードを使用している場合は「22」と入力する。</p>
-
-<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/02.png" width="600" title="キーボード配列を選択する" ></p>
-
-<p>　起動が完了しrootにログインできたら、pingコマンド等でネットワークへの接続を確認する。</p>
-
-<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/03.png" width="600" title="ネットワーク接続を確認する" ></p>
-
-<h3>2. ストレージデバイスの準備</h3>
-
-<p>　Gentoo Linuxをインストールするストレージデバイスを用意していく。SCSIまたはシリアルATAで接続されているデバイスは<code>lsscsi</code>コマンドで一覧できるので、システムを記録するブロックデバイス（/dev/sdaなど）を確認する。この記事では<code>parted</code>を使用して、単純なブートパーティションとルートパーティションを<code>/dev/sda</code>に作成する。</p>
-
-<pre><code>livecd ~ # lsscsi
-[0:0:0:0]    disk    ATA      VBOX HARDDISK    1.0   /dev/sda
-[2:0:0:0]    cd/dvd  VBOX     CD-ROM           1.0   /dev/sr0
-</code></pre>
-
-<p>　partedで使用できるコマンドはhelpで確認することができる。mklabelでパーティションラベルを指定し、mkpartでパーティションを区切っていく。</p>
-
-<pre><code>livecd ~ # parted /dev/sda
-GNU Parted 3.1
-Using /dev/sda
-Welcome to GNU Parted! Type 'help' to view a list of commands.
-(parted)
-(parted) mklabel msdos
-(parted)
-(parted) mkpart primary ext2 0 32mb
-Warning: The resulting partition is not properly aligned for best performance.
-Ignore/Cancel? i
-(parted)
-(parted) mkpart primary ext4 32mb -1s
-Warning: The resulting partition is not properly aligned for best performance.
-Ignore/Cancel? i
-(parted)
-(parted) print
-Model: ATA VBOX HARDDISK (scsi)
-Disk /dev/sda: 8590MB
-Sector size (logical/physical): 512B/512B
-Partition Table: msdos
-Disk Flags:
-
-Number  Start   End     Size    Type     File system  Flags
- 1      512B    32.0MB  32.0MB  primary
- 2      32.0MB  8590MB  8558MB  primary
-
-(parted)
-(parted) quit
-Information: You may need to update /etc/fstab.
-
-livecd ~ #
-</code></pre>
-
-<p>　次に、上で作成したパーティションにファイルシステムを適用する。上の例では、mkpartでも指定しているとおり/dev/sda1にext2を、/dev/sda2にext4を適用する。</p>
-
-<pre><code>livecd ~ # mkfs.ext2 /dev/sda1
-mke2fs 1.42 (29-Nov-2011)
-Filesystem label=
-OS type: Linux
-...
-Allocating group tables: done
-Writing inode tables: done
-Writing superblocks and filesystem accounting information: done
-
-livecd ~ # mkfs.ext4 /dev/sda2
-mke2fs 1.42 (29-Nov-2011)
-Filesystem label=
-OS type: Linux
-...
-Allocating group tables: done
-Writing inode tables: done
-Creating journal (32768 blocks): done
-Writing superblocks and filesystem accounting information: done
-
-livecd ~ #
-</code></pre>
-
-<p>　パーティションとファイルシステムが用意できたら、ルートパーティションは/mnt/gentooへ、ブートパーティションは/mnt/gentoo/bootへ、それぞれのディレクトリへマウントする。</p>
-
-<pre><code>livecd ~ # mount /dev/sda2 /mnt/gentoo/
-livecd ~ # mkdir /mnt/gentoo/boot
-livecd ~ # mount /dev/sda1 /mnt/gentoo/boot/
-</code></pre>
-
-<h3>3. システムのインストール</h3>
-
-<h4>3-1. stage3 tarballとportageのダウンロード</h4>
-
-<p>　まず、システムをインストールしようとしているマウントポイント<code>/mnt/gentoo</code>へ移動し、<code>links</code>コマンドでGentooミラーリストへアクセスする。</p>
-
-<pre><code>livecd ~ # cd /mnt/gentoo/
-livecd gentoo # links http://www.gentoo.org/main/en/mirrors.xml
-</code></pre>
-
-<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/04.png" width="600" title="linksを起動してGentooミラーリストへアクセスする" ></p>
-
-<p>　linksが起動したらミラーリストから国内のミラーへ移り、stage3-&lt;architecture&gt;&ndash;&lt;release&gt;.tar.bz2とportage-latest.tar.bz2をダウンロードする。<a href="http://ftp.jaist.ac.jp/">JAIST（北陸先端科学技術大学院大学）</a>のミラーであれば、<a href="http://ftp.jaist.ac.jp/pub/Linux/Gentoo/releases/x86/current-stage3/">releases/x86/current-stage3/</a>と<a href="http://ftp.jaist.ac.jp/pub/Linux/Gentoo/snapshots/">snapshots/</a>のディレクトリに配置されている。ダウンロードが済んだら、それぞれのtarballを次のオプションで展開する。</p>
-
-<pre><code>livecd gentoo # tar xvjpf stage3-*.tar.bz2
-livecd gentoo # tar xvjf /mnt/gentoo/portage-latest.tar.bz2 -C /mnt/gentoo/usr
-</code></pre>
-
-<h4>3-2. Portageの設定</h4>
-
-<p>　続いて、/etc/make.confにPortageの変数を設定する。最低限、必要な変数である<code>-march</code>には命令セットアーキテクチャを指定する。環境やプログラムによって最適な設定は異なるものであるし、Portageの設定はシステムに広く影響しうるので、この記事では<a href="http://www.gentoo.org/doc/ja/handbook/handbook-x86.xml?part=1&amp;chap=5">Gentoo Linuxドキュメント</a>で一般的と紹介されている例を使用する。</p>
-
-<pre><code>livecd gentoo # touch /mnt/gentoo/etc/make.conf
-livecd gentoo # nano -w /mnt/gentoo/etc/make.conf
-
-  ---
-  CFLAGS="-O2 -march=i686 -pipe"
-  CXXFLAGS="${CFLAGS}"
-  MAKEOPT="-j2"
-</code></pre>
-
-<p>　<code>mirrorselect</code>コマンドでミラーを選択する。選択したミラーの情報は/etc/make.confに記録される。</p>
-
-<pre><code>livecd gentoo # mirrorselect -i -o &gt;&gt; /mnt/gentoo/etc/make.conf
-* Downloading a list of mirrors... Got 222 mirrors.
-</code></pre>
-
-<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/05.png" width="600" title="ミラーを選択する" ></p>
-
-<h4>3-3. /procと/devのマウント、chroot、ロケールとタイムゾーンの設定</h4>
-
-<p>/procと/devをマウントする。</p>
-
-<pre><code>livecd gentoo # mount -t proc none /mnt/gentoo/proc/
-livecd gentoo # mount --rbind /dev/ /mnt/gentoo/dev/
-</code></pre>
-
-<p>新しくインストールした環境へchrootする。</p>
-
-<pre><code>livecd gentoo # chroot /mnt/gentoo/ /bin/bash
-livecd / # env-update
-&gt;&gt;&gt; Regenerating /etc/ld.so.cache...
-livecd / # source  /etc/profile
-livecd / # export PS1="(chroot) $PS1"
-</code></pre>
-
-<p><code>/etc/locale.gen</code>から指定するロケールの行（ja_JP.UTF-8 UTF-8）をアンコメントして<code>locele-gen</code>コマンドを実行する。</p>
-
-<pre><code>(chroot) livecd / # nano -w /etc/locale.gen
-(chroot) livecd / # locale-gen
- * Generating 1 locales (this might take a while) with 1 jobs
- *  (1/1) Generating ja_JP.UTF-8 ... [ ok ]
- * Generation complete
-(chroot) livecd / #
-</code></pre>
-
-<p>タイムゾーンを設定する。</p>
-
-<pre><code>(chroot) livecd / # cp /usr/share/zoneinfo/Japan /etc/localtime
-</code></pre>
-
-<h4>3-4. Portageによるインストール</h4>
-
-<p>まず、Portageツリーを最新状態に更新する。</p>
-
-<pre><code>(chroot) livecd / # emerge --sync
-
- ...
- * An update to portage is available. It is _highly_ recommended
- * that you update portage now, before any other packages are updated.
-
- * To update portage, run 'emerge portage' now.
-
-
- * IMPORTANT: 7 news items need reading for repository 'gentoo'.
- * Use eselect news to read news items.
-
-(chroot) livecd / #
-</code></pre>
-
-<p>サポートされているプロファイルの一覧を確認し、選択する。</p>
-
-<pre><code>(chroot) livecd / # eselect profile list
-Available profile symlink targets:
-  [1]   default/linux/x86/13.0
-  [2]   default/linux/x86/13.0/selinux
-  [3]   default/linux/x86/13.0/desktop
-  [4]   default/linux/x86/13.0/desktop/gnome
-  [5]   default/linux/x86/13.0/desktop/kde
-  [6]   default/linux/x86/13.0/developer
-  [7]   hardened/linux/x86
-  [8]   hardened/linux/x86/selinux
-  [9]   hardened/linux/uclibc/x86
-(chroot) livecd / #
-(chroot) livecd / # eselect profile set 1
-</code></pre>
-
-<p>gentoo-sourcesをインストールする。このパッケージにはLinuxカーネルが含まれている。</p>
-
-<pre><code>(chroot) livecd / # emerge gentoo-sources
-</code></pre>
-
-<p>カーネルソースのコンフィギュレーションとコンパイルする。ここではマニュアル（手動）ではなく<code>genkernel</code>を使用する。</p>
-
-<pre><code>(chroot) livecd / # emerge genkernel
-(chroot) livecd / # genkernel all
-</code></pre>
-
-<h3>4. 再起動</h3>
-
-<p>　再機動をする前にシステムで使用するパーティションを/etc/fstabへ記述する。上述の例であれば/dev/sda1と/dev/sda2のふたつを記述する。</p>
-
-<pre><code>(chroot) livecd / # nano -w /etc/fstab
-
-  ---
-  /dev/sda1               /boot           ext2            noauto,noatime  1 2
-  /dev/sda2               /               ext4            noatime         0 1
-  #/dev/cdrom              /mnt/cdrom      auto            noauto,ro       0 0
-</code></pre>
-
-<p>　次にブートローダをインストールする。GRUBを使用する場合、emergeでインストールし、/boot/grub/grub.confを書き換えた後、<code>grub-install</code>を実行する。</p>
-
-<pre><code>(chroot) livecd / # emerge grub
-(chroot) livecd / # nano -w /boot/grub/grub.conf
-
-  ---
-  default 0
-  timeout 30
-  splashimage=(hd0,0)/boot/grub/splash.xpm.gz
-
-  title Gentoo Linux 3.7.10
-  root (hd0,0)
-  kernel /boot/kernel-genkernel-x86-3.7.10-gentoo root=/dev/ram0 real_root=/dev/sda2
-  initrd /boot/initramfs-genkernel-x86-3.7.10-gentoo
-  ---
-
-(chroot) livecd / # grep -v rootfs /proc/mounts &gt; /etc/mtab
-(chroot) livecd / # grub-install --no-floppy /dev/sda
-</code></pre>
-
-<p>　最後にchroot環境を抜けて、マウントしたパーティションをアンマウントし、再起動する。</p>
-
-<pre><code>(chroot) livecd / # exit
-livecd gentoo # cd
-livecd ~ # umount -l /mnt/gentoo/dev{/shm,/pts,}
-livecd ~ # umount -l /mnt/gentoo{/boot,/proc,}
-livecd ~ # reboot
-</code></pre>
-
-<p>　再起動の後、ブートローダが動作してシステムが起動されたらインストールが完了する。インストールの後は、上述の手順からは省いていたシステム設定（ユーザーの追加、パスワード変更）を行なっていく。</p>
-
-<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/07.png" width="600" title="ブートローダから起動させるOSを選択する" ></p>
-
-<p><img src="http://momoto.github.io/blog/images/2013-03-16-install-x86-minimal-20121213/08.png" width="600" title="インストールが完了し、ログインプロンプトが表示される" ></p>
-
-<h3>参考</h3>
-
-<ul>
-<li><a href="http://www.gentoo.org/doc/ja/handbook/">Gentooハンドブック（日本語）</a></li>
 </ul>
 
 ]]></content>

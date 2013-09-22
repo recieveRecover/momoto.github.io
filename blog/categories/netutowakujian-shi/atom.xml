@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[ネットワーク監視 | momoto.github.io]]></title>
+  <link href="http://momoto.github.io/blog/categories/netutowakujian-shi/atom.xml" rel="self"/>
+  <link href="http://momoto.github.io/"/>
+  <updated>2013-09-23T07:54:45+09:00</updated>
+  <id>http://momoto.github.io/</id>
+  <author>
+    <name><![CDATA[Seiji Momoto]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Nagios Core 4.0.0をソースからインストールする]]></title>
+    <link href="http://momoto.github.io/blog/2013/09/22/installing-nagios-core-4-dot-0-0-from-source/"/>
+    <updated>2013-09-22T22:32:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/09/22/installing-nagios-core-4-dot-0-0-from-source</id>
+    <content type="html"><![CDATA[<p>　Nagios Core 4.0.0とNagios Plugins 1.4.16をソースからインストールします。OSはCentOS 6.4を使用しています。<!-- more --></p>
+
+<ol>
+<li><h4>ソースコードを取得する</h4>
+
+<p>　<a href="http://www.nagios.org/download">www.nagios.org</a>からNagios Core 4.0.0とNagios Plugins 1.4.16のソースコードを取得します。</p>
+
+<pre><code>$ cd /usr/local/src/
+$ sudo wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-4.0.0.tar.gz
+$ sudo wget http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-1.4.16.tar.gz
+$ sudo tar xfz nagios-4.0.0.tar.gz
+$ sudo tar xfz nagios-plugins-1.4.16.tar.gz
+</code></pre></li>
+<li><h4>要件を満たす</h4>
+
+<p>　<a href="http://assets.nagios.com/downloads/nagioscore/docs/Installing_Nagios_Core_From_Source.pdf">Documentation</a>に従って、必要なパッケージをインストールします。</p>
+
+<pre><code># RHEL/CentOSの場合
+$ sudo yum install wget httpd php gcc glibc glibc-common gd gd-devel make net-snmp
+
+# Ubuntuの場合
+$ sudo apt-get install wget build-essential apache2 php5-gd libgd2-xpm libgd2-xpm-dev libapache2-mod-php5
+</code></pre>
+
+<p>　続いて、Nagiosのプロセスを実行するユーザとグループを用意します。</p>
+
+<pre><code>$ sudo useradd nagios
+$ sudo groupadd nagcmd
+$ sudo usermod -a -G nagcmd nagios
+</code></pre></li>
+<li><h4>Nagios Coreをインストールする</h4>
+
+<p>　ソースコードを展開したディレクトリに移ってNagios Coreをインストールしていきます。</p>
+
+<pre><code># cd nagios
+
+# RHEL/CentOSの場合
+# ./configure --with-command-group=nagcmd
+
+# Ubuntuの場合
+# ./configure --with-nagios-group=nagios --with-command-group=nagcmd -–with-mail=/usr/bin/sendmail
+
+*** Configuration summary for nagios 4.0.0 09-20-2013 ***:
+
+ General Options:
+ -------------------------
+        Nagios executable:  nagios
+        Nagios user/group:  nagios,nagios
+       Command user/group:  nagios,nagcmd
+             Event Broker:  yes
+        Install ${prefix}:  /usr/local/nagios
+    Install ${includedir}:  /usr/local/nagios/include/nagios
+                Lock file:  ${prefix}/var/nagios.lock
+   Check result directory:  ${prefix}/var/spool/checkresults
+           Init directory:  /etc/rc.d/init.d
+  Apache conf.d directory:  /etc/httpd/conf.d
+             Mail program:  /bin/mail
+                  Host OS:  linux-gnu
+
+ Web Interface Options:
+ ------------------------
+                 HTML URL:  http://localhost/nagios/
+                  CGI URL:  http://localhost/nagios/cgi-bin/
+ Traceroute (used by WAP):
+</code></pre>
+
+<p>　configureが終わると、Nagiosの構成の要約を表示してくれます。</p>
+
+<pre><code># make all
+</code></pre>
+
+<p>　コンパイルまで済んだら、次のmakeオプションでインストールを続けていきます。</p>
+
+<ul>
+<li><code>make install</code> メインプログラム、CGI、HTMLファイルをインストール</li>
+<li><code>make install-init</code> /etc/rc.d/init.dの起動スクリプトをインストール</li>
+<li><code>make install-commandmode</code> ディレクトリの権限のインストールと設定</li>
+<li><code>make install-config</code> /usr/local/nagios/etcの設定ファイルのサンプルをインストール</li>
+<li><code>make install-webconf</code> ウェブインタフェースのためのApache設定ファイルをインストール</li>
+<li><code>make install-exfoliation</code> ウェブインタフェースのExfoliationテーマをインストール</li>
+<li><code>make install-classicui</code> ウェブインタフェースのクラシックテーマをインストール</li>
+</ul>
+
+
+<p>　ウェブインタフェースのテーマは必要なければ省略できるようです。</p>
+
+<pre><code># make install
+# make install-init
+# make install-config
+# make install-commandmode
+# make install-webconf
+# cp -R contrib/eventhandlers/ /usr/local/nagios/libexec/
+# chown -R nagios:nagios /usr/local/nagios/libexec/eventhandlers/
+</code></pre></li>
+<li><h4>Nagios Pluginをインストールする</h4>
+
+<p>　ソースコードを展開したディレクトリに移ってNagios Pluginをインストールしていきます。</p>
+
+<pre><code># cd ../nagios-plugins-1.4.16
+# ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+# make
+# make install
+</code></pre></li>
+<li><h4>NagiosとApacheを起動する</h4>
+
+<p>　ウェブインタフェースの認証につかうApacheのパスワードファイルを用意します。</p>
+
+<pre><code># htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+New password:
+Re-type new password:
+Adding password for user nagiosadmin
+</code></pre>
+
+<p>　Nagiosの設定ファイルを検証した後、Nagios、Apacheを起動します。</p>
+
+<pre><code># /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+# service nagios start
+nagios is stopped
+Starting nagios:                                           [  OK  ]
+# service httpd start
+                                                           [  OK  ]
+</code></pre>
+
+<p>　Nagiosのウェブインタフェースへアクセスして動作を確かめてみます。認証には上のhtpasswdで設定したユーザ名とパスワードを入力します。</p>
+
+<p>{% img /blog/images/2013-09-22-installing-nagios-core-4-dot-0-0-from-source/01-nagios-access.png 500 Nagios Access %}</p>
+
+<p>{% img /blog/images/2013-09-22-installing-nagios-core-4-dot-0-0-from-source/02-nagios-web-interface.png 500 Nagiosのウェブインタフェース %}</p></li>
+<li><h4>自動起動を設定する</h4>
+
+<p>　必要に応じて、Nagiosの自動起動を設定します。</p>
+
+<pre><code># chkconfig --add nagios
+# chkconfig nagios on
+# chkconfig httpd on
+</code></pre></li>
+</ol>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="http://assets.nagios.com/downloads/nagioscore/docs/Installing_Nagios_Core_From_Source.pdf">Nagios – Installing Nagios Core From Source</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

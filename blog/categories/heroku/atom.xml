@@ -4,7 +4,7 @@
   <title><![CDATA[Heroku | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/heroku/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-22T23:12:04+09:00</updated>
+  <updated>2013-09-23T07:54:45+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -519,7 +519,7 @@ $ heroku run rake redmine:load_default_data
 
 <p>HerokuのアプリケーションURLへアクセスして、動作を確認します。</p>
 
-<p><img src="/blog/images/2013-05-31-deploy-redmine-2-dot-3-1-on-heroku/01.png" width="500"></p>
+<p>{% img /blog/images/2013-05-31-deploy-redmine-2-dot-3-1-on-heroku/01.png 500 %}</p>
 
 <h4>参考</h4>
 

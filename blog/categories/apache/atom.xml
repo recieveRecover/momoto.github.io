@@ -4,7 +4,7 @@
   <title><![CDATA[Apache | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/apache/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-22T23:12:04+09:00</updated>
+  <updated>2013-09-23T07:54:45+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -59,14 +59,14 @@ Starting httpd:                                            [  OK  ]
 
 <p>　左がFirefoxのネットワークモニタ、右がChrome DevToolsのネットワークパネルです。</p>
 
-<p><img class="left" src="/blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0101-ssl-with-firefox.png" width="500">
-<img src="/blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0102-ssl-with-chrome.png" width="500"></p></li>
+<p>{% img left /blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0101-ssl-with-firefox.png 500 %}
+{% img /blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0102-ssl-with-chrome.png 500 %}</p></li>
 <li><h5>SPDYが有効</h5>
 
 <p>　通常のHTTPSからSPDYを有効に切り替えて、同じコンテンツをリクエストした様子です。</p>
 
-<p><img class="left" src="/blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0201-spdy-with-firefox.png" width="500">
-<img src="/blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0202-spdy-with-chrome.png" width="500"></p>
+<p>{% img left /blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0201-spdy-with-firefox.png 500 %}
+{% img /blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0202-spdy-with-chrome.png 500 %}</p>
 
 <p>　Firefoxでは画像ファイルのSending（リクエスト送信にかかる時間）がほとんどなくなってWaiting（イニシャルレスポンスを待つ時間）に入れ替わっています。
 Chromeでは画像ファイルのサイズが0Bになっています（code.google.comのChromiumプロジェクトにバグとして報告されているようです<a href="https://code.google.com/p/chromium/issues/detail?id=154706">Issue #154706</a>）。</p></li>
@@ -74,8 +74,8 @@ Chromeでは画像ファイルのサイズが0Bになっています（code.goog
 
 <p>　画像ファイルをX-Associated-Contentでサーバープッシュしています。</p>
 
-<p><img class="left" src="/blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0301-server-push-with-firefox.png" width="500">
-<img src="/blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0302-server-push-with-chrome.png" width="500"></p>
+<p>{% img left /blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0301-server-push-with-firefox.png 500 %}
+{% img /blog/images/2013-09-08-enabling-spdy-for-apache-http-server/0302-server-push-with-chrome.png 500 %}</p>
 
 <p>　Chromeでは画像ファイルがCacheからの読み込みとなってタイムラインが大幅に短くなりました（キャッシュはちゃんと消してアクセスしたと思います・・・）。
 X-Associated-Contentを追加した代わりにHTMLファイルの読み込み時間は伸びています。</p></li>
@@ -248,13 +248,13 @@ OK: Pass Phrase Dialog successful.
 
 <p>　ウェブサーバにアクセスしてみると、発行者不明（sec_error_unknown_issuer）のため接続を信頼されていませんが、接続は暗号化されているようです。</p>
 
-<p><img src="/blog/images/2013-09-08-enabling-ssl-for-apache-http-server/01-untrusted-connection.png" width="500" title="安全性を確認できない接続" ></p>
+<p>{% img /blog/images/2013-09-08-enabling-ssl-for-apache-http-server/01-untrusted-connection.png 500 安全性を確認できない接続 %}</p>
 
-<p><img src="/blog/images/2013-09-08-enabling-ssl-for-apache-http-server/02-connection-encrypted.png" width="500" title="暗号化された接続" ></p>
+<p>{% img /blog/images/2013-09-08-enabling-ssl-for-apache-http-server/02-connection-encrypted.png 500 暗号化された接続 %}</p>
 
 <p>　証明書情報を表示すると入力したディスティングイッシュネームを確認することができます。また、この記事の例では主体者と発行者が同一になっていることも確認できます。</p>
 
-<p><img src="/blog/images/2013-09-08-enabling-ssl-for-apache-http-server/03-could-not-verify-this-certificate.png" width="500" title="信頼性を検証できない証明書" ></p>
+<p>{% img /blog/images/2013-09-08-enabling-ssl-for-apache-http-server/03-could-not-verify-this-certificate.png 500 信頼性を検証できない証明書 %}</p>
 
 <h2>参考</h2>
 
@@ -414,7 +414,7 @@ Server version: Apache/2.4.6 (Unix)
 <pre><code>[root@localhost ~]# lynx localhost
 </code></pre>
 
-<p><img src="/blog/images/2013-07-31-guide-to-compiling-and-installing-apache-http-server-2-dot-4-6/apache-http-server-works.png" title="LynxでApache HTTP Server 2.4.6の動作を確認する" ></p>
+<p>{% img /blog/images/2013-07-31-guide-to-compiling-and-installing-apache-http-server-2-dot-4-6/apache-http-server-works.png LynxでApache HTTP Server 2.4.6の動作を確認する %}</p>
 
 <p>　ネットワークアクセスを介すると動作が確認できなくなる場合、様々な原因が考えられますが、GNU/LinuxのシステムでよくあるのはiptablesやSELinuxなどのセキュリティによるものです。
 外部からのアクセスを受け入れようとする場合はHTTPのネットワーク通信を許可する必要がありますが、これらの作業は実質、セキュリティ強度を緩和しているので、マシンが接続しているネットワークや記録しているコンテンツをよく確かめて設定するべきです。

@@ -4,7 +4,7 @@
   <title><![CDATA[デスクトップ環境 | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/desukutotupuhuan-jing/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-22T23:12:04+09:00</updated>
+  <updated>2013-09-23T07:54:45+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -25,8 +25,8 @@
 <ul>
 <li><p>タイル配置（awful.layout.suit.tile）</p>
 
-<p><img src="/blog/images/2013-03-27-awesome-tutorials/01.png" width="300" title="awesomeのタイル配置" >
-<img src="/blog/images/2013-03-27-awesome-tutorials/02.png" width="300" title="awesomeのタイル配置" ></p></li>
+<p>{% img /blog/images/2013-03-27-awesome-tutorials/01.png 300 awesomeのタイル配置 %}
+{% img /blog/images/2013-03-27-awesome-tutorials/02.png 300 awesomeのタイル配置 %}</p></li>
 </ul>
 
 
@@ -36,11 +36,11 @@
 <ul>
 <li><p>均等配置（awful.layout.suit.fair）</p>
 
-<p><img src="/blog/images/2013-03-27-awesome-tutorials/03.png" width="300" title="awesomeの均等配置" >
-<img src="/blog/images/2013-03-27-awesome-tutorials/04.png" width="300" title="awesomeの均等配置" ></p></li>
+<p>{% img /blog/images/2013-03-27-awesome-tutorials/03.png 300 awesomeの均等配置 %}
+{% img /blog/images/2013-03-27-awesome-tutorials/04.png 300 awesomeの均等配置 %}</p></li>
 <li><p>螺旋配置（awful.layout.suit.spiral）</p>
 
-<p><img src="/blog/images/2013-03-27-awesome-tutorials/05.png" width="300" title="awesomeの螺旋配置" ></p></li>
+<p>{% img /blog/images/2013-03-27-awesome-tutorials/05.png 300 awesomeの螺旋配置 %}</p></li>
 </ul>
 
 
