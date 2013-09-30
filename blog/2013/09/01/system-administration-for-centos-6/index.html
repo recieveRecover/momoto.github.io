@@ -7,7 +7,7 @@
 <title>CentOS 6のシステム設定を確認する - momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
 <meta name="description" content="CentOS 6の基本的なシステム設定を確認します。地域化、ネットワーク、セキュリティ、サービス管理などの設定を対象にしています。">
-<meta name="keywords" content="RHEL 6, CentOS 6, GNU/Linux">
+<meta name="keywords" content="RHEL 6, CentOS 6, GNU/Linux, Administration">
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -87,9 +87,24 @@
 ここでいうシステム設定は、地域化、ネットワーク、セキュリティ、サービス管理などの設定を対象にしています。デスクトップ環境や外観の設定は含みません。
 また、各機能については基本的な設定までを概観するにとどめて、詳細な設定までは踏み込みません。<!-- more --></p>
 
-<h2>地域化</h2>
+<h4>もくじ</h4>
 
-<h4>言語の設定（/etc/sysconfig/i18n）</h4>
+<ul>
+<li><a href="/blog/2013/09/01/system-administration-for-centos-6/#language">言語の設定</a></li>
+<li><a href="/blog/2013/09/01/system-administration-for-centos-6/#clock">システム時刻の設定</a></li>
+<li><a href="/blog/2013/09/01/system-administration-for-centos-6/#keyboard">キー配列の設定</a></li>
+<li><a href="/blog/2013/09/01/system-administration-for-centos-6/#network">ネットワークの設定</a></li>
+<li><a href="/blog/2013/09/01/system-administration-for-centos-6/#name-resolution">名前解決の設定</a></li>
+<li><a href="/blog/2013/09/01/system-administration-for-centos-6/#selinux">SELinuxの設定</a></li>
+<li><a href="/blog/2013/09/01/system-administration-for-centos-6/#packet-filtering">パケットフィルタリングの設定</a></li>
+<li><a href="/blog/2013/09/01/system-administration-for-centos-6/#auto-start-services">自動起動の設定</a></li>
+</ul>
+
+
+<!-- 地域化 -->
+
+
+<h2><span id="language">言語の設定（/etc/sysconfig/i18n）</span></h2>
 
 <p>　言語情報は地域、文字セットとともにLocaleとして設定します。
 現在のLocaleの設定や利用できるLocale名を表示するには<a href="http://www.gnu.org/software/libc/">GNU Cライブラリ</a>の<a href="http://www.gnu.org/software/libc/manual/html_node/Locales.html">locale</a>をつかいます。</p>
@@ -142,7 +157,7 @@ LC_ALL=
 
 <p>　日本語を設定する場合の注意点として、Locale名はja_JP.utf8ではなくja_JP.UTF-8を使用したほうが良いようです。</p>
 
-<h5>参考</h5>
+<h4>参考</h4>
 
 <ul>
 <li><a href="http://blog.at-dk.info/2011/03/jajputf-8-vs-jajputf8.html">ただのメモ: ja_JP.UTF-8 vs ja_JP.utf8</a></li>
@@ -150,7 +165,7 @@ LC_ALL=
 </ul>
 
 
-<h4>システム時刻の設定（/etc/sysconfig/clock）</h4>
+<h2><span id="clock">システム時刻の設定（/etc/sysconfig/clock）</span></h2>
 
 <p>　時刻系やタイムゾーンは/etc/sysconfig/clockに設定します。また、タイムゾーン情報は<a href="https://www.iana.org/time-zones">tzdata</a>のバイナリファイルを/etc/localtimeに保存します。</p>
 
@@ -162,7 +177,7 @@ UTC=false
 $ sudo ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 </code></pre>
 
-<h5>参考</h5>
+<h4>参考</h4>
 
 <ul>
 <li><a href="http://www.redhat.com/advice/tips/timezone.html">Tips &amp; Tricks: Changing timezone | Red Hat</a></li>
@@ -170,7 +185,7 @@ $ sudo ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 </ul>
 
 
-<h4>キー配列の設定（/etc/sysconfig/keyboard）</h4>
+<h2><span id="keyboard">キー配列の設定（/etc/sysconfig/keyboard）</span></h2>
 
 <p>　キー配列は/etc/sysconfig/keyboardに設定します。KEYTABLEに指定できる値は/lib/kbd/keymaps/i386/&lt;<em>配列</em>>/&lt;<em>表名</em>>.map.gzにある表名です。日本語106であればjp106を設定します。</p>
 
@@ -188,20 +203,21 @@ Loading /lib/kbd/keymaps/i386/qwerty/jp106.map.gz
 
 <p>　/etc/sysconfig/keyboardの設定はX Window Systemのキーボード設定とは異なります。</p>
 
-<h5>参考</h5>
+<h4>参考</h4>
 
 <ul>
 <li><a href="http://www.kbd-project.org/manpages/index.html">man pages | KBD</a></li>
 </ul>
 
 
-<h2>ネットワーク</h2>
+<!-- ネットワーク -->
 
-<h4>ネットワークの設定（/etc/sysconfig/network、/etc/sysconfig/network-scripts/ifcfg-&lt;<em>interface</em>>）</h4>
 
-<p>　RHEL 6のクローンでは、ネットワークインタフェースによらない設定とインタフェースごとの設定とで、設定ファイルがわかれています。</p>
+<h2><span id="network">ネットワークの設定（/etc/sysconfig/{network,network-scripts/}）</span></h2>
 
-<p>　グローバルな設定では、ホスト名やゲートウェイなどの情報を/etc/sysconfig/networkに設定します。</p>
+<p>　ネットワークの設定は、ネットワークインタフェースによらないグローバルな設定とインタフェースごとに固有の設定とでファイルがわかれています。</p>
+
+<p>　グローバルな設定では、/etc/sysconfig/networkにホスト名やゲートウェイなどの情報を設定します。</p>
 
 <pre><code>$ sudo vi /etc/sysconfig/network
 
@@ -209,7 +225,7 @@ NETWORKING=yes
 HOSTNAME=localhost.localdomain
 </code></pre>
 
-<p>　インタフェースごとの設定では、DHCPの利用するかどうか、DHCPを利用しない場合のIPなどの情報を/etc/sysconfig/ifcfg-&lt;<em>interface</em>>に設定します。</p>
+<p>　インタフェースごとの設定では、/etc/sysconfig/ifcfg-&lt;<em>インタフェース名</em>>にDHCPの利用するかどうか、DHCPを利用しない場合のIP情報などを設定します。</p>
 
 <pre><code>$ sudo vi /etc/sysconfig/network-scripts/ifcfg-eth0
 
@@ -231,14 +247,14 @@ eth0 のIP情報を検出中... 完了。
                                                            [  OK  ]
 </code></pre>
 
-<h5>参考</h5>
+<h4>参考</h4>
 
 <ul>
 <li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/part-Networking.html">パート III. ネットワーキング – Red Hat Customer Portal</a></li>
 </ul>
 
 
-<h4>名前解決の設定（nsswitch.conf、host.conf、hosts、resolv.conf）</h4>
+<h2><span id="name-resolution">名前解決の設定（nsswitch.conf、host.conf、hosts、resolv.conf）</span></h2>
 
 <ul>
 <li><p>　名前解決の方法の順序は/etc/nsswitch.confに設定します。</p>
@@ -268,7 +284,7 @@ eth0 のIP情報を検出中... 完了。
 </ul>
 
 
-<h5>参考</h5>
+<h4>参考</h4>
 
 <ul>
 <li><a href="http://linuxjm.sourceforge.jp/html/LDP_man-pages/man5/nsswitch.conf.5.html">Man page of NSSWITCH.CONF</a></li>
@@ -278,9 +294,7 @@ eth0 のIP情報を検出中... 完了。
 </ul>
 
 
-<h2>セキュリティ</h2>
-
-<h4>SELinuxの設定（/etc/sysconfig/selinux）</h4>
+<h2><span id="selinux">SELinuxの設定（/etc/sysconfig/selinux）</span></h2>
 
 <p>　現在のSELinuxの状態を表示するには<code>getenforce</code>をつかいます。
 SELinuxの状態はEnforcing（SELinuxが有効、ポリシーは強制される）、Permissive（SELinuxが有効、ポリシーは強制されない）、Disabled（SELinuxが無効）のいずれかです。
@@ -327,7 +341,7 @@ allow_daemons_dump_core --&gt; on
 <pre><code>$ sudo setsebool -P httpd_can_network_connect_db on
 </code></pre>
 
-<h5>参考</h5>
+<h4>参考</h4>
 
 <ul>
 <li><a href="http://itpro.nikkeibp.co.jp/article/COLUMN/20070827/280411/">第一人者がやさしく教える新SELinux入門 &ndash; 第一人者がやさしく教える新SELinux入門&mdash;-目次：ITpro</a></li>
@@ -336,12 +350,113 @@ allow_daemons_dump_core --&gt; on
 </ul>
 
 
-<h2>サービス管理</h2>
+<h2><span id="packet-filtering">パケットフィルタリングの設定（iptables）</span></h2>
 
-<!-- #### パッケージ管理 -->
+<p>　iptables管理ツールをつかって、パケットフィルタリングのルール（Netfilterのfilterテーブル）までを簡単に見ていきます。
+この記事で扱うのはiptablesの機能のほんの一部で、その他の機能（nat、mangleやip6tables）については扱いません。</p>
+
+<p>　現在のパケットフィルタリングのルールを表示するには<code>iptables -L</code>をつかいます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo iptables -L
+</span><span class='line'>Chain INPUT (policy ACCEPT)
+</span><span class='line'>target     prot opt source               destination
+</span><span class='line'>ACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED
+</span><span class='line'>ACCEPT     icmp --  anywhere             anywhere
+</span><span class='line'>ACCEPT     all  --  anywhere             anywhere
+</span><span class='line'>ACCEPT     tcp  --  anywhere             anywhere            state NEW tcp dpt:ssh
+</span><span class='line'>REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited
+</span><span class='line'>
+</span><span class='line'>Chain FORWARD (policy ACCEPT)
+</span><span class='line'>target     prot opt source               destination
+</span><span class='line'>REJECT     all  --  anywhere             anywhere            reject-with icmp-host-prohibited
+</span><span class='line'>
+</span><span class='line'>Chain OUTPUT (policy ACCEPT)
+</span><span class='line'>target     prot opt source               destination</span></code></pre></td></tr></table></div></figure>
 
 
-<h4>自動起動の設定（chkconfig）</h4>
+<p>　上の出力例は、テーブル（filter）に設定された３つのチェーン（INPUT、FORWARD、OUTPUT）と各チェーンのルール（INPUTに５行、FORWARDに１行、OUTPUTに０行）の内容を表示しています。
+この場合、OUTPUTチェーンにはルールが何も設定されておらず、OUTPUTのポリシーにはACCEPTが設定されているので、ローカルからネットワークへ出ていくパケットに適用されるのは常にACCEPTです。
+一方、INPUTチェーンのポリシーにもACCEPTが設定されていますが、INPUTにはルールが５つ設定されているので、ネットワークからローカルへ入ってくるパケットはルールのマッチオプションに一致するtargetが適用されます。</p>
+
+<p>　iptablesの<code>-L (--list)</code>オプションだけではルールのマッチオプションまで詳しく表示されないので、より詳しい出力を表示させるには<code>-v (--verbose)</code>オプションを追加します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo iptables -L -v
+</span><span class='line'>Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+</span><span class='line'> pkts bytes target     prot opt in     out     source               destination
+</span><span class='line'> 2290  234K ACCEPT     all  --  any    any     anywhere             anywhere            state RELATED,ESTABLISHED
+</span><span class='line'>   27  2268 ACCEPT     icmp --  any    any     anywhere             anywhere
+</span><span class='line'>   26  1560 ACCEPT     all  --  lo     any     anywhere             anywhere
+</span><span class='line'>    3   132 ACCEPT     tcp  --  any    any     anywhere             anywhere            state NEW tcp dpt:ssh
+</span><span class='line'>    1    40 REJECT     all  --  any    any     anywhere             anywhere            reject-with icmp-host-prohibited
+</span><span class='line'>
+</span><span class='line'>Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+</span><span class='line'> pkts bytes target     prot opt in     out     source               destination
+</span><span class='line'>    0     0 REJECT     all  --  any    any     anywhere             anywhere            reject-with icmp-host-prohibited
+</span><span class='line'>
+</span><span class='line'>Chain OUTPUT (policy ACCEPT 1534 packets, 283K bytes)
+</span><span class='line'> pkts bytes target     prot opt in     out     source               destination</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　-L (&mdash;list)だけでは表示されていなかったpkts、bytes、in、outの列が表示されています。それぞれの列が示しているのは次のような内容です。</p>
+
+<ul>
+<li><strong>pkts</strong> ルールにマッチしたパケット数</li>
+<li><strong>bytes</strong> 同バイト数</li>
+<li><strong>target</strong> ルールにマッチしたパケットに対するターゲット</li>
+<li><strong>prot</strong> ルールを適用するプロトコル</li>
+<li><strong>opt</strong> パケットの断片化の区別</li>
+<li><strong>in</strong> ルールを適用する入力インタフェース</li>
+<li><strong>out</strong> ルールを適用する出力インタフェース、INPUTチェーンでは指定不可</li>
+<li><strong>source</strong> ルールを適用するパケットの送信元アドレス</li>
+<li><strong>destination</strong> ルールを適用するパケットの送信先アドレス</li>
+<li><strong>追加のマッチオプション</strong> 拡張マッチモジュール（stateやreject-withなど）</li>
+</ul>
+
+
+<p>　上記例のINPUTチェーン１行目のルールだけ見てみると、プロトコル、インタフェース、送信元・送信先のいずれも指定していませんが、
+stateモジュールによって既に接続が確立している状態（ESTABLISHED）と既存の接続に関連して新しく接続された状態（RELATED）を指定していて、
+プロトコル、インタフェース等を問わず既存の接続はACCEPTするという内容になります。</p>
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Security_Guide/sect-Security_Guide-Firewalls.html">2.8. ファイアウォール – Red Hat Customer Portal</a></li>
+<li><a href="http://linuxjm.sourceforge.jp/html/iptables/man8/iptables.8.html">Man page of IPTABLES</a></li>
+<li><a href="http://ipset.netfilter.org/iptables-extensions.man.html">Man page of iptables-extensions</a></li>
+</ul>
+
+
+<h2><span id="auto-start-services">自動起動の設定（chkconfig）</span></h2>
 
 <p>　サービスの自動起動はchkconfigで設定します。サービスと現在の設定の一覧を表示するには<code>chkconfig --list</code>をつかいます。</p>
 
@@ -384,7 +499,7 @@ $ runlevel
 N 3
 </code></pre>
 
-<h5>参考</h5>
+<h4>参考</h4>
 
 <ul>
 <li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/s2-services-chkconfig.html">10.2.3. chkconfig &#12518;&#12540;&#12486;&#12451;&#12522;&#12486;&#12451;&#12398;&#20351;&#29992; &ndash; Red Hat Customer Portal</a></li>
