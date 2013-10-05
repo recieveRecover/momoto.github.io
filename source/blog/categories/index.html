@@ -1,0 +1,27 @@
+---
+layout: page
+title: Categories
+footer: false
+---
+
+<div id="blog-archives" class="category">
+{% for site_category in site.categories reversed %}
+{% capture category %}{{ site_category | first }}{% endcapture %}
+<h2>{{ category | category_link }}</h2><br><br>
+{% for post in site.categories[category] %}
+<article>
+<h1><a href="{{ root_url }}{{ post.url }}">{{post.title}}</a></h1>
+{% capture category_size %}{{ post.categories | size }}{% endcapture %}
+{% if category_size != '0' %}
+<footer>
+  <span class="categories">posted in {{ post.categories | category_links }}</span>
+</footer>
+{% endif %}
+</article>
+{% endfor %}
+{% endfor %}
+</div>
+<div>
+<h2>Googleのトレンド</h2>
+<script type="text/javascript" src="//www.google.com/trends/embed.js?hl=ja&q={% for site_category in site.categories reversed limit:5 %}{{ site_category | first }},+{% endfor %}&cmpt=q&content=1&cid=TIMESERIES_GRAPH_0&export=5&w=500&h=330"></script>
+</div>

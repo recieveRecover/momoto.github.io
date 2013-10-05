@@ -44,8 +44,8 @@ module Jekyll
       title_prefix             = site.config['category_title_prefix'] || 'Category: '
       self.data['title']       = "#{title_prefix}#{category}"
       # Set the meta-description for this page.
-      meta_description_prefix  = site.config['category_meta_description_prefix'] || 'Category: '
-      self.data['description'] = "#{meta_description_prefix}#{category}"
+      # meta_description_prefix  = site.config['category_meta_description_prefix'] || 'Category: '
+      # self.data['description'] = "#{meta_description_prefix}#{category}"
     end
 
   end

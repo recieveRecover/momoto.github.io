@@ -1,0 +1,3 @@
+{% if page.breadcrumb.size > 0 %}<span class="breadcrumb">{% for crumb in page.breadcrumb %}
+<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="{{ crumb.url }}" itemprop="url"><span itemprop="title">{{ crumb.title }}</span></a> › </span>
+{% endfor %}</span>{% endif %}
