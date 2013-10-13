@@ -4,7 +4,7 @@
   <title><![CDATA[暗号化 | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/an-hao-hua/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-30T23:58:38+09:00</updated>
+  <updated>2013-10-14T03:16:04+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -19,7 +19,10 @@
     <updated>2013-09-08T00:00:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/09/08/enabling-ssl-for-apache-http-server</id>
     <content type="html"><![CDATA[<p>　mod_sslをつかってApache HTTP ServerのSSL/TLSサポートを有効化します。
-SSLを有効にするために必要なRSA秘密鍵と公開鍵証明書のうち、公開鍵証明書は第三者の認証局に署名してもらうのが通常ですが、この記事では検証のため自己発行証明書をつかいます。<!-- more --></p>
+SSLを有効にするために必要なRSA秘密鍵と公開鍵証明書のうち、公開鍵証明書は第三者の認証局に署名してもらうのが通常ですが、この記事では検証のため自己発行証明書をつかいます。</p>
+
+<!-- more -->
+
 
 <p>　手順としては(1) RSA秘密鍵を生成、(2) 証明書署名要求（CSR）を作成、(3) 公開鍵証明書を発行、その後、ウェブサーバでSSL/TLSを設定します。(3)の「公開鍵証明書の発行」は本来、認証局で行う手順です。</p>
 

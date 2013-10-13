@@ -4,7 +4,7 @@
   <title><![CDATA[ネットワーク監視 | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/netutowakujian-shi/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-30T23:58:38+09:00</updated>
+  <updated>2013-10-14T03:16:04+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -18,7 +18,10 @@
     <link href="http://momoto.github.io/blog/2013/09/22/installing-nagios-core-4-dot-0-0-from-source/"/>
     <updated>2013-09-22T22:32:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/09/22/installing-nagios-core-4-dot-0-0-from-source</id>
-    <content type="html"><![CDATA[<p>　Nagios Core 4.0.0とNagios Plugins 1.4.16をソースからインストールします。OSはCentOS 6.4を使用しています。<!-- more --></p>
+    <content type="html"><![CDATA[<p>　Nagios Core 4.0.0とNagios Plugins 1.4.16をソースからインストールします。OSはCentOS 6.4を使用しています。</p>
+
+<!-- more -->
+
 
 <ol>
 <li><h4>ソースコードを取得する</h4>

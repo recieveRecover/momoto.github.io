@@ -4,7 +4,7 @@
   <title><![CDATA[GNU/Linux | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/gnu-slash-linux/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-30T23:58:38+09:00</updated>
+  <updated>2013-10-14T03:16:04+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -14,13 +14,85 @@
 
   
   <entry>
+    <title type="html"><![CDATA[EPEL 6のリポジトリを有効化する]]></title>
+    <link href="http://momoto.github.io/blog/2013/10/13/enabling-extra-packages-for-enterprise-linux-repository/"/>
+    <updated>2013-10-13T11:09:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/10/13/enabling-extra-packages-for-enterprise-linux-repository</id>
+    <content type="html"><![CDATA[<p>　CentOS 6でExtra Packages for Enterprise Linux 6（EPEL 6）リポジトリを有効化します。
+このリポジトリを有効化することでRHEL 6やそのクローンでもFedoraパッケージを利用できるようになります。</p>
+
+<!-- more -->
+
+
+<p>　まず、パッケージの検証につかう公開鍵をRPMデータベースにインポートします。
+EPEL6でつかう公開鍵は<a href="https://fedoraproject.org/keys">Fedora Project &ndash; List of GPG keys</a>の<a href="https://fedoraproject.org/static/0608B895.txt">RPM-GPG-KEY-EPEL-6</a>です。</p>
+
+<pre><code>$ sudo rpm --import https://fedoraproject.org/static/0608B895.txt
+</code></pre>
+
+<p>　次に、EPEL6のミラーからRPMパッケージをインストールして、リポジトリの有効化は完了です。</p>
+
+<pre><code>$ sudo rpm -Uvh http://ftp.iij.ad.jp/pub/linux/fedora/epel/6/i386/epel-release-6-8.noarch.rpm
+Retrieving http://ftp.iij.ad.jp/pub/linux/fedora/epel/6/i386/epel-release-6-8.noarch.rpm
+Preparing...                ########################################### [100%]
+   1:epel-release           ########################################### [100%]
+</code></pre>
+
+<p>　RPMファイルのURLは、ミラーに<a href="http://www.iij.ad.jp/">IIJ</a>を選んだ場合だと次のようになります。</p>
+
+<ul>
+<li><strong>i386</strong> <a href="http://ftp.iij.ad.jp/pub/linux/fedora/epel/6/i386/epel-release-6-8.noarch.rpm">http://ftp.iij.ad.jp/pub/linux/fedora/epel/6/i386/epel-release-6-8.noarch.rpm</a></li>
+<li><strong>x86_64</strong> <a href="http://ftp.iij.ad.jp/pub/linux/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm">http://ftp.iij.ad.jp/pub/linux/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm</a></li>
+</ul>
+
+
+<p>　追加したEPELのリポジトリが有効になっているかどうかは<code>yum repolist</code>をつかって確認することができます。</p>
+
+<pre><code>$ yum repolist
+
+repo id           repo name                                               status
+base              CentOS-6 - Base                                         4,802
+epel              Extra Packages for Enterprise Linux 6 - i386            8,113
+extras            CentOS-6 - Extras                                          12
+updates           CentOS-6 - Updates                                      1,000
+repolist: 13,927
+</code></pre>
+
+<p>　yumオプションに<code>--enablerepo=epel</code>を指定したときだけEPELを利用し、普段は無効化にしておきたい場合は/etc/yum.repos.d/epel.repoの<code>enabled=1</code>を<code>enabled=0</code>に変更しておきます。</p>
+
+<pre><code>$ sudo vi /etc/yum.repos.d/epel.repo
+
+[epel]
+name=Extra Packages for Enterprise Linux 6 - $basearch
+#baseurl=http://download.fedoraproject.org/pub/epel/6/$basearch
+mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-6&amp;arch=$basearch
+failovermethod=priority
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+</code></pre>
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="http://fedoraproject.org/wiki/EPEL">EPEL &ndash; FedoraProject</a></li>
+<li><a href="http://wiki.centos.org/AdditionalResources/Repositories">AdditionalResources/Repositories &ndash; CentOS Wiki</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[CentOS 6のシステム設定を確認する]]></title>
     <link href="http://momoto.github.io/blog/2013/09/01/system-administration-for-centos-6/"/>
     <updated>2013-09-01T00:00:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/09/01/system-administration-for-centos-6</id>
     <content type="html"><![CDATA[<p>　CentOS 6の基本的なシステム設定を確認します。
 ここでいうシステム設定は、地域化、ネットワーク、セキュリティ、サービス管理などの設定を対象にしています。デスクトップ環境や外観の設定は含みません。
-また、各機能については基本的な設定までを概観するにとどめて、詳細な設定までは踏み込みません。<!-- more --></p>
+また、各機能については基本的な設定までを概観するにとどめて、詳細な設定までは踏み込みません。</p>
+
+<!-- more -->
+
 
 <h4>もくじ</h4>
 
@@ -456,7 +528,10 @@ N 3
     <id>http://momoto.github.io/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst</id>
     <content type="html"><![CDATA[<p>　Debian 7.1.0をインストールした手順の記録です。インストールメディアはdebian-7.1.0-amd64-netinst.isoを使用しています。インターネットへ接続できる環境を前提にしています。</p>
 
-<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/01.png" width="400" title="インストーラの起動" ><!-- more --></p>
+<p><img src="/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/01.png" width="400" title="インストーラの起動" ></p>
+
+<!-- more -->
+
 
 <ol>
 <li><h3>言語、地域、キーボードの選択</h3>
@@ -584,7 +659,10 @@ N 3
     <link href="http://momoto.github.io/blog/2013/06/23/installing-ubuntu-13-dot-04-server-amd64/"/>
     <updated>2013-06-23T00:00:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/06/23/installing-ubuntu-13-dot-04-server-amd64</id>
-    <content type="html"><![CDATA[<p>　Ubuntu Server 13.04をインストールした手順の記録です。インストールイメージはubuntu-13.04-server-amd64.isoを使用しています。<!-- more --></p>
+    <content type="html"><![CDATA[<p>　Ubuntu Server 13.04をインストールした手順の記録です。インストールイメージはubuntu-13.04-server-amd64.isoを使用しています。</p>
+
+<!-- more -->
+
 
 <ol>
 <li><h4>インストールイメージの起動</h4>
@@ -877,117 +955,6 @@ The operation has completed successfully.
 <li><a href="http://www.syslinux.org/wiki/index.php/Mbr">Mbr &ndash; Syslinux Wiki</a></li>
 <li><a href="http://www.syslinux.org/wiki/index.php/Common_Problems#Missing_OS_.28gptmbr.bin.29">Common Problems &ndash; Syslinux Wiki</a></li>
 </ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[CentOS 6.4をインストールする]]></title>
-    <link href="http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/"/>
-    <updated>2013-04-06T01:37:00+09:00</updated>
-    <id>http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall</id>
-    <content type="html"><![CDATA[<p>　CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。インターネットへ接続できる環境を前提にしています。<!-- more --></p>
-
-<ol>
-<li><h3>Anacondaの起動</h3>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/01.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/01_thumbnail.png" title="Anacondaの起動" ></a></p>
-
-<p>　インストールメディアからCentOSのインストーラ"Anaconda"を起動します。このとき、インストールメディア（光学ドライブやUSB、あるいはISOイメージファイル）が優先的に起動されるようにコンピュータ側（BIOSや仮想化環境）で正しく設定されている必要があります。</p>
-
-<p>　インストールを開始するために、"Install or upgrade an existing system"を選択します。</p></li>
-<li><h3>インストールメディアのチェック</h3>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02_thumbnail.png" title="インストールメディアのチェック" ></a></p>
-
-<p>　必要に応じてメディアチェックを行います。このチェックはインストールに必ずしも必要ではありません。チェックを行う場合は「OK」を、チェックを省略してインストールを開始する場合は「Skip」を選択します。</p></li>
-<li><h3>言語の選択</h3>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/03.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/03_thumbnail.png" title="言語の選択" ></a></p>
-
-<p>　インストーラで使用される言語とベースシステムに含める言語パッケージを選択します。日本語も用意されていますが、翻訳が未対応の箇所では原文が表示されます。この記事では英語を選択してインストールを進めます。</p></li>
-<li><h3>キーボード配列の選択</h3>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/04.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/04_thumbnail.png" title="キーボード配列の選択" ></a></p>
-
-<p>使用しているキーボードにあわせて、キーボード配列を選択します。日本語キーボードであれば"jp106"を選択します。</p></li>
-<li><h3>インストール方法の選択</h3>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/05.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/05_thumbnail.png" title="インストール方法の選択" ></a></p>
-
-<p>ネットワークインストールの場合、"URL"を選択します。</p>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/06.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/06_thumbnail.png" title="TCP&frasl;IPの設定" ></a></p>
-
-<p>　続いて、TCP/IPを設定します。IPv4、IPv6サポートの有無と、それぞれのプロトコルにおいて動的IP（DHCP）を使用するかどうかを選択します。この記事ではIPv4のみ有効化し、動的IPを使用するように設定してインストールを進めます。</p>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/07.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/07_thumbnail.png" title="ネットワークインストールのURLの設定" ></a></p>
-
-<p>　<a href="http://www.centos.org/modules/tinycontent/index.php?id=32">CentOS Mirrors</a>にあるミラー等を参考に、対象アーキテクチャの"images/install.img"のURLを入力します。例えば、アーキテクチャが"i386"で、<a href="http://www.riken.jp/">理研</a>のミラーを使用する場合のURLは <a href="http://ftp.riken.jp/Linux/centos/6.4/os/i386/images/install.img">http://ftp.riken.jp/Linux/centos/6.4/os/i386/images/install.img</a> になります。</p>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/08.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/08_thumbnail.png" title="ネットワークインストールのURLの入力" ></a></p>
-
-<p>　<code>OSError: /lib64/libudev.so.0: wrong ELF class: ELFCLASS64</code>と表示されて処理が止まった場合は、install.imgのアーキテクチャが正しいかどうか確認してください。</p></li>
-<li><h3>グラフィカルインストールの開始</h3>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/09.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/09_thumbnail.png" title="Anacondaのグラフィカルユーザインタフェース" ></a></p>
-
-<p>　続いて、AnacondaのGUIにしたがってインストールを進めていきます。ブートメニューに指定するオプション（<code>boot: linux text</code>）によって、テキストモードインストールを使用することも可能ですが、テキストモードでは設定できない項目もあるため、通常はグラフィカルモードを使用します。</p></li>
-<li><h3>ストレージ形式の選択</h3>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/10.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/10_thumbnail.png" title="ストレージ形式の選択" ></a></p>
-
-<p>特殊なストレージを使用する必要がなければ"Basic Storage Devices"を選択します。</p></li>
-<li><h3>ホスト名の入力</h3>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/11.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/11_thumbnail.png" title="ホスト名の入力" ></a></p>
-
-<p>ホスト名を入力します。</p></li>
-<li><h3>タイムゾーンの指定</h3>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/12.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/12_thumbnail.png" title="タイムゾーンの指定" ></a></p>
-
-<p>タイムゾーンの指定と、システムクロックにUTCを使用するかどうかを選択します。</p></li>
-<li><h3>rootパスワードの設定</h3>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/13.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/13_thumbnail.png" title="rootパスワードの設定" ></a></p></li>
-<li><h3>パーティションの設定</h3>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/14.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/14_thumbnail.png" title="パーティションの設定" ></a></p>
-
-<p>　ストレージデバイスのパーティション設定を行います。上４つの選択肢を選んだ場合、自動的にデフォルトのパーティションが構成されます。手動でパーティション構成を設定する場合は一番下の"Create Custom Layout"を選択します。
-また、LUKS（Linux Unified Key Setup）による暗号化を行うかどうかを、この画面で指定出来ます。</p>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/15.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/15_thumbnail.png" title="ストレージへの書き込みに対する警告" ></a></p>
-
-<p>　この画面以降、ストレージデバイスへの書込みが行われます。この時点で接続しているストレージデバイスや上書きが行われる記憶領域をよく確かめて、次の画面へ進んでください。</p></li>
-<li><h3>パッケージグループの選択</h3>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/16.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/16_thumbnail.png" title="パッケージグループの選択" ></a></p>
-
-<p>　用途にあわせてパッケージグループを選択します。パッケージはOSインストール後にも当然、インストールすることができます。単一目的サーバーの土台として、最小限のパッケージのみをインストールする場合は"Minimal"を選択します。</p>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/17.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/17_thumbnail.png" title="ベースシステムのインストール" ></a></p></li>
-<li><h3>再起動</h3>
-
-<p><a href="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/18.png"><img src="/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/18_thumbnail.png" title="インストールの完了" ></a></p>
-
-<p>　インストールが完了し、システムを再起動します。</p></li>
-</ol>
-
-
-<h3>参考</h3>
-
-<ul>
-<li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Installation_Guide/index.html">Red Hat Enterprise Linux 6 インストールガイド</a></li>
-<li><a href="http://www.centos.org/modules/tinycontent/index.php?id=31">CentOS Asian Mirrors</a></li>
-</ul>
-
-
-<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&npa=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774145017" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
-
-
-<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&npa=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4789840875" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
 
 ]]></content>
   </entry>

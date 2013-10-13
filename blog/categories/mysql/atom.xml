@@ -4,7 +4,7 @@
   <title><![CDATA[MySQL | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/mysql/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-30T23:58:38+09:00</updated>
+  <updated>2013-10-14T03:16:04+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -19,8 +19,12 @@
     <updated>2013-07-31T22:15:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-mysql-community-server-5-dot-6-13</id>
     <content type="html"><![CDATA[<p>　MySQL Community Server 5.6.13をソースコードからビルドして、Unix系システムへインストールする手引きです。
-この記事ではCentOS 6.4環境でインストールの例を示しますが、自身でソースからビルドする方法は特定のLinuxディストリビューションに依りません。<!-- more -->
-インストールを行うユーザは、インストール先ディレクトリに対して書込み権限をもっている必要があります。/usr/local/* にインストールする場合、通常、root権限が必要です。</p>
+この記事ではCentOS 6.4環境でインストールの例を示しますが、自身でソースからビルドする方法は特定のLinuxディストリビューションに依りません。</p>
+
+<!-- more -->
+
+
+<p>　インストールを行うユーザは、インストール先ディレクトリに対して書込み権限をもっている必要があります。/usr/local/* にインストールする場合、通常、root権限が必要です。</p>
 
 <ol>
 <li><h3>ソースコードを取得する</h3>

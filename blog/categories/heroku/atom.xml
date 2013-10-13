@@ -4,7 +4,7 @@
   <title><![CDATA[Heroku | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/heroku/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-30T23:58:38+09:00</updated>
+  <updated>2013-10-14T03:16:04+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -18,7 +18,10 @@
     <link href="http://momoto.github.io/blog/2013/08/16/deploying-django-1-dot-5-2-on-heroku/"/>
     <updated>2013-08-16T00:00:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/08/16/deploying-django-1-dot-5-2-on-heroku</id>
-    <content type="html"><![CDATA[<p>　Herokuが提供するPaaSにウェブアプリケーションフレームワーク Django 1.5.2を展開します。Pythonのバージョンは2.7を使用しています。<!-- more --></p>
+    <content type="html"><![CDATA[<p>　Herokuが提供するPaaSにウェブアプリケーションフレームワーク Django 1.5.2を展開します。Pythonのバージョンは2.7を使用しています。</p>
+
+<!-- more -->
+
 
 <h4>1. django-toolbeltをインストールする</h4>
 
@@ -289,7 +292,10 @@ Installed 0 object(s) from 0 fixture(s)
     <updated>2013-05-31T23:19:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku</id>
     <content type="html"><![CDATA[<p>　Herokuが提供するPaaSにプロジェクト管理ソフトウェア Redmine 2.3.1を展開します。
-Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、<a href="https://aur.archlinux.org/packages/heroku-client/">heroku-toolbelt</a>は2.39.4を使用しました。<!-- more --></p>
+Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、<a href="https://aur.archlinux.org/packages/heroku-client/">heroku-toolbelt</a>は2.39.4を使用しました。</p>
+
+<!-- more -->
+
 
 <h4>Redmine 2.3.1のダウンロード</h4>
 

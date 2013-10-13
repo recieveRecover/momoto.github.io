@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<html lang="ja">
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
 <meta charset="utf-8">
 <title>OpenSSLを使用してファイルをRSA暗号化する - momoto.github.io</title>
@@ -11,16 +9,16 @@
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta property="og:type" content="website" />
-<meta property="og:url" content="http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption/" />
-<meta property="og:title" content="OpenSSLを使用してファイルをRSA暗号化する" />
+<meta property="og:type" content="website">
+<meta property="og:url" content="http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption/">
+<meta property="og:title" content="OpenSSLを使用してファイルをRSA暗号化する">
 <meta property="og:site_name" content="momoto.github.io">
 <meta property="og:description" content="OpenSSLを使用してファイルをRSA暗号化する手引きです。">
-<meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
-<meta property="fb:app_id" content="561979160531119" />
+<meta property="og:image" content="http://momoto.github.io/images/identicon.png">
+<meta property="fb:app_id" content="561979160531119">
 <link rel="canonical" href="http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption/">
 <link href="/favicon.png" rel="icon">
-<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link href="/atom.xml" rel="alternate" title="momoto.github.io" type="application/atom+xml">
 <script type="text/javascript">
   var _gaq = _gaq || [];
@@ -36,36 +34,20 @@
   })();
 </script>
 </head>
-<body>
-<div id="header-container">
-  <div id="header">
-    <div class="wrapper">
-      <header role="banner"><hgroup><h1><a href="/">momoto.github.io</a></h1></hgroup></header>
-      <nav role="navigation">
-        <form action="http://google.com/search" method="get"><fieldset role="search"><input type="hidden" name="q" value="site:momoto.github.io" /><input class="search" type="text" name="q" results="0" placeholder="Search"/></fieldset></form>
-        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li><li><a href="https://github.com/momoto/momoto.github.io/wiki" title="momoto.github.io Wiki">Wiki</a></li></ul>
-      </nav>
-    </div>
-  </div>
-</div>
-<div id="body" class="collapse-sidebar sidebar-footer">
-  <div id="main">
-    <div id="content"><div>
+<body class="container">
+<header>
+  <ul class="nav nav-pills pull-right">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+    <li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li>
+  </ul>
+  <h3 class="text-muted clearfix">momoto.github.io</h3>
+</header>
 <article class="hentry" role="article">
-  
+
   <header>
-    
-      <h1 class="entry-title">OpenSSLを使用してファイルをRSA暗号化する</h1>
-    
-    
-      <p class="meta">
-<span class="breadcrumb">
-<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/" itemprop="url"><span itemprop="title">Blog</span></a> › </span>
-
-<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/blog/categories/an-hao-hua/" itemprop="url"><span itemprop="title">暗号化</span></a> › </span>
-</span>
-
-
+    <ol class="breadcrumb"><li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/" itemprop="url"><small itemprop="title">Blog</small></a></li><li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/blog/categories/an-hao-hua/" itemprop="url"><small itemprop="title">暗号化</small></a></li></ol>
+    <p class="text-muted text-right">
 
 
 
@@ -77,13 +59,11 @@
 
   
 
-<time datetime="2012-10-14T17:45:00+09:00" pubdate data-updated="true" class="updated">Oct 14<span>th</span>, 2012</time>
-      </p>
-    
+<time datetime="2012-10-14T17:45:00+09:00" pubdate data-updated="true" class="updated">Oct 14<span>th</span>, 2012</time></p>
+    <h1 class="entry-title page-header">OpenSSLを使用してファイルをRSA暗号化する</h1>
   </header>
 
-
-<div class="entry-content"><p>OpenSSLは様々な暗号方式での暗号化、復号化をサポートするセキュリティライブラリ。
+  <section class="entry-content"><p>OpenSSLは様々な暗号方式での暗号化、復号化をサポートするセキュリティライブラリ。
 使用できる暗号方式は<code>openssl ciphers</code>で確認できる。</p>
 
 <p>RSA暗号方式の暗号化、復号、署名、検証を利用する場合は<code>openssl rsautl</code>を使う。</p>
@@ -132,11 +112,11 @@ Enter pass phrase for private_key:
 </code></pre>
 
 <p>復号に成功すると、<em>&ldquo;decrypted.txt&rdquo;</em>にその内容が出力される。</p>
-</div>
-
+</section>
 
   <footer>
-    <p class="meta">
+    <hr>
+    <p>
       
   
 
@@ -158,46 +138,59 @@ Enter pass phrase for private_key:
       
 
 <span class="categories">
-  
-    <a class='category' href='/blog/categories/openssl/'>OpenSSL</a>, <a class='category' href='/blog/categories/an-hao-hua/'>暗号化</a>
-  
+
+  <a class='category' href='/blog/categories/openssl/'>OpenSSL</a>, <a class='category' href='/blog/categories/an-hao-hua/'>暗号化</a>
+
 </span>
 
 
     </p>
-    <div class="sharing">
+    <p>
+<g:plusone
+    size="medium"
+    annotation="none"></g:plusone>
+<a
+    href="https://twitter.com/share"
+    class="twitter-share-button"
+    data-lang="ja"
+    data-url="http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption/"
+    data-text="OpenSSLを使用してファイルをRSA暗号化する"
+    data-count="none">Tweet</a>
+<fb:like
+    data-href="http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption/"
+    layout="button_count"></fb:like>
+<script
+    type="IN/Share"
+    data-url="http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption/"></script>
+<a
+    href="http://b.hatena.ne.jp/entry/http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption/"
+    data-hatena-bookmark-title="OpenSSLを使用してファイルをRSA暗号化する - momoto.github.io"
+    class="hatena-bookmark-button"
+    data-hatena-bookmark-layout="standard-noballoon"
+    data-hatena-bookmark-lang="ja"
+    title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
 
-<g:plusone size="medium" annotation="none"></g:plusone>
-<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-url="http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption/" data-text="OpenSSLを使用してファイルをRSA暗号化する" data-count="none">Tweet</a>
-<fb:like data-href="http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption/" layout="button_count"></fb:like>
-<script type="IN/Share" data-url="http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption/"></script>
-<a href="http://b.hatena.ne.jp/entry/http://momoto.github.io/blog/2012/10/14/rsa-encryption-and-decryption/" data-hatena-bookmark-title="OpenSSLを使用してファイルをRSA暗号化する - momoto.github.io" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-noballoon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
-
-</div>
-
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2012/10/08/encoding-conversion-with-iconv/" title="Previous Post: iconvで文字コードを変換する">&laquo; iconvで文字コードを変換する</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2012/11/23/install-rbenv-and-ruby-build-on-ubuntu-12-dot-10/" title="Next Post: Ubuntu 12.10にrbenvとruby-buildをインストール">Ubuntu 12.10にrbenvとruby-buildをインストール &raquo;</a>
-      
-    </p>
+</p>
   </footer>
+
+  <nav>
+    <ul class="pager">
+      <li class="previous"><a href="/blog/2012/10/08/encoding-conversion-with-iconv/" title="Previous Post: iconvで文字コードを変換する">&laquo; iconvで文字コードを変換する</a></li>
+      <li class="next"><a href="/blog/2012/11/23/install-rbenv-and-ruby-build-on-ubuntu-12-dot-10/" title="Next Post: Ubuntu 12.10にrbenvとruby-buildをインストール">Ubuntu 12.10にrbenvとruby-buildをインストール &raquo;</a></li>
+    </ul>
+  </nav>
 </article>
-</div>
-<aside class="sidebar"><section class="vcard">
-<h2>About Me</h2>
+
+<aside class="vcard">
+<h3 class="text-muted">About Me</h3>
 <p>
-<a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
-<a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
-<a href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
-<a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
-</section>
-</aside></div>
-  </div>
-  <footer role="contentinfo"><p>&copy; Copyright 2013, <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a>. <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> and <a href="http://pages.github.com/">GitHub Pages</a>.</span></p></footer>
-</div>
+  <a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
+  <a class="url" href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
+  <a class="url" href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
+  <a class="url" href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a>
+</p>
+</aside>
+<footer><p class="text-center"><small>&copy; Copyright 2013, <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a>.<br>Powered by <a href="http://octopress.org">Octopress</a> and <a href="http://pages.github.com/">GitHub Pages</a>.</small></p></footer>
 <script src="/javascripts/modernizr-2.0.js"></script>
 <script src="/javascripts/ender.js"></script>
 <script src="/javascripts/octopress.js" type="text/javascript"></script>

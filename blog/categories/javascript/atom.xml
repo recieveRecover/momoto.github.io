@@ -4,7 +4,7 @@
   <title><![CDATA[JavaScript | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-30T23:58:38+09:00</updated>
+  <updated>2013-10-14T03:16:04+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -20,8 +20,6 @@
     <id>http://momoto.github.io/blog/2013/06/30/finding-the-longest-contiguous-equal-sum-substring-of-length-2n</id>
     <content type="html"><![CDATA[<p>　getEqualSumSubstring関数の問題を考えてみます。この問題の出典についてはわかりませんが、Stack Overflowには同問題に関する質問がいくつか寄せられているように、プログラミングの分野では有名な問題であるようです。</p>
 
-<h3>問題</h3>
-
 <p>　問題文を日本語に訳してみると、だいたい次のような内容です。</p>
 
 <blockquote><p>　0以外の数字だけを含む文字列sを引数にとるgetEqualSumSubstring関数を定義します。<br>
@@ -29,6 +27,9 @@
 　適当な部分列がない場合には0と表示します。</p>
 
 <p><a href="http://stackoverflow.com/questions/8469407/to-find-the-longest-substring-with-equal-sum-in-left-and-right-in-c">To find the longest substring with equal sum in left and right in C++ &ndash; Stack Overflow</a></p></blockquote>
+
+<!-- more -->
+
 
 <h4>入力例＃１</h4>
 
@@ -163,6 +164,9 @@ i.onkeyup   = eventhandler;
     <updated>2012-08-11T00:00:00+09:00</updated>
     <id>http://momoto.github.io/blog/2012/08/11/converting-text-to-character-references</id>
     <content type="html"><![CDATA[<p>　入力された文字列の符号位置（Unicode）を出力します。テキストをHTML数値文字参照に変換するように動作します。</p>
+
+<!-- more -->
+
 
 <p><form id="convert-text-to-character-references">
 <label>形式 <select><option>HTML文字参照（10進数）</option><option>HTML文字参照（16進数）</option><option>符号位置のみ（10進数）</option><option>符号位置のみ（16進数）</option></select></label><br>

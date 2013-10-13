@@ -4,7 +4,7 @@
   <title><![CDATA[OpenShift | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/openshift/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-30T23:58:38+09:00</updated>
+  <updated>2013-10-14T03:16:04+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -18,8 +18,10 @@
     <link href="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/"/>
     <updated>2013-08-24T12:06:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift</id>
-    <content type="html"><![CDATA[<p>　Red Hat OpenShiftにプロジェクト管理ソフトウェアのRedmine 2.0を展開します。rhcとredmine-2.0-openshift-quickstartを使用しています。<!--more-->
-あらかじめOpenShiftのアカウントを作成している必要があります。</p>
+    <content type="html"><![CDATA[<p>　Red Hat OpenShiftにプロジェクト管理ソフトウェアのRedmine 2.0を展開します。rhcとredmine-2.0-openshift-quickstartを使用しています。あらかじめOpenShiftのアカウントを作成している必要があります。</p>
+
+<!--more-->
+
 
 <ol>
 <li><h4>Ruby 1.9のアプリケーションを作成する</h4>
@@ -163,7 +165,10 @@ remote: Fetching gem metadata from http://rubygems.org/.........
     <updated>2013-08-24T11:08:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/08/24/installation-guide-for-openshift-rhc-client-tools</id>
     <content type="html"><![CDATA[<p>　Red Hat OpenShiftに用意されている２通りのユーザインタフェースのうちの１つ、クライアントツールをインストールします。
-クライアントツールをつかうと、もう一方のユーザインタフェースであるマネジメントコンソールでは提供されていない機能を利用できます。<!-- more --></p>
+クライアントツールをつかうと、もう一方のユーザインタフェースであるマネジメントコンソールでは提供されていない機能を利用できます。</p>
+
+<!-- more -->
+
 
 <h2>インストール</h2>
 

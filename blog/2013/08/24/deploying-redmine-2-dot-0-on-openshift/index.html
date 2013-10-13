@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<html lang="ja">
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
 <meta charset="utf-8">
 <title>Red Hat OpenShiftにRedmine 2.0を展開する - momoto.github.io</title>
@@ -11,16 +9,16 @@
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta property="og:type" content="website" />
-<meta property="og:url" content="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/" />
-<meta property="og:title" content="Red Hat OpenShiftにRedmine 2.0を展開する" />
+<meta property="og:type" content="website">
+<meta property="og:url" content="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/">
+<meta property="og:title" content="Red Hat OpenShiftにRedmine 2.0を展開する">
 <meta property="og:site_name" content="momoto.github.io">
 <meta property="og:description" content="Red Hat OpenShiftにプロジェクト管理ソフトウェアのRedmine 2.0を展開します。">
-<meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
-<meta property="fb:app_id" content="561979160531119" />
+<meta property="og:image" content="http://momoto.github.io/images/identicon.png">
+<meta property="fb:app_id" content="561979160531119">
 <link rel="canonical" href="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/">
 <link href="/favicon.png" rel="icon">
-<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link href="/atom.xml" rel="alternate" title="momoto.github.io" type="application/atom+xml">
 <script type="text/javascript">
   var _gaq = _gaq || [];
@@ -36,36 +34,20 @@
   })();
 </script>
 </head>
-<body>
-<div id="header-container">
-  <div id="header">
-    <div class="wrapper">
-      <header role="banner"><hgroup><h1><a href="/">momoto.github.io</a></h1></hgroup></header>
-      <nav role="navigation">
-        <form action="http://google.com/search" method="get"><fieldset role="search"><input type="hidden" name="q" value="site:momoto.github.io" /><input class="search" type="text" name="q" results="0" placeholder="Search"/></fieldset></form>
-        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li><li><a href="https://github.com/momoto/momoto.github.io/wiki" title="momoto.github.io Wiki">Wiki</a></li></ul>
-      </nav>
-    </div>
-  </div>
-</div>
-<div id="body" class="collapse-sidebar sidebar-footer">
-  <div id="main">
-    <div id="content"><div>
+<body class="container">
+<header>
+  <ul class="nav nav-pills pull-right">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+    <li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li>
+  </ul>
+  <h3 class="text-muted clearfix">momoto.github.io</h3>
+</header>
 <article class="hentry" role="article">
-  
+
   <header>
-    
-      <h1 class="entry-title">Red Hat OpenShiftにRedmine 2.0を展開する</h1>
-    
-    
-      <p class="meta">
-<span class="breadcrumb">
-<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/" itemprop="url"><span itemprop="title">Blog</span></a> › </span>
-
-<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/blog/categories/kuraudokonpiyuteingu/" itemprop="url"><span itemprop="title">クラウドコンピューティング</span></a> › </span>
-</span>
-
-
+    <ol class="breadcrumb"><li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/" itemprop="url"><small itemprop="title">Blog</small></a></li><li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/blog/categories/kuraudokonpiyuteingu/" itemprop="url"><small itemprop="title">クラウドコンピューティング</small></a></li></ol>
+    <p class="text-muted text-right">
 
 
 
@@ -77,14 +59,14 @@
 
   
 
-<time datetime="2013-08-24T12:06:00+09:00" pubdate data-updated="true" class="updated">Aug 24<span>th</span>, 2013</time>
-      </p>
-    
+<time datetime="2013-08-24T12:06:00+09:00" pubdate data-updated="true" class="updated">Aug 24<span>th</span>, 2013</time></p>
+    <h1 class="entry-title page-header">Red Hat OpenShiftにRedmine 2.0を展開する</h1>
   </header>
 
+  <section class="entry-content"><p>　Red Hat OpenShiftにプロジェクト管理ソフトウェアのRedmine 2.0を展開します。rhcとredmine-2.0-openshift-quickstartを使用しています。あらかじめOpenShiftのアカウントを作成している必要があります。</p>
 
-<div class="entry-content"><p>　Red Hat OpenShiftにプロジェクト管理ソフトウェアのRedmine 2.0を展開します。rhcとredmine-2.0-openshift-quickstartを使用しています。<!--more-->
-あらかじめOpenShiftのアカウントを作成している必要があります。</p>
+<!--more-->
+
 
 <ol>
 <li><h4>Ruby 1.9のアプリケーションを作成する</h4>
@@ -219,11 +201,11 @@ remote: Fetching gem metadata from http://rubygems.org/.........
 
 <iframe src="http://rcm-fe.amazon-adsystem.com/e/cm?lt1=_top&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=seijimomotobl-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774155934" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
 
-</div>
-
+</section>
 
   <footer>
-    <p class="meta">
+    <hr>
+    <p>
       
   
 
@@ -245,46 +227,59 @@ remote: Fetching gem metadata from http://rubygems.org/.........
       
 
 <span class="categories">
-  
-    <a class='category' href='/blog/categories/openshift/'>OpenShift</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>, <a class='category' href='/blog/categories/kuraudokonpiyuteingu/'>クラウドコンピューティング</a>
-  
+
+  <a class='category' href='/blog/categories/openshift/'>OpenShift</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>, <a class='category' href='/blog/categories/kuraudokonpiyuteingu/'>クラウドコンピューティング</a>
+
 </span>
 
 
     </p>
-    <div class="sharing">
+    <p>
+<g:plusone
+    size="medium"
+    annotation="none"></g:plusone>
+<a
+    href="https://twitter.com/share"
+    class="twitter-share-button"
+    data-lang="ja"
+    data-url="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/"
+    data-text="Red Hat OpenShiftにRedmine 2.0を展開する"
+    data-count="none">Tweet</a>
+<fb:like
+    data-href="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/"
+    layout="button_count"></fb:like>
+<script
+    type="IN/Share"
+    data-url="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/"></script>
+<a
+    href="http://b.hatena.ne.jp/entry/http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/"
+    data-hatena-bookmark-title="Red Hat OpenShiftにRedmine 2.0を展開する - momoto.github.io"
+    class="hatena-bookmark-button"
+    data-hatena-bookmark-layout="standard-noballoon"
+    data-hatena-bookmark-lang="ja"
+    title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
 
-<g:plusone size="medium" annotation="none"></g:plusone>
-<a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-url="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/" data-text="Red Hat OpenShiftにRedmine 2.0を展開する" data-count="none">Tweet</a>
-<fb:like data-href="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/" layout="button_count"></fb:like>
-<script type="IN/Share" data-url="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/"></script>
-<a href="http://b.hatena.ne.jp/entry/http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/" data-hatena-bookmark-title="Red Hat OpenShiftにRedmine 2.0を展開する - momoto.github.io" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-noballoon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
-
-</div>
-
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2013/08/24/installation-guide-for-openshift-rhc-client-tools/" title="Previous Post: Red Hat OpenShiftクライアントツールをインストールする">&laquo; Red Hat OpenShiftクライアントツールをインストールする</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2013/08/28/guide-to-managing-guests-using-vagrant/" title="Next Post: Vagrantをつかって仮想マシンを管理する">Vagrantをつかって仮想マシンを管理する &raquo;</a>
-      
-    </p>
+</p>
   </footer>
+
+  <nav>
+    <ul class="pager">
+      <li class="previous"><a href="/blog/2013/08/24/installation-guide-for-openshift-rhc-client-tools/" title="Previous Post: Red Hat OpenShiftクライアントツールをインストールする">&laquo; Red Hat OpenShiftクライアントツールをインストールする</a></li>
+      <li class="next"><a href="/blog/2013/08/28/guide-to-managing-guests-using-vagrant/" title="Next Post: Vagrantをつかって仮想マシンを管理する">Vagrantをつかって仮想マシンを管理する &raquo;</a></li>
+    </ul>
+  </nav>
 </article>
-</div>
-<aside class="sidebar"><section class="vcard">
-<h2>About Me</h2>
+
+<aside class="vcard">
+<h3 class="text-muted">About Me</h3>
 <p>
-<a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
-<a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
-<a href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
-<a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
-</section>
-</aside></div>
-  </div>
-  <footer role="contentinfo"><p>&copy; Copyright 2013, <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a>. <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> and <a href="http://pages.github.com/">GitHub Pages</a>.</span></p></footer>
-</div>
+  <a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
+  <a class="url" href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
+  <a class="url" href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
+  <a class="url" href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a>
+</p>
+</aside>
+<footer><p class="text-center"><small>&copy; Copyright 2013, <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a>.<br>Powered by <a href="http://octopress.org">Octopress</a> and <a href="http://pages.github.com/">GitHub Pages</a>.</small></p></footer>
 <script src="/javascripts/modernizr-2.0.js"></script>
 <script src="/javascripts/ender.js"></script>
 <script src="/javascripts/octopress.js" type="text/javascript"></script>

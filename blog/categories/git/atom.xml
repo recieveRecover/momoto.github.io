@@ -4,7 +4,7 @@
   <title><![CDATA[Git | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-30T23:58:38+09:00</updated>
+  <updated>2013-10-14T03:16:04+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -25,6 +25,9 @@
 <li>ruby-1.9.2-p290</li>
 <li>(rbenv and ruby-build) || rvm</li>
 </ul>
+
+
+<!-- more -->
 
 
 <h4>Octopressのセットアップ</h4>

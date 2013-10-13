@@ -1,30 +1,24 @@
 <!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<html lang="ja">
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
 <meta charset="utf-8">
 <title>momoto.github.io</title>
 <meta name="author" content="Seiji Momoto">
-<meta name="description" content="　入力された文字列の符号位置（Unicode）を出力します。テキストをHTML数値文字参照に変換するように動作します。 形式 HTML文字参照（10進数）HTML文字参照（16進数）符号位置のみ（10進数）符号位置のみ（16進数）
-入力 出力 (function(){
-function &hellip;">
-
+<meta name="description" content="momoto.github.ioの投稿の一覧です。">
+<meta name="keywords" content="momoto.github.io">
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta property="og:type" content="website" />
-<meta property="og:url" content="http://momoto.github.io/blog/page/7/" />
-
+<meta property="og:type" content="website">
+<meta property="og:url" content="http://momoto.github.io/blog/page/7/">
+<meta property="og:title" content="momoto.github.io">
 <meta property="og:site_name" content="momoto.github.io">
-<meta property="og:description" content="　入力された文字列の符号位置（Unicode）を出力します。テキストをHTML数値文字参照に変換するように動作します。 形式 HTML文字参照（10進数）HTML文字参照（16進数）符号位置のみ（10進数）符号位置のみ（16進数）
-入力 出力 (function(){
-function &hellip;">
-<meta property="og:image" content="http://momoto.github.io/images/identicon.png" />
-<meta property="fb:app_id" content="561979160531119" />
+<meta property="og:description" content="momoto.github.ioの投稿の一覧です。">
+<meta property="og:image" content="http://momoto.github.io/images/identicon.png">
+<meta property="fb:app_id" content="561979160531119">
 <link rel="canonical" href="http://momoto.github.io/blog/page/7/">
 <link href="/favicon.png" rel="icon">
-<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+<link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link href="/atom.xml" rel="alternate" title="momoto.github.io" type="application/atom+xml">
 <script type="text/javascript">
   var _gaq = _gaq || [];
@@ -40,34 +34,23 @@ function &hellip;">
   })();
 </script>
 </head>
-<body>
-<div id="header-container">
-  <div id="header">
-    <div class="wrapper">
-      <header role="banner"><hgroup><h1><a href="/">momoto.github.io</a></h1></hgroup></header>
-      <nav role="navigation">
-        <form action="http://google.com/search" method="get"><fieldset role="search"><input type="hidden" name="q" value="site:momoto.github.io" /><input class="search" type="text" name="q" results="0" placeholder="Search"/></fieldset></form>
-        <ul class="main-navigation"><li><a href="/blog/archives">Archives</a></li><li><a href="/blog/categories">Categories</a></li><li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li><li><a href="https://github.com/momoto/momoto.github.io/wiki" title="momoto.github.io Wiki">Wiki</a></li></ul>
-      </nav>
-    </div>
-  </div>
-</div>
-<div id="body" class="collapse-sidebar sidebar-footer">
-  <div id="main">
-    <div id="content"><div class="blog-index">
-  
-  
-  
-    <article>
-  <header>
-    
-      <h2 class="entry-title">テキストを文字参照記述へ変換する</h2>
-    
-    
-      <p class="meta">
+<body class="container">
+<header>
+  <ul class="nav nav-pills pull-right">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+    <li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li>
+  </ul>
+  <h3 class="text-muted clearfix">momoto.github.io</h3>
+</header>
+<article role="article">
+
+  <section class="entry-content"><section class="hfeed">
 
 
+<article class="hentry">
 
+  <p class="text-muted text-right">
 
 
 
@@ -79,76 +62,21 @@ function &hellip;">
 
   
 
-<time datetime="2012-08-11T00:00:00+09:00" pubdate data-updated="true" class="published">Aug 11<span>th</span>, 2012</time>
-      </p>
-    
-  </header>
+<time datetime="2012-10-08T00:00:00+09:00" pubdate data-updated="true" class="updated">Oct 8<span>th</span>, 2012</time></p>
+  <h3 class="entry-title">Iconvで文字コードを変換する</h3>
 
+  <section class="entry-summary"><p>　文字コードの変換は、変換前の文字コードを<code>--from-code (-f)</code>に、変換後の文字コードを<code>--to-code (-t)</code>を指定して、さらに入力ファイルと出力ファイルを指定して使用する。</p>
 
-  <div class="entry-content"><p>　入力された文字列の符号位置（Unicode）を出力します。テキストをHTML数値文字参照に変換するように動作します。</p>
+</section>
 
-<p><form id="convert-text-to-character-references">
-<label>形式 <select><option>HTML文字参照（10進数）</option><option>HTML文字参照（16進数）</option><option>符号位置のみ（10進数）</option><option>符号位置のみ（16進数）</option></select></label><br>
-<label>入力 <textarea rows="4" style="width: 100%;"></textarea></label>
-<label>出力 <output><textarea rows="4" style="width: 100%;" readonly=True></textarea></output></label></p>
-
-<script> (function(){
-function decimal_form(codepoint) { return "&#" + codepoint.toString(10) + ";"; }
-function hexadecimal_form(codepoint) { return "&#x" + codepoint.toString(16) + ";"; }
-function decimal_delimit_space(codepoint) { return codepoint.toString(10) + " "; }
-function hexadecimal_delimit_space(codepoint) { return codepoint.toString(16) + " "; }
-function convert_text_to_character_references(text) {
-  for (var encoded="", i=0; i<text.length; i++)
-    if (s.selectedIndex === 0) encoded += decimal_form(text.charCodeAt(i));
-    else if (s.selectedIndex === 1) encoded += hexadecimal_form(text.charCodeAt(i));
-    else if (s.selectedIndex === 2) encoded += decimal_delimit_space(text.charCodeAt(i));
-    else if (s.selectedIndex === 3) encoded += hexadecimal_delimit_space(text.charCodeAt(i));
-  o.value = encoded;
-}
-function eventhandler(event) {
-  if (text === i.value && event.type !== "change")
-    return;
-  else
-    convert_text_to_character_references(text = i.value);
-}
-var text = "";
-var f = document.getElementById("convert-text-to-character-references");
-var s = f.getElementsByTagName("select")[0];
-var i = f.getElementsByTagName("textarea")[0];
-var o = f.getElementsByTagName("textarea")[1];
-i.onkeydown = eventhandler;
-i.onkeyup   = eventhandler;
-s.onchange  = eventhandler;
-})(); </script>
-
-
-<p></form></p>
-
-<h3>参考</h3>
-
-<ul>
-<li><a href="http://www.unicode.org/Public/UCD/latest/ucd/">The Unicode Character Database (UCD)</a></li>
-<li><a href="http://www.ietf.org/rfc/rfc1815.txt">RFC 1815 &ndash; Character Sets ISO-10646 and ISO-10646-J-1</a></li>
-<li><a href="http://www.w3.org/TR/html5/syntax.html#character-references">8.1.4 Character references — HTML5</a></li>
-</ul>
-
-</div>
-  
-  
+  <footer><a rel="full-article" href="/blog/2012/10/08/encoding-conversion-with-iconv/" class="btn btn-default">Read on &rarr;</a></footer>
 
 </article>
-  
-  
-    <article>
-  <header>
-    
-      <h2 class="entry-title">Libvirtを用いて仮想マシンを構築、インストールする</h2>
-    
-    
-      <p class="meta">
 
 
+<article class="hentry">
 
+  <p class="text-muted text-right">
 
 
 
@@ -160,39 +88,79 @@ s.onchange  = eventhandler;
 
   
 
-<time datetime="2012-08-04T09:49:00+09:00" pubdate data-updated="true" class="updated">Aug 4<span>th</span>, 2012</time>
-      </p>
-    
-  </header>
+<time datetime="2012-08-12T10:30:00+09:00" pubdate data-updated="true" class="updated">Aug 12<span>th</span>, 2012</time></p>
+  <h3 class="entry-title">IdeaPad S205のメインメモリとストレージデバイスの換装</h3>
+
+  <section class="entry-summary"><p>　レノボ社のノートパソコン「<a href="http://www.amazon.co.jp/gp/product/BiB004XWLKDC/ref=as_li_ss_tl?ie=UTF8&camp=247&creative=7399&creativeASIN=B004XWLKDC&linkCode=as2&tag=alqet049-22">IdeaPad S205</a><img src="http://www.assoc-amazon.jp/e/ir?t=alqet049-22&l=as2&o=9&a=B004XWLKDC" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />」（2011年4月）のメインメモリとストレージデバイスを換装した。</p>
+
+<p><img src="/blog/images/2012-08-12-install-ram-and-ssd-in-lenovo-ideapad-s205/01.png" title="換装したメモリとストレージがUbuntu 12.04に認識されている" ></p>
+
+</section>
+
+  <footer><a rel="full-article" href="/blog/2012/08/12/install-ram-and-ssd-in-lenovo-ideapad-s205/" class="btn btn-default">Read on &rarr;</a></footer>
+
+</article>
 
 
-  <div class="entry-content"><p>virt-installを使って、CUIから仮想マシンのディスクイメージを作成する。</p>
+<article class="hentry">
+
+  <p class="text-muted text-right">
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2012-08-11T00:00:00+09:00" pubdate data-updated="true" class="published">Aug 11<span>th</span>, 2012</time></p>
+  <h3 class="entry-title">テキストを文字参照記述へ変換する</h3>
+
+  <section class="entry-summary"><p>　入力された文字列の符号位置（Unicode）を出力します。テキストをHTML数値文字参照に変換するように動作します。</p>
+
+</section>
+
+  <footer><a rel="full-article" href="/blog/2012/08/11/converting-text-to-character-references/" class="btn btn-default">Read on &rarr;</a></footer>
+
+</article>
+
+
+<article class="hentry">
+
+  <p class="text-muted text-right">
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2012-08-04T09:49:00+09:00" pubdate data-updated="true" class="updated">Aug 4<span>th</span>, 2012</time></p>
+  <h3 class="entry-title">Libvirtを用いて仮想マシンを構築、インストールする</h3>
+
+  <section class="entry-summary"><p>virt-installを使って、CUIから仮想マシンのディスクイメージを作成する。</p>
 
 <p>動作要件として、ホストOSにハイパーバイザ（KVMやXen）とlibvirtがインストールされていて、libvirtdが起動している必要がある。
 virt-install自体は、RPMでは&#8221;python-virtinst&#8221;パッケージに含まれている。
 （参考：<a href="http://rpmfind.net/linux/rpm2html/search.php?query=virt-install">RPM resource virt-install</a>）</p>
 
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/08/04/build-and-install-libvirt-based-virtual-machine/">Read on &rarr;</a>
-    </footer>
-  
+</section>
+
+  <footer><a rel="full-article" href="/blog/2012/08/04/build-and-install-libvirt-based-virtual-machine/" class="btn btn-default">Read on &rarr;</a></footer>
 
 </article>
-  
-  
-    <article>
-  <header>
-    
-      <h2 class="entry-title">UML 2.0の概要</h2>
-    
-    
-      <p class="meta">
 
 
+<article class="hentry">
 
+  <p class="text-muted text-right">
 
 
 
@@ -204,227 +172,40 @@ virt-install自体は、RPMでは&#8221;python-virtinst&#8221;パッケージに
 
   
 
-<time datetime="2012-08-02T19:37:00+09:00" pubdate data-updated="true" class="updated">Aug 2<span>nd</span>, 2012</time>
-      </p>
-    
-  </header>
+<time datetime="2012-08-02T19:37:00+09:00" pubdate data-updated="true" class="updated">Aug 2<span>nd</span>, 2012</time></p>
+  <h3 class="entry-title">UML 2.0の概要</h3>
 
-
-  <div class="entry-content"><p>統一モデリング言語（UML）は、システムの構造や振る舞いを図で表現するために標準化されたモデリング言語の一つ。
+  <section class="entry-summary"><p>統一モデリング言語（UML）は、システムの構造や振る舞いを図で表現するために標準化されたモデリング言語の一つ。
 規定されている13種類の図を必要に応じて使い分ける。</p>
 
-<ol>
-<li>クラス図</li>
-<li>複合構造図</li>
-<li>コンポーネント図</li>
-<li>配置図</li>
-<li>オブジェクト図</li>
-<li>パッケージ図</li>
-<li>アクティビティ図</li>
-<li>ユースケース図</li>
-<li>ステートマシン図</li>
-<li>シーケンス図</li>
-<li>コミュニケーション図</li>
-<li>相互作用概要図</li>
-<li>タイミング図</li>
-</ol>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/08/02/overview-uml/">Read on &rarr;</a>
-    </footer>
-  
-
-</article>
-  
-  
-    <article>
-  <header>
-    
-      <h2 class="entry-title">Android端末を検出するためのudevの設定</h2>
-    
-    
-      <p class="meta">
-
-
-
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2012-08-02T16:45:00+09:00" pubdate data-updated="true" class="updated">Aug 2<span>nd</span>, 2012</time>
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>デバイス管理ツールとしてudevを使用しているLinuxシステムで、USB接続したAndroid端末を検出できない場合、USBベンダーIDごとにudevルールを加える必要がある。</p>
-
-<p>例えば、USBベンダーIDが<code>0bb4</code>になるHTCの端末を検出する場合、次の内容のファイルを<code>51-android.rules</code>として<code>/etc/udev/rules.d</code>に加える。</p>
-
-<figure class='code'><figcaption><span>/etc/udev/rules.d/51-android.rules</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>SUBSYSTEM=="usb", ATTR{idVendor}=="0bb4", MODE="0666", GROUP="plugdev"</span></code></pre></td></tr></table></div></figure>
-
-
-<p>各メーカーに対応するUSBベンダーIDは、<a href="http://developer.android.com/tools/device.html%E3%81%A7%E5%8F%82%E7%85%A7%E3%81%A7%E3%81%8D%E3%82%8B%E3%80%82">http://developer.android.com/tools/device.html%E3%81%A7%E5%8F%82%E7%85%A7%E3%81%A7%E3%81%8D%E3%82%8B%E3%80%82</a></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/08/02/set-up-udev-rules-to-detect-android-device/">Read on &rarr;</a>
-    </footer>
-  
-
-</article>
-  
-  
-    <article>
-  <header>
-    
-      <h2 class="entry-title">Ruby各種ライブラリに必要なパッケージ</h2>
-    
-    
-      <p class="meta">
-
-
-
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2012-08-01T03:18:00+09:00" pubdate data-updated="true" class="updated">Aug 1<span>st</span>, 2012</time>
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>no such file to load &mdash; curses (LoadError)</h3>
-
-<ul>
-<li>RPM</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo yum install ncurses-devel</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>no such file to load &mdash; readline (LoadError)</h3>
-
-<ul>
-<li>RPM</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo yum install readline-devel</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>no such file to load &mdash; openssl (RuntimeError)</h3>
-
-<ul>
-<li>RPM</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ yum install openssl-devel</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>deb</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo apt-get install libssl-dev</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>no such file to load &mdash; zlib</h3>
-
-<ul>
-<li>RPM</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo yum install zlib-devel</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>cannot load such file &mdash; rubypython (LoadError)</h3>
-
-<ul>
-<li>RPM</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo yum install python-devel</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>deb</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo apt-get install python-dev</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>参考</h3>
-
-<ul>
-<li><a href="http://doc.ruby-lang.org/ja/1.9.3/library/">Ruby 1.9.3 リファレンスマニュアル > ライブラリ一覧 </a></li>
-<li><a href="http://doc.ruby-lang.org/ja/2.0.0/library/">Ruby 2.0.0 リファレンスマニュアル > ライブラリ一覧 </a></li>
-<li><a href="http://raa.ruby-lang.org/">RAA &ndash; Ruby Application Archive</a></li>
-</ul>
-
-</div>
-  
-  
-
-</article>
-  
-  <div class="pagination">
-    
-      <a class="prev" href="/blog/page/8/">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-    <a class="next" href="/blog/page/6/">Newer &rarr;</a>
-    
-  </div>
-</div>
-<aside class="sidebar"><section class="vcard">
-<h2>About Me</h2>
-<p>
-<a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
-<a href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
-<a href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
-<a href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a></p>
 </section>
-</aside></div>
-  </div>
-  <footer role="contentinfo"><p>&copy; Copyright 2013, <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a>. <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> and <a href="http://pages.github.com/">GitHub Pages</a>.</span></p></footer>
-</div>
+
+  <footer><a rel="full-article" href="/blog/2012/08/02/overview-uml/" class="btn btn-default">Read on &rarr;</a></footer>
+
+</article>
+
+  <nav class="text-center">
+    <ul class="pagination pagination-centered">
+      <li><a href="/blog/page/8/">&larr; Older</a></li>
+      <li><a href="/blog/archives/">Blog Archives</a></li>
+      <li><a href="/blog/page/6/">Newer &rarr;</a></li>
+    </ul>
+  </nav>
+</section>
+</section>
+
+</article>
+
+<aside class="vcard">
+<h3 class="text-muted">About Me</h3>
+<p>
+  <a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
+  <a class="url" href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
+  <a class="url" href="https://github.com/momoto">GitHub</a>&nbsp;|&nbsp;
+  <a class="url" href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a>
+</p>
+</aside>
+<footer><p class="text-center"><small>&copy; Copyright 2013, <a href="https://plus.google.com/101153525943529592041" rel="publisher">Seiji Momoto</a>.<br>Powered by <a href="http://octopress.org">Octopress</a> and <a href="http://pages.github.com/">GitHub Pages</a>.</small></p></footer>
 <script src="/javascripts/modernizr-2.0.js"></script>
 <script src="/javascripts/ender.js"></script>
 <script src="/javascripts/octopress.js" type="text/javascript"></script>

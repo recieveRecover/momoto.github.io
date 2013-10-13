@@ -4,7 +4,7 @@
   <title><![CDATA[UML | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/uml/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-30T23:58:38+09:00</updated>
+  <updated>2013-10-14T03:16:04+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -21,6 +21,9 @@
     <content type="html"><![CDATA[<p>統一モデリング言語（UML）は、システムの構造や振る舞いを図で表現するために標準化されたモデリング言語の一つ。
 規定されている13種類の図を必要に応じて使い分ける。</p>
 
+<!-- more -->
+
+
 <ol>
 <li>クラス図</li>
 <li>複合構造図</li>
@@ -36,9 +39,6 @@
 <li>相互作用概要図</li>
 <li>タイミング図</li>
 </ol>
-
-
-<!-- more -->
 
 
 <h4>各図の特徴</h4>

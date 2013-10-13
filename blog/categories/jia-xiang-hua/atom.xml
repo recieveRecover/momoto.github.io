@@ -4,7 +4,7 @@
   <title><![CDATA[仮想化 | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/jia-xiang-hua/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-30T23:58:38+09:00</updated>
+  <updated>2013-10-14T03:16:04+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -18,7 +18,10 @@
     <link href="http://momoto.github.io/blog/2013/08/28/guide-to-managing-guests-using-vagrant/"/>
     <updated>2013-08-28T21:41:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/08/28/guide-to-managing-guests-using-vagrant</id>
-    <content type="html"><![CDATA[<p>　Vagrantをつかって仮想マシンを管理する手引きです。Vagrantを利用するにはVirtualBoxやAWSなどのプロバイダを利用できる状態である必要があります。<!-- more --></p>
+    <content type="html"><![CDATA[<p>　Vagrantをつかって仮想マシンを管理する手引きです。Vagrantを利用するにはVirtualBoxやAWSなどのプロバイダを利用できる状態である必要があります。</p>
+
+<!-- more -->
+
 
 <ol>
 <li><h3>試してみる</h3>
@@ -243,7 +246,10 @@ node2                     running (virtualbox)
     <link href="http://momoto.github.io/blog/2013/08/17/guide-to-managing-guests-using-virsh/"/>
     <updated>2013-08-17T15:51:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/08/17/guide-to-managing-guests-using-virsh</id>
-    <content type="html"><![CDATA[<p>　libvirtのコマンドラインツールであるvirshをつかって、仮想マシンを管理する手引きです。virt-installなどで作成した仮想マシンの起動、停止、接続などの操作を行います。<!-- more --></p>
+    <content type="html"><![CDATA[<p>　libvirtのコマンドラインツールであるvirshをつかって、仮想マシンを管理する手引きです。virt-installなどで作成した仮想マシンの起動、停止、接続などの操作を行います。</p>
+
+<!-- more -->
+
 
 <h3>仮想マシンの一覧</h3>
 
@@ -357,7 +363,10 @@ $ virsh destroy 6
     <link href="http://momoto.github.io/blog/2013/08/11/guide-to-creating-virtual-machine-with-qemu/"/>
     <updated>2013-08-11T14:54:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/08/11/guide-to-creating-virtual-machine-with-qemu</id>
-    <content type="html"><![CDATA[<p>　QEMUをつかって仮想マシンを作成する手引きです。ホスト側に仮想化機能が備わっていることを確かめたあと、QEMUをつかってゲストOSを構築します。<!-- more --></p>
+    <content type="html"><![CDATA[<p>　QEMUをつかって仮想マシンを作成する手引きです。ホスト側に仮想化機能が備わっていることを確かめたあと、QEMUをつかってゲストOSを構築します。</p>
+
+<!-- more -->
+
 
 <h2>仮想化機能を確かめる</h2>
 

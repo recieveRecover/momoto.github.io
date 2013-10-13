@@ -4,7 +4,7 @@
   <title><![CDATA[デスクトップ環境 | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/desukutotupuhuan-jing/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-30T23:58:38+09:00</updated>
+  <updated>2013-10-14T03:16:04+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -20,6 +20,9 @@
     <id>http://momoto.github.io/blog/2013/03/27/awesome-tutorials</id>
     <content type="html"><![CDATA[<p>タイル型ウィンドウマネージャ「awesome」の特徴とショートカットキーを簡単にまとめています。</p>
 
+<!-- more -->
+
+
 <h4>awesomeが提供しているレイアウトのスクリーンショット</h4>
 
 <ul>
@@ -27,13 +30,6 @@
 
 <p><img src="/blog/images/2013-03-27-awesome-tutorials/01.png" width="300" title="awesomeのタイル配置" >
 <img src="/blog/images/2013-03-27-awesome-tutorials/02.png" width="300" title="awesomeのタイル配置" ></p></li>
-</ul>
-
-
-<!-- more -->
-
-
-<ul>
 <li><p>均等配置（awful.layout.suit.fair）</p>
 
 <p><img src="/blog/images/2013-03-27-awesome-tutorials/03.png" width="300" title="awesomeの均等配置" >

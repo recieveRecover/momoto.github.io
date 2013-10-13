@@ -4,7 +4,7 @@
   <title><![CDATA[Android | momoto.github.io]]></title>
   <link href="http://momoto.github.io/blog/categories/android/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-30T23:58:38+09:00</updated>
+  <updated>2013-10-14T03:16:04+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -20,6 +20,9 @@
     <id>http://momoto.github.io/blog/2012/08/02/set-up-udev-rules-to-detect-android-device</id>
     <content type="html"><![CDATA[<p>デバイス管理ツールとしてudevを使用しているLinuxシステムで、USB接続したAndroid端末を検出できない場合、USBベンダーIDごとにudevルールを加える必要がある。</p>
 
+<!-- more -->
+
+
 <p>例えば、USBベンダーIDが<code>0bb4</code>になるHTCの端末を検出する場合、次の内容のファイルを<code>51-android.rules</code>として<code>/etc/udev/rules.d</code>に加える。</p>
 
 <p><code>plain /etc/udev/rules.d/51-android.rules
@@ -27,9 +30,6 @@ SUBSYSTEM=="usb", ATTR{idVendor}=="0bb4", MODE="0666", GROUP="plugdev"
 </code></p>
 
 <p>各メーカーに対応するUSBベンダーIDは、<a href="http://developer.android.com/tools/device.html%E3%81%A7%E5%8F%82%E7%85%A7%E3%81%A7%E3%81%8D%E3%82%8B%E3%80%82">http://developer.android.com/tools/device.html%E3%81%A7%E5%8F%82%E7%85%A7%E3%81%A7%E3%81%8D%E3%82%8B%E3%80%82</a></p>
-
-<!-- more -->
-
 
 <p>また、<code>/etc/udev/rules.d</code>への書き込みにはroot権限が必要で、ファイルを追加した後は読み出しを許可する必要がある。</p>
 

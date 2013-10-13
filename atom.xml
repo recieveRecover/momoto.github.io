@@ -4,7 +4,7 @@
   <title><![CDATA[momoto.github.io]]></title>
   <link href="http://momoto.github.io/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-09-30T23:58:38+09:00</updated>
+  <updated>2013-10-14T03:16:04+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -14,11 +14,258 @@
 
   
   <entry>
+    <title type="html"><![CDATA[YumをつかってApache HTTP Server 2.2をインストールする]]></title>
+    <link href="http://momoto.github.io/blog/2013/10/13/installing-apache-http-server-2-dot-2-15-using-yum/"/>
+    <updated>2013-10-13T11:29:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/10/13/installing-apache-http-server-2-dot-2-15-using-yum</id>
+    <content type="html"><![CDATA[<p>　パッケージ管理システムのYumをつかって、Apache HTTP Server 2.2.15をインストールします。OSはCentOS 6を使用しています。</p>
+
+<!-- more -->
+
+
+<p>　RHEL 6互換のCentOSの標準リポジトリではhttpdパッケージでApache HTTP Serverが提供されています。パッケージの情報は<code>yum info &lt;パッケージ名&gt;</code>で調べることができます。
+パッケージ情報が示すとおり、httpdパッケージ（i686）からインストールできるApacheのバージョンは<strong>2.2.15</strong>になります。</p>
+
+<pre><code>$ yum info httpd
+
+Available Packages
+Name        : httpd
+Arch        : i686
+Version     : 2.2.15
+Release     : 29.el6.centos
+Size        : 828 k
+Repo        : updates
+Summary     : Apache HTTP Server
+URL         : http://httpd.apache.org/
+License     : ASL 2.0
+Description : The Apache HTTP Server is a powerful, efficient, and extensible
+            : web server.
+</code></pre>
+
+<p>　インストールには<code>yum install &lt;パッケージ名&gt;</code>を実行するだけで、パッケージ管理システムが依存関係を解決し、必要なパッケージと共にインストールが完了します。</p>
+
+<pre><code>$ sudo yum install httpd
+Setting up Install Process
+
+...
+
+Installed:
+  httpd.i686 0:2.2.15-29.el6.centos
+
+Dependency Installed:
+  apr.i686 0:1.3.9-5.el6_2                    apr-util.i686 0:1.3.9-3.el6_0.1
+  apr-util-ldap.i686 0:1.3.9-3.el6_0.1        httpd-tools.i686 0:2.2.15-29.el6.centos
+  mailcap.noarch 0:2.1.31-2.el6
+
+Complete!
+</code></pre>
+
+<p>　httpdパッケージが提供しているファイルは<code>rpm -ql httpd</code>で一覧を得られますが、出力は300行以上に及ぶためディレクトリごとにファイルの役割をみてみます。</p>
+
+<pre><code>$ rpm -ql httpd | gawk -F/ '{print "/"$2"/"$3}' | uniq -c
+     10 /etc/httpd
+      1 /etc/logrotate.d
+      2 /etc/rc.d
+      2 /etc/sysconfig
+     66 /usr/lib
+      8 /usr/sbin
+     12 /usr/share
+      1 /var/cache
+      1 /var/lib
+      1 /var/log
+      1 /var/run
+    252 /var/www
+</code></pre>
+
+<table class="table">
+<caption>（表）httpdパッケージが提供するファイルやディレクトリの概要</caption>
+<tbody>
+<tr><td>/etc/httpd/</td><td>conf/httpd.confなど設定ファイルを格納しているディレクトリ（サーバルート）</td></tr>
+<tr><td>/etc/logrotate.d/httpd</td><td>httpdのログローテーションの設定</td></tr>
+<tr><td>/etc/rc.d/init.d/{htcacheclean, httpd}</td><td>httpdとhtcachecleanの起動スクリプト</td></tr>
+<tr><td>/etc/sysconfig/{htcacheclean, httpd}</td><td>preforkかworkerの切り替え等、サービスの設定ファイル</td></tr>
+<tr><td>/usr/lib/httpd/modules/mod_*.so</td><td>Apacheモジュールの共有ライブラリファイル</td></tr>
+<tr><td>/usr/sbin/{apachectl, httpdなど}</td><td>Apache各種コマンドの実行ファイル</td></tr>
+<tr><td>/usr/share/{doc/, man/}</td><td>Apacheのドキュメントやmanページ</td></tr>
+<tr><td>/var/cache/mod_proxy/</td><td>mod_disk_cacheのCacheRootディレクトリ</td></tr>
+<tr><td>/var/lib/dav/</td><td>mod_davのロックデータベースディレクトリ</td></tr>
+<tr><td>/var/log/httpd/</td><td>httpdのログを格納するディレクトリ</td></tr>
+<tr><td>/var/run/httpd/</td><td>httpdのプロセスIDファイルを格納するディレクトリ</td></tr>
+<tr><td>/var/www/</td><td>HTMLファイル等のコンテンツを格納しているディレクトリ（/var/www/htmlがデフォルトのドキュメントルート）</td></tr>
+</tbody>
+</table>
+
+
+<p>　httpd-2.2.15-29.el6.centos.i686では、実行ファイルのhttpd（prefork）とhttpd.workerはそれぞれ次のようにコンパイルされています。</p>
+
+<pre><code>$ /usr/sbin/httpd -V
+...
+Server compiled with....
+ -D APACHE_MPM_DIR="server/mpm/prefork"
+ -D APR_HAS_SENDFILE
+ -D APR_HAS_MMAP
+ -D APR_HAVE_IPV6 (IPv4-mapped addresses enabled)
+ -D APR_USE_SYSVSEM_SERIALIZE
+ -D APR_USE_PTHREAD_SERIALIZE
+ -D SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+ -D APR_HAS_OTHER_CHILD
+ -D AP_HAVE_RELIABLE_PIPED_LOGS
+ -D DYNAMIC_MODULE_LIMIT=128
+ -D HTTPD_ROOT="/etc/httpd"
+ -D SUEXEC_BIN="/usr/sbin/suexec"
+ -D DEFAULT_PIDLOG="run/httpd.pid"
+ -D DEFAULT_SCOREBOARD="logs/apache_runtime_status"
+ -D DEFAULT_LOCKFILE="logs/accept.lock"
+ -D DEFAULT_ERRORLOG="logs/error_log"
+ -D AP_TYPES_CONFIG_FILE="conf/mime.types"
+ -D SERVER_CONFIG_FILE="conf/httpd.conf"
+
+$ /usr/sbin/httpd.worker -V
+...
+Server compiled with....
+ -D APACHE_MPM_DIR="server/mpm/worker"
+ -D APR_HAS_SENDFILE
+ -D APR_HAS_MMAP
+ -D APR_HAVE_IPV6 (IPv4-mapped addresses enabled)
+ -D APR_USE_SYSVSEM_SERIALIZE
+ -D APR_USE_PTHREAD_SERIALIZE
+ -D SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+ -D APR_HAS_OTHER_CHILD
+ -D AP_HAVE_RELIABLE_PIPED_LOGS
+ -D DYNAMIC_MODULE_LIMIT=128
+ -D HTTPD_ROOT="/etc/httpd"
+ -D SUEXEC_BIN="/usr/sbin/suexec"
+ -D DEFAULT_SCOREBOARD="logs/apache_runtime_status"
+ -D DEFAULT_ERRORLOG="logs/error_log"
+ -D AP_TYPES_CONFIG_FILE="conf/mime.types"
+ -D SERVER_CONFIG_FILE="conf/httpd.conf"
+</code></pre>
+
+<p>　serviceユーティリティをつかってhttpdを起動させたあと、curlでウェブサーバの動作を確認してみます。</p>
+
+<pre><code>$ sudo service httpd start
+                                                           [  OK  ]
+$ curl -D - -s -o /dev/null localhost
+HTTP/1.1 403 Forbidden
+Date: Sun, 13 Oct 2013 09:08:07 GMT
+Server: Apache/2.2.15 (CentOS)
+Accept-Ranges: bytes
+Content-Length: 5039
+Connection: close
+Content-Type: text/html; charset=UTF-8
+</code></pre>
+
+<p>　デフォルトの設定のままではDocumentRoot（/var/www/html）のDirectoryIndex（index.html）が見つからず、/etc/httpd/conf.d/welcome.confでは<code>Options -Indexes</code>が設定されているため、
+HTTPステータスコードは<code>403 Forbidden</code>、メッセージボディには/var/www/error/noindex.htmlを応答しています。</p>
+
+<p>　/var/www/html/index.htmlを作成したあとに再度リクエストしてみると<code>200 OK</code>を応答するようになります。</p>
+
+<pre><code>$ echo '&lt;html&gt;&lt;body&gt;It works!&lt;/body&gt;&lt;/html&gt;' | sudo tee /var/www/html/index.html
+&lt;html&gt;&lt;body&gt;It works!&lt;/body&gt;&lt;/html&gt;
+$ curl -D - localhost
+HTTP/1.1 200 OK
+Date: Sun, 13 Oct 2013 09:12:35 GMT
+Server: Apache/2.2.15 (CentOS)
+Last-Modified: Sun, 13 Oct 2013 09:12:16 GMT
+ETag: "20584-24-4e8a167dd7f45"
+Accept-Ranges: bytes
+Content-Length: 36
+Connection: close
+Content-Type: text/html; charset=UTF-8
+
+&lt;html&gt;&lt;body&gt;It works!&lt;/body&gt;&lt;/html&gt;
+</code></pre>
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/ch-Web_Servers.html">Red Hat Enterprise Linux 6 Deployment Guide 第15章 Web サーバー – Red Hat Customer Portal</a></li>
+<li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Managing_Confined_Services/chap-Managing_Confined_Services-The_Apache_HTTP_Server.html">Red Hat Enterprise Linux 6.4 Managing Confined Services 第3章 Apache HTTP Server – Red Hat Customer Portal</a></li>
+<li><a href="http://httpd.apache.org/docs/2.2/ja/">Apache HTTP サーバ バージョン 2.2 ドキュメント &ndash; Apache HTTP サーバ</a></li>
+<li><a href="http://www.atmarkit.co.jp/ait/articles/0508/02/news102.html">実用 Apache 2.0運用・管理術（1）：Apache 2.0の必須設定と基本セキュリティ対策 &ndash; ＠IT</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[EPEL 6のリポジトリを有効化する]]></title>
+    <link href="http://momoto.github.io/blog/2013/10/13/enabling-extra-packages-for-enterprise-linux-repository/"/>
+    <updated>2013-10-13T11:09:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/10/13/enabling-extra-packages-for-enterprise-linux-repository</id>
+    <content type="html"><![CDATA[<p>　CentOS 6でExtra Packages for Enterprise Linux 6（EPEL 6）リポジトリを有効化します。
+このリポジトリを有効化することでRHEL 6やそのクローンでもFedoraパッケージを利用できるようになります。</p>
+
+<!-- more -->
+
+
+<p>　まず、パッケージの検証につかう公開鍵をRPMデータベースにインポートします。
+EPEL6でつかう公開鍵は<a href="https://fedoraproject.org/keys">Fedora Project &ndash; List of GPG keys</a>の<a href="https://fedoraproject.org/static/0608B895.txt">RPM-GPG-KEY-EPEL-6</a>です。</p>
+
+<pre><code>$ sudo rpm --import https://fedoraproject.org/static/0608B895.txt
+</code></pre>
+
+<p>　次に、EPEL6のミラーからRPMパッケージをインストールして、リポジトリの有効化は完了です。</p>
+
+<pre><code>$ sudo rpm -Uvh http://ftp.iij.ad.jp/pub/linux/fedora/epel/6/i386/epel-release-6-8.noarch.rpm
+Retrieving http://ftp.iij.ad.jp/pub/linux/fedora/epel/6/i386/epel-release-6-8.noarch.rpm
+Preparing...                ########################################### [100%]
+   1:epel-release           ########################################### [100%]
+</code></pre>
+
+<p>　RPMファイルのURLは、ミラーに<a href="http://www.iij.ad.jp/">IIJ</a>を選んだ場合だと次のようになります。</p>
+
+<ul>
+<li><strong>i386</strong> <a href="http://ftp.iij.ad.jp/pub/linux/fedora/epel/6/i386/epel-release-6-8.noarch.rpm">http://ftp.iij.ad.jp/pub/linux/fedora/epel/6/i386/epel-release-6-8.noarch.rpm</a></li>
+<li><strong>x86_64</strong> <a href="http://ftp.iij.ad.jp/pub/linux/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm">http://ftp.iij.ad.jp/pub/linux/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm</a></li>
+</ul>
+
+
+<p>　追加したEPELのリポジトリが有効になっているかどうかは<code>yum repolist</code>をつかって確認することができます。</p>
+
+<pre><code>$ yum repolist
+
+repo id           repo name                                               status
+base              CentOS-6 - Base                                         4,802
+epel              Extra Packages for Enterprise Linux 6 - i386            8,113
+extras            CentOS-6 - Extras                                          12
+updates           CentOS-6 - Updates                                      1,000
+repolist: 13,927
+</code></pre>
+
+<p>　yumオプションに<code>--enablerepo=epel</code>を指定したときだけEPELを利用し、普段は無効化にしておきたい場合は/etc/yum.repos.d/epel.repoの<code>enabled=1</code>を<code>enabled=0</code>に変更しておきます。</p>
+
+<pre><code>$ sudo vi /etc/yum.repos.d/epel.repo
+
+[epel]
+name=Extra Packages for Enterprise Linux 6 - $basearch
+#baseurl=http://download.fedoraproject.org/pub/epel/6/$basearch
+mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-6&amp;arch=$basearch
+failovermethod=priority
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+</code></pre>
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="http://fedoraproject.org/wiki/EPEL">EPEL &ndash; FedoraProject</a></li>
+<li><a href="http://wiki.centos.org/AdditionalResources/Repositories">AdditionalResources/Repositories &ndash; CentOS Wiki</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Nagios Core 4.0.0をソースからインストールする]]></title>
     <link href="http://momoto.github.io/blog/2013/09/22/installing-nagios-core-4-dot-0-0-from-source/"/>
     <updated>2013-09-22T22:32:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/09/22/installing-nagios-core-4-dot-0-0-from-source</id>
-    <content type="html"><![CDATA[<p>　Nagios Core 4.0.0とNagios Plugins 1.4.16をソースからインストールします。OSはCentOS 6.4を使用しています。<!-- more --></p>
+    <content type="html"><![CDATA[<p>　Nagios Core 4.0.0とNagios Plugins 1.4.16をソースからインストールします。OSはCentOS 6.4を使用しています。</p>
+
+<!-- more -->
+
 
 <ol>
 <li><h4>ソースコードを取得する</h4>
@@ -171,7 +418,10 @@ Starting nagios:                                           [  OK  ]
     <link href="http://momoto.github.io/blog/2013/09/08/enabling-spdy-for-apache-http-server/"/>
     <updated>2013-09-08T01:00:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/09/08/enabling-spdy-for-apache-http-server</id>
-    <content type="html"><![CDATA[<p>　mod_spdyをつかってApache HTTP ServerのSPDYサポートを有効化します。mod_spdyは<a href="http://code.google.com/p/mod-spdy/">code.google.com</a>で配布されています。<!-- more --></p>
+    <content type="html"><![CDATA[<p>　mod_spdyをつかってApache HTTP ServerのSPDYサポートを有効化します。mod_spdyは<a href="http://code.google.com/p/mod-spdy/">code.google.com</a>で配布されています。</p>
+
+<!-- more -->
+
 
 <h4>mod_spdyのRPMパッケージ 64ビットをインストールする場合</h4>
 
@@ -260,7 +510,10 @@ X-Associated-Contentを追加した代わりにHTMLファイルの読み込み�
     <updated>2013-09-08T00:00:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/09/08/enabling-ssl-for-apache-http-server</id>
     <content type="html"><![CDATA[<p>　mod_sslをつかってApache HTTP ServerのSSL/TLSサポートを有効化します。
-SSLを有効にするために必要なRSA秘密鍵と公開鍵証明書のうち、公開鍵証明書は第三者の認証局に署名してもらうのが通常ですが、この記事では検証のため自己発行証明書をつかいます。<!-- more --></p>
+SSLを有効にするために必要なRSA秘密鍵と公開鍵証明書のうち、公開鍵証明書は第三者の認証局に署名してもらうのが通常ですが、この記事では検証のため自己発行証明書をつかいます。</p>
+
+<!-- more -->
+
 
 <p>　手順としては(1) RSA秘密鍵を生成、(2) 証明書署名要求（CSR）を作成、(3) 公開鍵証明書を発行、その後、ウェブサーバでSSL/TLSを設定します。(3)の「公開鍵証明書の発行」は本来、認証局で行う手順です。</p>
 
@@ -436,7 +689,10 @@ OK: Pass Phrase Dialog successful.
     <id>http://momoto.github.io/blog/2013/09/01/system-administration-for-centos-6</id>
     <content type="html"><![CDATA[<p>　CentOS 6の基本的なシステム設定を確認します。
 ここでいうシステム設定は、地域化、ネットワーク、セキュリティ、サービス管理などの設定を対象にしています。デスクトップ環境や外観の設定は含みません。
-また、各機能については基本的な設定までを概観するにとどめて、詳細な設定までは踏み込みません。<!-- more --></p>
+また、各機能については基本的な設定までを概観するにとどめて、詳細な設定までは踏み込みません。</p>
+
+<!-- more -->
+
 
 <h4>もくじ</h4>
 
@@ -895,7 +1151,10 @@ N 3
     <link href="http://momoto.github.io/blog/2013/08/28/guide-to-managing-guests-using-vagrant/"/>
     <updated>2013-08-28T21:41:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/08/28/guide-to-managing-guests-using-vagrant</id>
-    <content type="html"><![CDATA[<p>　Vagrantをつかって仮想マシンを管理する手引きです。Vagrantを利用するにはVirtualBoxやAWSなどのプロバイダを利用できる状態である必要があります。<!-- more --></p>
+    <content type="html"><![CDATA[<p>　Vagrantをつかって仮想マシンを管理する手引きです。Vagrantを利用するにはVirtualBoxやAWSなどのプロバイダを利用できる状態である必要があります。</p>
+
+<!-- more -->
+
 
 <ol>
 <li><h3>試してみる</h3>
@@ -1120,8 +1379,10 @@ node2                     running (virtualbox)
     <link href="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/"/>
     <updated>2013-08-24T12:06:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift</id>
-    <content type="html"><![CDATA[<p>　Red Hat OpenShiftにプロジェクト管理ソフトウェアのRedmine 2.0を展開します。rhcとredmine-2.0-openshift-quickstartを使用しています。<!--more-->
-あらかじめOpenShiftのアカウントを作成している必要があります。</p>
+    <content type="html"><![CDATA[<p>　Red Hat OpenShiftにプロジェクト管理ソフトウェアのRedmine 2.0を展開します。rhcとredmine-2.0-openshift-quickstartを使用しています。あらかじめOpenShiftのアカウントを作成している必要があります。</p>
+
+<!--more-->
+
 
 <ol>
 <li><h4>Ruby 1.9のアプリケーションを作成する</h4>
@@ -1265,7 +1526,10 @@ remote: Fetching gem metadata from http://rubygems.org/.........
     <updated>2013-08-24T11:08:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/08/24/installation-guide-for-openshift-rhc-client-tools</id>
     <content type="html"><![CDATA[<p>　Red Hat OpenShiftに用意されている２通りのユーザインタフェースのうちの１つ、クライアントツールをインストールします。
-クライアントツールをつかうと、もう一方のユーザインタフェースであるマネジメントコンソールでは提供されていない機能を利用できます。<!-- more --></p>
+クライアントツールをつかうと、もう一方のユーザインタフェースであるマネジメントコンソールでは提供されていない機能を利用できます。</p>
+
+<!-- more -->
+
 
 <h2>インストール</h2>
 
@@ -1406,7 +1670,10 @@ quota           list disk usage
     <link href="http://momoto.github.io/blog/2013/08/17/guide-to-managing-guests-using-virsh/"/>
     <updated>2013-08-17T15:51:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/08/17/guide-to-managing-guests-using-virsh</id>
-    <content type="html"><![CDATA[<p>　libvirtのコマンドラインツールであるvirshをつかって、仮想マシンを管理する手引きです。virt-installなどで作成した仮想マシンの起動、停止、接続などの操作を行います。<!-- more --></p>
+    <content type="html"><![CDATA[<p>　libvirtのコマンドラインツールであるvirshをつかって、仮想マシンを管理する手引きです。virt-installなどで作成した仮想マシンの起動、停止、接続などの操作を行います。</p>
+
+<!-- more -->
+
 
 <h3>仮想マシンの一覧</h3>
 
@@ -1520,7 +1787,10 @@ $ virsh destroy 6
     <link href="http://momoto.github.io/blog/2013/08/16/deploying-django-1-dot-5-2-on-heroku/"/>
     <updated>2013-08-16T00:00:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/08/16/deploying-django-1-dot-5-2-on-heroku</id>
-    <content type="html"><![CDATA[<p>　Herokuが提供するPaaSにウェブアプリケーションフレームワーク Django 1.5.2を展開します。Pythonのバージョンは2.7を使用しています。<!-- more --></p>
+    <content type="html"><![CDATA[<p>　Herokuが提供するPaaSにウェブアプリケーションフレームワーク Django 1.5.2を展開します。Pythonのバージョンは2.7を使用しています。</p>
+
+<!-- more -->
+
 
 <h4>1. django-toolbeltをインストールする</h4>
 
@@ -1894,7 +2164,10 @@ Herokuプラットフォーム側でコマンドを実行する場合は<code>he
     <link href="http://momoto.github.io/blog/2013/08/11/guide-to-creating-virtual-machine-with-qemu/"/>
     <updated>2013-08-11T14:54:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/08/11/guide-to-creating-virtual-machine-with-qemu</id>
-    <content type="html"><![CDATA[<p>　QEMUをつかって仮想マシンを作成する手引きです。ホスト側に仮想化機能が備わっていることを確かめたあと、QEMUをつかってゲストOSを構築します。<!-- more --></p>
+    <content type="html"><![CDATA[<p>　QEMUをつかって仮想マシンを作成する手引きです。ホスト側に仮想化機能が備わっていることを確かめたあと、QEMUをつかってゲストOSを構築します。</p>
+
+<!-- more -->
+
 
 <h2>仮想化機能を確かめる</h2>
 
@@ -2021,8 +2294,12 @@ QEMUの<code>-m</code>オプションの値を引き上げて試してみてく�
     <updated>2013-07-31T23:03:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-php-5-dot-5-1</id>
     <content type="html"><![CDATA[<p>　PHP 5.5.1をソースコードからビルドして、Unix系システムへインストールする手引きです。
-この記事ではCentOS 6.4環境でインストールの例を示しますが、自身でソースからビルドする方法は特定のLinuxディストリビューションに依りません。<!-- more -->
-インストールを行うユーザは、インストール先ディレクトリに対して書込み権限をもっている必要があります。/usr/local/* にインストールする場合、通常、root権限が必要です。</p>
+この記事ではCentOS 6.4環境でインストールの例を示しますが、自身でソースからビルドする方法は特定のLinuxディストリビューションに依りません。</p>
+
+<!-- more -->
+
+
+<p>　インストールを行うユーザは、インストール先ディレクトリに対して書込み権限をもっている必要があります。/usr/local/* にインストールする場合、通常、root権限が必要です。</p>
 
 <ol>
 <li><h3>ソースコードを取得する</h3>
@@ -2236,8 +2513,12 @@ Array
     <updated>2013-07-31T22:15:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-mysql-community-server-5-dot-6-13</id>
     <content type="html"><![CDATA[<p>　MySQL Community Server 5.6.13をソースコードからビルドして、Unix系システムへインストールする手引きです。
-この記事ではCentOS 6.4環境でインストールの例を示しますが、自身でソースからビルドする方法は特定のLinuxディストリビューションに依りません。<!-- more -->
-インストールを行うユーザは、インストール先ディレクトリに対して書込み権限をもっている必要があります。/usr/local/* にインストールする場合、通常、root権限が必要です。</p>
+この記事ではCentOS 6.4環境でインストールの例を示しますが、自身でソースからビルドする方法は特定のLinuxディストリビューションに依りません。</p>
+
+<!-- more -->
+
+
+<p>　インストールを行うユーザは、インストール先ディレクトリに対して書込み権限をもっている必要があります。/usr/local/* にインストールする場合、通常、root権限が必要です。</p>
 
 <ol>
 <li><h3>ソースコードを取得する</h3>
@@ -2533,8 +2814,12 @@ mysql&gt; SELECT version();
     <updated>2013-07-31T22:10:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/07/31/guide-to-compiling-and-installing-apache-http-server-2-dot-4-6</id>
     <content type="html"><![CDATA[<p>　Apache HTTP Server 2.4.6をソースコードからビルドして、Unix系システムへインストールする手引きです。
-この記事ではCentOS 6.4環境でインストールの例を示しますが、自身でソースからビルドする方法は特定のLinuxディストリビューションに依りません。<!-- more -->
-インストールを行うユーザは、インストール先ディレクトリに対して書込み権限をもっている必要があります。/usr/local/* にインストールする場合、通常、root権限が必要です。</p>
+この記事ではCentOS 6.4環境でインストールの例を示しますが、自身でソースからビルドする方法は特定のLinuxディストリビューションに依りません。</p>
+
+<!-- more -->
+
+
+<p>　インストールを行うユーザは、インストール先ディレクトリに対して書込み権限をもっている必要があります。/usr/local/* にインストールする場合、通常、root権限が必要です。</p>
 
 <ol>
 <li><h3>ソースコードを取得する</h3>
@@ -2730,8 +3015,6 @@ httpd_can_network_connect --&gt; off
     <id>http://momoto.github.io/blog/2013/06/30/finding-the-longest-contiguous-equal-sum-substring-of-length-2n</id>
     <content type="html"><![CDATA[<p>　getEqualSumSubstring関数の問題を考えてみます。この問題の出典についてはわかりませんが、Stack Overflowには同問題に関する質問がいくつか寄せられているように、プログラミングの分野では有名な問題であるようです。</p>
 
-<h3>問題</h3>
-
 <p>　問題文を日本語に訳してみると、だいたい次のような内容です。</p>
 
 <blockquote><p>　0以外の数字だけを含む文字列sを引数にとるgetEqualSumSubstring関数を定義します。<br>
@@ -2739,6 +3022,9 @@ httpd_can_network_connect --&gt; off
 　適当な部分列がない場合には0と表示します。</p>
 
 <p><a href="http://stackoverflow.com/questions/8469407/to-find-the-longest-substring-with-equal-sum-in-left-and-right-in-c">To find the longest substring with equal sum in left and right in C++ &ndash; Stack Overflow</a></p></blockquote>
+
+<!-- more -->
+
 
 <h4>入力例＃１</h4>
 
@@ -2905,7 +3191,10 @@ i.onkeyup   = eventhandler;
     <id>http://momoto.github.io/blog/2013/06/23/install-debian-7-dot-1-0-amd64-netinst</id>
     <content type="html"><![CDATA[<p>　Debian 7.1.0をインストールした手順の記録です。インストールメディアはdebian-7.1.0-amd64-netinst.isoを使用しています。インターネットへ接続できる環境を前提にしています。</p>
 
-<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/01.png" width="400" title="インストーラの起動" ><!-- more --></p>
+<p><img src="http://momoto.github.io/blog/images/2013-06-23-debian-7.1.0-amd64-netinst/01.png" width="400" title="インストーラの起動" ></p>
+
+<!-- more -->
+
 
 <ol>
 <li><h3>言語、地域、キーボードの選択</h3>
@@ -3033,7 +3322,10 @@ i.onkeyup   = eventhandler;
     <link href="http://momoto.github.io/blog/2013/06/23/installing-ubuntu-13-dot-04-server-amd64/"/>
     <updated>2013-06-23T00:00:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/06/23/installing-ubuntu-13-dot-04-server-amd64</id>
-    <content type="html"><![CDATA[<p>　Ubuntu Server 13.04をインストールした手順の記録です。インストールイメージはubuntu-13.04-server-amd64.isoを使用しています。<!-- more --></p>
+    <content type="html"><![CDATA[<p>　Ubuntu Server 13.04をインストールした手順の記録です。インストールイメージはubuntu-13.04-server-amd64.isoを使用しています。</p>
+
+<!-- more -->
+
 
 <ol>
 <li><h4>インストールイメージの起動</h4>
@@ -3177,7 +3469,10 @@ Ubuntuのドキュメントには、インストールイメージのDVDへの�
     <updated>2013-05-31T23:19:00+09:00</updated>
     <id>http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku</id>
     <content type="html"><![CDATA[<p>　Herokuが提供するPaaSにプロジェクト管理ソフトウェア Redmine 2.3.1を展開します。
-Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、<a href="https://aur.archlinux.org/packages/heroku-client/">heroku-toolbelt</a>は2.39.4を使用しました。<!-- more --></p>
+Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、<a href="https://aur.archlinux.org/packages/heroku-client/">heroku-toolbelt</a>は2.39.4を使用しました。</p>
+
+<!-- more -->
+
 
 <h4>Redmine 2.3.1のダウンロード</h4>
 
@@ -3581,213 +3876,6 @@ The operation has completed successfully.
 <li><a href="https://wiki.archlinux.org/index.php/Syslinux">Syslinux &ndash; ArchWiki</a></li>
 <li><a href="http://www.syslinux.org/wiki/index.php/Mbr">Mbr &ndash; Syslinux Wiki</a></li>
 <li><a href="http://www.syslinux.org/wiki/index.php/Common_Problems#Missing_OS_.28gptmbr.bin.29">Common Problems &ndash; Syslinux Wiki</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[CentOS 6.4をインストールする]]></title>
-    <link href="http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/"/>
-    <updated>2013-04-06T01:37:00+09:00</updated>
-    <id>http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall</id>
-    <content type="html"><![CDATA[<p>　CentOS 6.4をインストールした手順の記録です。インストールメディアはCentOS-6.4-i386-netinstall.isoを使用しています。インターネットへ接続できる環境を前提にしています。<!-- more --></p>
-
-<ol>
-<li><h3>Anacondaの起動</h3>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/01.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/01_thumbnail.png" title="Anacondaの起動" ></a></p>
-
-<p>　インストールメディアからCentOSのインストーラ&#8221;Anaconda&#8221;を起動します。このとき、インストールメディア（光学ドライブやUSB、あるいはISOイメージファイル）が優先的に起動されるようにコンピュータ側（BIOSや仮想化環境）で正しく設定されている必要があります。</p>
-
-<p>　インストールを開始するために、&#8221;Install or upgrade an existing system&#8221;を選択します。</p></li>
-<li><h3>インストールメディアのチェック</h3>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/02_thumbnail.png" title="インストールメディアのチェック" ></a></p>
-
-<p>　必要に応じてメディアチェックを行います。このチェックはインストールに必ずしも必要ではありません。チェックを行う場合は「OK」を、チェックを省略してインストールを開始する場合は「Skip」を選択します。</p></li>
-<li><h3>言語の選択</h3>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/03.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/03_thumbnail.png" title="言語の選択" ></a></p>
-
-<p>　インストーラで使用される言語とベースシステムに含める言語パッケージを選択します。日本語も用意されていますが、翻訳が未対応の箇所では原文が表示されます。この記事では英語を選択してインストールを進めます。</p></li>
-<li><h3>キーボード配列の選択</h3>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/04.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/04_thumbnail.png" title="キーボード配列の選択" ></a></p>
-
-<p>使用しているキーボードにあわせて、キーボード配列を選択します。日本語キーボードであれば&#8221;jp106&#8221;を選択します。</p></li>
-<li><h3>インストール方法の選択</h3>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/05.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/05_thumbnail.png" title="インストール方法の選択" ></a></p>
-
-<p>ネットワークインストールの場合、&#8221;URL&#8221;を選択します。</p>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/06.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/06_thumbnail.png" title="TCP&frasl;IPの設定" ></a></p>
-
-<p>　続いて、TCP/IPを設定します。IPv4、IPv6サポートの有無と、それぞれのプロトコルにおいて動的IP（DHCP）を使用するかどうかを選択します。この記事ではIPv4のみ有効化し、動的IPを使用するように設定してインストールを進めます。</p>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/07.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/07_thumbnail.png" title="ネットワークインストールのURLの設定" ></a></p>
-
-<p>　<a href="http://www.centos.org/modules/tinycontent/index.php?id=32">CentOS Mirrors</a>にあるミラー等を参考に、対象アーキテクチャの&#8221;images/install.img&#8221;のURLを入力します。例えば、アーキテクチャが&#8221;i386&#8221;で、<a href="http://www.riken.jp/">理研</a>のミラーを使用する場合のURLは <a href="http://ftp.riken.jp/Linux/centos/6.4/os/i386/images/install.img">http://ftp.riken.jp/Linux/centos/6.4/os/i386/images/install.img</a> になります。</p>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/08.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/08_thumbnail.png" title="ネットワークインストールのURLの入力" ></a></p>
-
-<p>　<code>OSError: /lib64/libudev.so.0: wrong ELF class: ELFCLASS64</code>と表示されて処理が止まった場合は、install.imgのアーキテクチャが正しいかどうか確認してください。</p></li>
-<li><h3>グラフィカルインストールの開始</h3>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/09.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/09_thumbnail.png" title="Anacondaのグラフィカルユーザインタフェース" ></a></p>
-
-<p>　続いて、AnacondaのGUIにしたがってインストールを進めていきます。ブートメニューに指定するオプション（<code>boot: linux text</code>）によって、テキストモードインストールを使用することも可能ですが、テキストモードでは設定できない項目もあるため、通常はグラフィカルモードを使用します。</p></li>
-<li><h3>ストレージ形式の選択</h3>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/10.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/10_thumbnail.png" title="ストレージ形式の選択" ></a></p>
-
-<p>特殊なストレージを使用する必要がなければ&#8221;Basic Storage Devices&#8221;を選択します。</p></li>
-<li><h3>ホスト名の入力</h3>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/11.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/11_thumbnail.png" title="ホスト名の入力" ></a></p>
-
-<p>ホスト名を入力します。</p></li>
-<li><h3>タイムゾーンの指定</h3>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/12.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/12_thumbnail.png" title="タイムゾーンの指定" ></a></p>
-
-<p>タイムゾーンの指定と、システムクロックにUTCを使用するかどうかを選択します。</p></li>
-<li><h3>rootパスワードの設定</h3>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/13.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/13_thumbnail.png" title="rootパスワードの設定" ></a></p></li>
-<li><h3>パーティションの設定</h3>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/14.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/14_thumbnail.png" title="パーティションの設定" ></a></p>
-
-<p>　ストレージデバイスのパーティション設定を行います。上４つの選択肢を選んだ場合、自動的にデフォルトのパーティションが構成されます。手動でパーティション構成を設定する場合は一番下の&#8221;Create Custom Layout&#8221;を選択します。
-また、LUKS（Linux Unified Key Setup）による暗号化を行うかどうかを、この画面で指定出来ます。</p>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/15.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/15_thumbnail.png" title="ストレージへの書き込みに対する警告" ></a></p>
-
-<p>　この画面以降、ストレージデバイスへの書込みが行われます。この時点で接続しているストレージデバイスや上書きが行われる記憶領域をよく確かめて、次の画面へ進んでください。</p></li>
-<li><h3>パッケージグループの選択</h3>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/16.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/16_thumbnail.png" title="パッケージグループの選択" ></a></p>
-
-<p>　用途にあわせてパッケージグループを選択します。パッケージはOSインストール後にも当然、インストールすることができます。単一目的サーバーの土台として、最小限のパッケージのみをインストールする場合は&#8221;Minimal&#8221;を選択します。</p>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/17.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/17_thumbnail.png" title="ベースシステムのインストール" ></a></p></li>
-<li><h3>再起動</h3>
-
-<p><a href="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/18.png"><img src="http://momoto.github.io/blog/images/2013-04-06-install-centos-6-dot-4-i386-netinstall/18_thumbnail.png" title="インストールの完了" ></a></p>
-
-<p>　インストールが完了し、システムを再起動します。</p></li>
-</ol>
-
-
-<h3>参考</h3>
-
-<ul>
-<li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Installation_Guide/index.html">Red Hat Enterprise Linux 6 インストールガイド</a></li>
-<li><a href="http://www.centos.org/modules/tinycontent/index.php?id=31">CentOS Asian Mirrors</a></li>
-</ul>
-
-
-<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&npa=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4774145017" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
-
-
-<iframe src="http://rcm-jp.amazon.co.jp/e/cm?lt1=_top&bc1=000000&IS2=1&npa=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=alqet049-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=4789840875" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ウィンドウマネージャawesomeの基本操作]]></title>
-    <link href="http://momoto.github.io/blog/2013/03/27/awesome-tutorials/"/>
-    <updated>2013-03-27T21:13:00+09:00</updated>
-    <id>http://momoto.github.io/blog/2013/03/27/awesome-tutorials</id>
-    <content type="html"><![CDATA[<p>タイル型ウィンドウマネージャ「awesome」の特徴とショートカットキーを簡単にまとめています。</p>
-
-<h4>awesomeが提供しているレイアウトのスクリーンショット</h4>
-
-<ul>
-<li><p>タイル配置（awful.layout.suit.tile）</p>
-
-<p><img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/01.png" width="300" title="awesomeのタイル配置" >
-<img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/02.png" width="300" title="awesomeのタイル配置" ></p></li>
-</ul>
-
-
-<!-- more -->
-
-
-<ul>
-<li><p>均等配置（awful.layout.suit.fair）</p>
-
-<p><img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/03.png" width="300" title="awesomeの均等配置" >
-<img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/04.png" width="300" title="awesomeの均等配置" ></p></li>
-<li><p>螺旋配置（awful.layout.suit.spiral）</p>
-
-<p><img src="http://momoto.github.io/blog/images/2013-03-27-awesome-tutorials/05.png" width="300" title="awesomeの螺旋配置" ></p></li>
-</ul>
-
-
-<p>レイアウトはここで挙げているもの以外にも複数の種類が用意されています。</p>
-
-<h4>ショートカットキー</h4>
-
-<ul>
-<li>ウィンドウ操作
-
-<ul>
-<li><code>modkey + j</code> フォーカスを次のウィンドウへ移動する</li>
-<li><code>modkey + k</code> フォーカスを前のウィンドウへ移動する</li>
-<li><code>modkey + Tab</code> フォーカスを直前に使用していたウィンドウへ移動する</li>
-<li><code>modkey + Shift + c</code> ウィンドウを閉じる</li>
-<li><code>modkey + f</code> ウィンドウをフルスクリーン化する</li>
-<li><code>modkey + m</code> ウィンドウを最大化させる</li>
-<li><code>modkey + n</code> ウィンドウを最小化させる</li>
-<li><code>modkey + Control + n</code> 最小化したウィンドウを復元する</li>
-<li>レイアウト操作
-
-<ul>
-<li><code>modkey + Control + space</code> ウィンドウをフローティングウィンドウにする（またはフロート解除）</li>
-<li><code>modkey + Control + Return</code> ウィンドウをマスターウィンドウにする（レイアウトの中で最も目立つ配置へ移動する）</li>
-<li><code>modkey + space</code> 次のレイアウトへ切り替える</li>
-<li><code>modkey + Shift + space</code> 前のレイアウトへ切り替える</li>
-<li><code>modkey + Shift + j</code> ウィンドウの配置を前のウィンドウと入れ替える</li>
-<li><code>modkey + Shift + k</code> ウィンドウの配置を次のウィンドウと入れ替える</li>
-<li><code>modkey + l</code> ウィンドウを右方向へ伸縮させる</li>
-<li><code>modkey + h</code> ウィンドウを左方向へ伸縮させる</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>タグ操作
-
-<ul>
-<li><code>modkey + Left</code> 前のタグへ移動</li>
-<li><code>modkey + Right</code> 次のタグへ移動</li>
-<li><code>modkey + [1-9]</code> 焦点を指定のタグへ移動する</li>
-<li><code>modkey + "Shift" + [1-9]</code> ウィンドウを指定のタグへ移動する</li>
-<li><code>modkey + Escape</code> 直前に使用していたタグへ移動</li>
-</ul>
-</li>
-<li>ウインドウマネージャ機能
-
-<ul>
-<li><code>modkey + Return</code> ターミナルエミュレータを起動する</li>
-<li><code>modkey + r</code> コマンド実行プロンプトを起動する</li>
-<li><code>modkey + x</code> Luaコード実行プロンプトを起動する</li>
-<li><code>modkey + w</code> awesomeのメニューを開く</li>
-<li><code>modkey + Control + r</code> awesomeを再起動する</li>
-<li><code>modkey + Shift + q</code> awesomeを終了する</li>
-</ul>
-</li>
-</ul>
-
-
-<h4>参考</h4>
-
-<ul>
-<li><a href="http://awesome.naquadah.org/wiki/Getting_started">Getting started &ndash; awesome</a></li>
-<li><a href="http://awesome.naquadah.org/doc/manpages/awesome.1.html">doc &ndash; awesome window manager</a></li>
 </ul>
 
 ]]></content>
