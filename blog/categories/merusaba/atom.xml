@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[メールサーバ | momoto.github.io]]></title>
+  <link href="http://momoto.github.io/blog/categories/merusaba/atom.xml" rel="self"/>
+  <link href="http://momoto.github.io/"/>
+  <updated>2013-11-24T19:39:03+09:00</updated>
+  <id>http://momoto.github.io/</id>
+  <author>
+    <name><![CDATA[Seiji Momoto]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Postfix 2.6.6をCentOS 6にインストールする]]></title>
+    <link href="http://momoto.github.io/blog/2013/11/23/installing-postfix-2-dot-6-6-on-centos-6-dot-3/"/>
+    <updated>2013-11-23T17:01:00+09:00</updated>
+    <id>http://momoto.github.io/blog/2013/11/23/installing-postfix-2-dot-6-6-on-centos-6-dot-3</id>
+    <content type="html"><![CDATA[<p>　RHEL 6に標準で搭載されているPostfix 2.6.6をつかって、スタンドアロンのMTAを設定するまでの手順をまとめています。
+OSはRHELクローンのCentOS 6.3を使用しています。</p>
+
+<p>　注意点として、SMTPサーバが不正中継に利用されないように、リレー制限の慎重な設定が必要になります。
+この記事ではサーバからメールを送信できることと、外部からメールをリレーできないことまでを確認します。
+受け取ったメールの配送やメールボックスへのアクセス（POPやIMAP）については扱っていません。</p>
+
+<!-- more -->
+
+
+<h3>1. postfixパッケージの確認</h3>
+
+<p>　postfixパッケージがシステムにインストールされているかどうか、を<code>yum list installed postfix</code>で確認します。
+もし、インストールされていなければ<code>yum install postfix</code>でインストールすることができます。
+ソフトウェアライセンスは<a href="http://www.ibm.com/developerworks/opensource/library/os-i18n2/os-ipl.html">IPL</a>になるので、
+とくに商用利用の責任において<a href="http://www.gnu.org/copyleft/gpl.html">GPL</a>と異なる部分があります。</p>
+
+<pre><code>$ yum list installed postfix
+
+Installed Packages
+postfix.x86_64                 2:2.6.6-2.2.el6_1                 @anaconda-CentOS-201207061011.x86_64/6.3
+</code></pre>
+
+<p>　postfixパッケージの設定ファイルは<code>rpm -qc postfix</code>で確認することができます。</p>
+
+<table class="table">
+<caption>表１　postfixパッケージの設定ファイル</caption>
+<thead>
+<tr><th>ファイルの名前</th><th>説明</th></tr>
+</thead>
+<tbody>
+<tr><th>/etc/pam.d/smtp.postfix</th><td>PAM (Pluggable Authentication Modules)の設定</td></tr>
+<tr><th>/etc/postfix/access</th><td>SMTPサーバのアクセステーブル</td></tr>
+<tr><th>/etc/postfix/canonical</th><td>canonicalテーブルの書式</td></tr>
+<tr><th>/etc/postfix/generic</th><td>genericテーブルの書式</td></tr>
+<tr><th>/etc/postfix/header_checks</th><td>正規表現による内容検査の設定</td></tr>
+<tr><th>/etc/postfix/main.cf</th><td>基本的な設定</td></tr>
+<tr><th>/etc/postfix/master.cf</th><td>デーモンプロセスの定義</td></tr>
+<tr><th>/etc/postfix/relocated</th><td>relocatedテーブルの書式</td></tr>
+<tr><th>/etc/postfix/transport</th><td>transportテーブルの書式</td></tr>
+<tr><th>/etc/postfix/virtual</th><td>仮想エイリアステーブルの書式</td></tr>
+<tr><th>/etc/sasl2/smtpd.conf</th><td>Cyrus SASLの設定</td></tr>
+</tbody>
+</table>
+
+
+<h3>2. Postfixの設定</h3>
+
+<p>　用途に応じて設定を変更していきます。
+設定できる項目は600以上あるようですが、単純な用途であれば、ほとんどの項目は初期値のまま利用できます。</p>
+
+<table class="table">
+<caption>表２　/etc/postfix/main.cfの基本的な設定</caption>
+<thead><tr><th>変数名</th><th>初期値</th><th>説明</th></tr></thead>
+<tbody>
+<tr><th>myhostname</th><td>hostname.localdomain</td><td>メールシステムのFQDN。この変数は他の多くの設定で参照されます。</td></tr>
+<tr><th>mydomain</th><td>localdomain</td><td>メールシステムのインターネットドメイン名。この変数は他の多くの設定で参照されます。</td></tr>
+<tr><th>myorigin</th><td>$myhostname</td><td>メールシステムから送信されたメールにおいて、差出人のメールアドレスにつかわれるドメイン。</td></tr>
+<tr><th>inet_interfaces</th><td>all</td><td>メールシステムが通信できるネットワークアドレス。ここで許可されていないアドレスとは、メールの受信も送信もできません。</td></tr>
+<tr><th>mydestination</th><td>$myhostname, localhost.$mydomain, localhost</td><td>メールシステムに到達したメールにおいて、自分宛のメールとみなすドメインのリスト。</td></tr>
+<tr><th>mynetworks</th><td>127.0.0.0/8</td><td>メールシステムがリレーを許可するSMTPクライアントのネットワークアドレスのリスト。</td></tr>
+</tbody>
+</table>
+
+
+<p>　現時点の設定は<code>postconf</code>コマンドで確認することもできます。
+オプションに<code>-d</code>を付けると設定の初期値、<code>-n</code>を付けると初期値から変更した設定だけを表示します。</p>
+
+<h3>3. Postfixの起動/再起動</h3>
+
+<p>　設定を変更した後は、<code>postfix check</code>で設定や権限を検証し、サーバを起動または再起動して変更を反映させます。
+<code>postfix reload</code>でも設定を反映させることができますが、<code>inet_interfaces</code>など一部設定の変更にはサーバ再起動が必要です。</p>
+
+<pre><code>$ sudo service postfix check
+                                            [  OK  ]
+$ sudo service postfix status
+master is stopped
+$ sudo service postfix start
+Starting postfix:                           [  OK  ]
+</code></pre>
+
+<p>　サービスの自動起動を有効にする場合は<code>chkconfig</code>をつかいます。</p>
+
+<pre><code>$ chkconfig --list postfix
+postfix         0:off   1:off   2:off   3:off   4:off   5:off   6:off
+$ sudo chkconfig postfix on
+$ chkconfig --list postfix
+postfix         0:off   1:off   2:on    3:on    4:on    5:on    6:off
+</code></pre>
+
+<h3>4. メールの送信テスト</h3>
+
+<h4>4-1. Sendmail互換インタフェース</h4>
+
+<p>　PostfixのSendmail互換インタフェースをつかって、メールサーバのホストからメールを送信してみます。
+Sendmail互換インタフェースのパスは<code>sendmail_path</code>で設定されています。</p>
+
+<pre><code>$ sendmail somebody@example.com
+from: user@hostname.localdomain
+to: somebody@example.com
+subject: test email
+
+this is a test message.
+.
+</code></pre>
+
+<p>　送信したメールのログは<code>/var/log/maillog</code>から、ローカルのメールボックスへ配送されたメールは<code>/var/mail/{ユーザ名}</code>（mail_spool_directory）から確認することができます。</p>
+
+<h4>4-2. Telnet</h4>
+
+<p>　Telnetをつかって、mynetworksで指定していないネットワークアドレスから、relay_domains (mydestination)にないドメインへメールをリレーできないことを確認します。</p>
+
+<pre><code>$ telnet &lt;SMTP_HOST&gt; 25
+Trying &lt;SMTP_HOST&gt;...
+Connected to &lt;SMTP_HOST&gt;.
+Escape character is '^]'.
+220 hostname.localdomain ESMTP Postfix
+HELO hostname.localdomain
+250 hostname.localdomain
+MAIL FROM: user@hostname.localdomain
+250 2.1.0 Ok
+RCPT TO: somebody@example.com
+554 5.7.1 &lt;somebody@example.com&gt;: Relay access denied
+</code></pre>
+
+<p>　この例では、SMTP応答コード554 (Transaction failed)を返されて、リレーが失敗しています。</p>
+
+<p>　オープンリレーとなっていないかどうかの確認は<a href="http://www.rbl.jp/">RBL.JP</a>の<a href="http://www.rbl.jp/svcheck.php">Third Party Relay Check</a>からも確認することができます。</p>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Deployment_Guide/ch-Mail_Servers.html">第16章 メールサーバー &ndash; Red Hat Customer Portal</a></li>
+<li><a href="https://access.redhat.com/site/documentation/ja-JP/Red_Hat_Enterprise_Linux/6/html/Managing_Confined_Services/chap-Managing_Confined_Services-Postfix.html">第13章 Postfix &ndash; Red Hat Customer Portal</a></li>
+<li><a href="http://www.postfix.org/STANDARD_CONFIGURATION_README.html">Postfix Standard Configuration Examples</a></li>
+<li><a href="http://www.postfix-jp.info/trans-2.3/jhtml/STANDARD_CONFIGURATION_README.html">Postfix 標準設定の例 (2.3.x)</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

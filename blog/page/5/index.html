@@ -8,7 +8,7 @@
 <meta name="keywords" content="momoto.github.io">
 <meta name="HandheldFriendly" content="True">
 <meta name="MobileOptimized" content="320">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta property="og:type" content="website">
 <meta property="og:url" content="http://momoto.github.io/blog/page/5/">
 <meta property="og:title" content="momoto.github.io">
@@ -46,6 +46,37 @@
 <article role="article">
 
   <section class="entry-content"><section class="hfeed">
+
+
+<article class="hentry">
+
+  <p class="text-muted text-right">
+
+
+
+
+
+
+  
+
+
+  
+
+<time datetime="2013-04-08T20:46:00+09:00" pubdate data-updated="true" class="updated">Apr 8<span>th</span>, 2013</time></p>
+  <h3 class="entry-title">GPT規格のディスクにSyslinuxをインストールする</h3>
+
+  <section class="entry-summary"><p>　GUIDパーティションテーブル（GPT）規格のディスクにSyslinuxをインストールした手順の記録です。OSはArch Linux、パーティショニングにはgptfdisk（gdisk）を使用しています。GPTの利点は2TiBを超える記憶容量を管理できることにありますが、ここでは練習のため8GBの仮想ディスクを使用します。パーティションは以下のようにrootとbootだけに分割します。</p>
+
+<pre><code>Number  Start (sector)    End (sector)  Size       Code  Name
+   1            2048          206847   100.0 MiB   EF02  BIOS boot partition
+   2          206848        16777182   7.9 GiB     8300  Linux filesystem
+</code></pre>
+
+</section>
+
+  <footer><a rel="full-article" href="/blog/2013/04/08/install-syslinux-on-gpt-partition-styled-disk/" class="btn btn-default">Read on &rarr;</a></footer>
+
+</article>
 
 
 <article class="hentry">
@@ -156,34 +187,6 @@ class Controller_Api extends Controller_Rest {
 </section>
 
   <footer><a rel="full-article" href="/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp/" class="btn btn-default">Read on &rarr;</a></footer>
-
-</article>
-
-
-<article class="hentry">
-
-  <p class="text-muted text-right">
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2013-02-24T14:44:00+09:00" pubdate data-updated="true" class="updated">Feb 24<span>th</span>, 2013</time></p>
-  <h3 class="entry-title">Arch Linux Extra/emacs 24.2-4で日本語を入力する</h3>
-
-  <section class="entry-summary"><p>　Arch LinuxのEmacsで日本語を入力するための設定の記録です。この方法では、Emacsの他、UIM等の入力メソッドフレームワークと、AnthyやMozc等の入力メソッドがインストールされている必要があります。</p>
-
-<p><img src="/blog/images/2013-02-24-input-japanese-on-emacs-24-dot-2-4/01.png" title="Mozcを使用して、Emacsで日本語を入力する" ></p>
-
-</section>
-
-  <footer><a rel="full-article" href="/blog/2013/02/24/input-japanese-on-emacs-24-dot-2-4/" class="btn btn-default">Read on &rarr;</a></footer>
 
 </article>
 
