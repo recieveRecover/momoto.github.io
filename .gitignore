@@ -3,11 +3,14 @@
 .sass-cache
 .gist-cache
 .pygments-cache
+_config.yml
 _deploy
 public
+sass
 sass.old
+!sass/.gitkeep
+source
 source.old
-source/_stash
-source/stylesheets/screen.css
+!source/.gitkeep
 vendor
 node_modules

@@ -1,9 +1,0 @@
-- jdk7
-  - http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html
-- jdk6
-  - http://www.oracle.com/technetwork/java/javase/downloads/jdk6downloads-1902814.html
-- eclipse
-  - http://www.eclipse.org/downloads/
-- android development tools plugins
-  - http://developer.android.com/sdk/installing/installing-adt.html
-
