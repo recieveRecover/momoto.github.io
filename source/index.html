@@ -1,0 +1,29 @@
+---
+layout: page
+title:
+keywords: "momoto.github.io"
+description: "momoto.github.ioの投稿の一覧です。"
+footer: false
+---
+<section class="hfeed">
+{% for post in paginator.posts %}
+{% assign content = post.content %}
+<article class="hentry">
+{% unless page.no_header %}
+  <p class="text-muted text-right">{% include post/date.html %}{{ time }}</p>
+  <h3 class="entry-title">{% if site.titlecase %}{{ post.title | titlecase }}{% else %}{{ post.title }}{% endif %}</h3>
+{% endunless %}
+  <section class="entry-summary">{{ content | excerpt }}</section>
+{% capture excerpted %}{{ content | has_excerpt }}{% endcapture %}{% if excerpted == 'true' %}
+  <footer><a rel="full-article" href="{{ root_url }}{{ post.url }}" class="btn btn-default">{{ site.excerpt_link }}</a></footer>
+{% endif %}
+</article>
+{% endfor %}
+  <nav class="text-center">
+    <ul class="pagination pagination-centered">
+      <li{% unless paginator.next_page %} class="disabled"{% endunless %}><a{% if paginator.next_page %} href="{{paginator.next_page}}"{% endif %}>&larr; Older</a></li>
+      <li><a href="/blog/archives/">Blog Archives</a></li>
+      <li{% unless paginator.previous_page %} class="disabled"{% endunless %}><a{% if paginator.previous_page %} href="{{paginator.previous_page}}"{% endif %}>Newer &rarr;</a></li>
+    </ul>
+  </nav>
+</section>

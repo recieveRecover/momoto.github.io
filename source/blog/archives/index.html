@@ -1,0 +1,39 @@
+---
+layout: page
+title: Archives
+keywords: "momoto.github.io"
+description: "momoto.github.ioの投稿の一覧です。"
+footer: false
+---
+
+<script>
+  (function() {
+    var cx = '000964627494144321301:prly5nmgpqm';
+    var gcse = document.createElement('script');
+    gcse.type = 'text/javascript';
+    gcse.async = true;
+    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+        '//www.google.com/cse/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(gcse, s);
+  })();
+</script>
+<gcse:search></gcse:search>
+
+<h3 class="text-muted page-header">カテゴリ</h3>
+
+<ul class="nav nav-pills">
+{% for site_category in site.categories order:ascending %}{% capture category %}{{ site_category | first }}{% endcapture %}<li>{{ category | category_link }}</li>{% endfor %}
+</ul>
+
+<section class="hfeed">
+{% for post in site.posts reverse %}{% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
+{% unless year == this_year %}{% assign year = this_year %}<h3 class="text-muted page-header">{{ year }}</h3>{% endunless %}
+<article class="hentry">
+{% unless page.no_header %}
+  <p class="text-muted text-right"><time datetime="{{ post.date | datetime | date_to_xmlschema }}" pubdate data-updated="true" class="updated">{{ post.date | date: "<span class='month'>%b</span> <span class='day'>%d</span> <span class='year'>%Y</span>"}}</time></p>
+  <h4 class="entry-title"><a href="{{ root_url }}{{ post.url }}">{{post.title}}</a></h4>
+{% endunless %}
+</article>
+{% endfor %}
+</section>

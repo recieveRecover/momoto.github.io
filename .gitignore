@@ -6,11 +6,11 @@
 _config.yml
 _deploy
 public
-sass
+sass/*
 sass.old
 !sass/.gitkeep
-source
+source/_drafts/*
+!source/_drafts/.gitkeep
 source.old
-!source/.gitkeep
 vendor
 node_modules

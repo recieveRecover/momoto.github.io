@@ -1,0 +1,59 @@
+{% capture root_url %}{{ site.root | strip_slash }}{% endcapture %}{% capture canonical %}{{ site.url }}{% if site.permalink contains '.html' %}{{ page.url }}{% else %}{{ page.url | remove:'index.html' }}{% endif %}{% endcapture %}<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+<meta charset="utf-8">
+<title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
+<meta name="author" content="{{ site.author }}">
+{% capture description %}{% if page.description %}{{ page.description }}{% else %}{{ content | raw_content }}{% endif %}{% endcapture %}<meta name="description" content="{{ description | strip_html | condense_spaces | truncate:150 }}">
+<meta name="keywords" content="{% if page.keywords %}{{ page.keywords }}{% endif %}">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ canonical }}">
+<meta property="og:title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}">
+<meta property="og:site_name" content="{{ site.title }}">
+<meta property="og:description" content="{{ description | strip_html | condense_spaces | truncate:150 }}">
+<meta property="og:image" content="{{ site.url }}/images/identicon.png">
+<meta property="fb:app_id" content="561979160531119">
+<link rel="canonical" href="{{ canonical }}">
+<link href="{{ root_url }}/favicon.png" rel="icon">
+<link href="{{ root_url }}/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="{{ site.subscribe_rss }}" rel="alternate" title="{{site.title}}" type="application/atom+xml">
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29340465-5']);
+  _gaq.push(['_setDomainName', 'github.io']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+<body class="container">
+<header>
+  <ul class="nav nav-pills pull-right">
+    <li><a href="{{ root_url }}/">Blog</a></li>
+    <li><a href="{{ root_url }}/blog/archives">Archives</a></li>
+    <li><a href="{{ site.subscribe_rss }}" title="subscribe via RSS">RSS</a></li>
+  </ul>
+  <h3 class="text-muted clearfix">{{ site.title }}</h3>
+</header>
+{{ content | expand_urls: root_url }}
+<aside class="vcard">
+<h3 class="text-muted">About Me</h3>
+<p>
+  <a class="url fn" href="http://momoto.github.io/">Seiji Momoto</a>&nbsp;|&nbsp;
+  <a class="url" href="https://plus.google.com/101153525943529592041?rel=author">Google+</a>&nbsp;|&nbsp;
+  <a class="url" href="https://github.com/{{site.github_user}}">GitHub</a>&nbsp;|&nbsp;
+  <a class="url" href="https://www.linkedin.com/pub/seiji-momoto/41/67a/ba3">LinkedIn</a>
+</p>
+</aside>
+<footer><p class="text-center"><small>&copy; Copyright <a href="https://plus.google.com/101153525943529592041" rel="publisher">{{ site.author }}</a>.</small></p></footer>
+{% include scripts.html %}
+</body>
+</html>

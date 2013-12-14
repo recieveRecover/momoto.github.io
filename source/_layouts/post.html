@@ -1,0 +1,32 @@
+---
+layout: default
+single: true
+---
+
+<article class="hentry" role="article">
+{% unless page.no_header %}
+  <header>
+    {% if page.breadcrumb.size > 0 %}<ol class="breadcrumb">{% for crumb in page.breadcrumb %}<li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="{{ crumb.url }}" itemprop="url"><small itemprop="title">{{ crumb.title }}</small></a></li>{% endfor %}</ol>{% endif %}
+    {% if page.date %}<p class="text-muted text-right">{% include post/date.html %}{{ time }}</p>{% endif %}
+    <h1 class="entry-title page-header">{% if site.titlecase %}{{ page.title | titlecase }}{% else %}{{ page.title }}{% endif %}</h1>
+  </header>
+{% endunless %}
+  <section class="entry-content">{{ content }}</section>
+{% unless page.footer == false %}
+  <footer>
+    <hr>
+    <p>
+      {% include post/author.html %}
+      {% include post/date.html %}{% if updated %}{{ updated }}{% else %}{{ time }}{% endif %}
+      {% include post/categories.html %}
+    </p>
+    {% unless page.sharing == false %}<p>{% include post/sharing.html %}</p>{% endunless %}
+  </footer>
+{% endunless %}
+  <nav>
+    <ul class="pager">
+      {% if page.previous.url %}<li class="previous"><a href="{{page.previous.url}}" title="Previous Post: {{page.previous.title}}">&laquo; {{page.previous.title}}</a></li>{% endif %}
+      {% if page.next.url %}<li class="next"><a href="{{page.next.url}}" title="Next Post: {{page.next.title}}">{{page.next.title}} &raquo;</a></li>{% endif %}
+    </ul>
+  </nav>
+</article>
