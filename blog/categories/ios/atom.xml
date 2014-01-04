@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[iOS | momoto.github.io]]></title>
+  <link href="http://momoto.github.io/blog/categories/ios/atom.xml" rel="self"/>
+  <link href="http://momoto.github.io/"/>
+  <updated>2014-01-05T07:52:49+09:00</updated>
+  <id>http://momoto.github.io/</id>
+  <author>
+    <name><![CDATA[Seiji Momoto]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[iOS UITableViewをつかってリストを表現する]]></title>
+    <link href="http://momoto.github.io/blog/2014/01/04/introduction-to-uitableview-in-ios/"/>
+    <updated>2014-01-04T22:27:02+09:00</updated>
+    <id>http://momoto.github.io/blog/2014/01/04/introduction-to-uitableview-in-ios</id>
+    <content type="html"><![CDATA[<p>　iOS UITableViewをつかってリストを表現してみます。iOSは7.0.3、IDEにはXcode 5.0.2を使用しています。
+この記事では、次のスクリーンショットのような簡単なアプリを動作させることを目的とします。</p>
+
+<p><img src="/blog/images/2014-01-04-introduction-to-uitableview-in-ios/01-uitableview-demo.png" title="&ldquo;iOS &ndash; libsqliteDemo スクリーンショット&rdquo;" ></p>
+
+<!-- more -->
+
+
+<p>　まず、リストを表示させたい画面のView Controllerに、UITableViewのインスタンスを作成します。
+インスタンスの作成には、ストーリーボードを使用する方法とView Controllerだけで記述する方法とがありますが、
+ここではストーリーボードを使用する方法でインスタンスを作成していきます。</p>
+
+<p>　ストーリーボードを使用する場合は、
+(1) オブジェクトライブラリからTable Viewをえらんで、対象のシーン（View Controller）の中に追加
+(2) 追加したTable Viewのオブジェクトを、View Controllerのアウトレットプロパティとして接続、までの操作をXcodeのGUIですすめていきます。
+オブジェクトライブラリにはTable View Controllerというオブジェクトも用意されていますが、
+既存のコントローラの中にTable Viewを組込むのであればTable View Controllerは使用しません（コントローラが増えてしまうので）。</p>
+
+<p><img src="/blog/images/2014-01-04-introduction-to-uitableview-in-ios/02-mainstoryboard.png" title="ストーリーボードのコネクションズインスペクタ画面" ></p>
+
+<p>　次に、View Controllerの定義部（.h）にうつって、View ControllerはUITableViewDataSourceプロトコルを採用するように、親クラス名の後に<code>&lt;UITableViewDataSource&gt;</code>を加えます。
+また、ストーリーボードで接続したTable Viewがプロパティとして定義されているかどうかを確かめておきます。ここでは、TableViewオブジェクトのプロパティ名を<code>tv</code>としました。</p>
+
+<p>```</p>
+
+<h1>import &lt;UIKit/UIKit.h></h1>
+
+<p>@interface ViewController : UIViewController <UITableViewDataSource></p>
+
+<p>@property (weak, nonatomic) IBOutlet UITableView *tv;</p>
+
+<p>@end
+```</p>
+
+<p>　プロトコルの採用に伴って、View Controllerの実装部（.m）には<code>numberOfRowsInSection</code>と<code>cellForRowAtIndexPath</code>のふたつのメソッドの実装が必要になります。
+このメソッドが実装されていない間は、<code>Method 'メソッド名' in protocol not implemented</code>というSemantic Issueが現れているはずなので、
+ひとまず次のようにメソッドを実装して、<code>viewDidLoad</code>などには<code>self.tv.dataSource = self;</code>の１行を加えておきます。</p>
+
+<p>```
+&ndash; (void)viewDidLoad
+{</p>
+
+<pre><code>[super viewDidLoad];
+// Do any additional setup after loading the view.
+
+// Table ViewのデータソースにView Controller自身を設定する
+self.tv.dataSource = self;
+</code></pre>
+
+<p>}</p>
+
+<ul>
+<li><p>(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+  // Table Viewの行数を返す
+  return 5;
+}</p></li>
+<li><p>(UITableViewCell <em>)tableView:(UITableView </em>)tableView cellForRowAtIndexPath:(NSIndexPath <em>)indexPath
+{
+  UITableViewCell </em>tvcell = [tableView dequeueReusableCellWithIdentifier: @&ldquo;cid&rdquo;];
+  if (tvcell == nil) {
+      tvcell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                      reuseIdentifier: @&ldquo;cid&rdquo;];
+  }
+  // Table Viewの各行の情報を、UITableViewCellのオブジェクトとして返す
+  tvcell.textLabel.text = [[NSString alloc] initWithFormat:@&ldquo;%d行目のセル&rdquo;, indexPath.row + 1];
+  return tvcell;
+}
+```</p></li>
+</ul>
+
+
+<p>　この状態でビルドしてみると、５行のリストを表現できるようになりました。</p>
+
+<p><img src="/blog/images/2014-01-04-introduction-to-uitableview-in-ios/03-uitableview-demo.png"></p>
+
+<p>　ここまでのコードを基に、セルの情報を配列に格納し、セルの挿入と削除ができるボタンを加えてみます。
+再びストーリーボードに戻り、セル操作のイベントハンドラになるボタンをView Controllerに追加します。</p>
+
+<p><img src="/blog/images/2014-01-04-introduction-to-uitableview-in-ios/04-mainstoryboard.png"></p>
+
+<p>　View Controllerの定義部では、セル情報を格納する配列<code>cells</code>というプロパティを新たに定義します。</p>
+
+<p>```</p>
+
+<h1>import &lt;UIKit/UIKit.h></h1>
+
+<p>@interface SampleController : UIViewController <UITableViewDataSource></p>
+
+<p>@property (weak, nonatomic) IBOutlet UITableView <em>tv;
+@property NSMutableArray </em>cells;</p>
+
+<ul>
+<li>(IBAction)insertCell:(id)sender;</li>
+<li>(IBAction)deleteAll:(id)sender;</li>
+</ul>
+
+
+<p>@end
+```</p>
+
+<p>　View Controllerの実装部では、それぞれのメソッドを次のように変更します。
+<code>insertCell</code>と<code>deleteAll</code>のメソッドでは、配列操作のあとに<code>[selv.tv reloadData]</code>でTable Viewをリロードするように指示しています。</p>
+
+<p>```
+&ndash; (void)viewDidLoad {</p>
+
+<pre><code>[super viewDidLoad];
+self.cells = [NSMutableArray array];
+self.tv.dataSource = self;
+</code></pre>
+
+<p>}</p>
+
+<ul>
+<li><p>(IBAction)insertCell:(id)sender {
+  [self.cells addObject: [[NSString alloc] initWithFormat:
+                          @&ldquo;%d行目のセル&rdquo;, [self.cells count] + 1]];
+  [self.tv reloadData];
+}</p></li>
+<li><p>(IBAction)deleteAll:(id)sender {
+  self.cells = [NSMutableArray array];
+  [self.tv reloadData];
+}</p></li>
+<li><p>(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+  return [self.cells count];
+}</p></li>
+<li><p>(UITableViewCell <em>)tableView:(UITableView </em>)tableView cellForRowAtIndexPath:(NSIndexPath <em>)indexPath {
+  UITableViewCell </em>tvcell = [tableView dequeueReusableCellWithIdentifier: @&ldquo;cid&rdquo;];
+  if (tvcell == nil) {
+      tvcell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                      reuseIdentifier: @&ldquo;cid&rdquo;];
+  }
+  tvcell.textLabel.text = [self.cells objectAtIndex: indexPath.row];
+  return tvcell;
+}
+```</p></li>
+</ul>
+
+
+<p>　セル情報を配列に格納することで、アプリの中でセルの追加/削除を操作できるようになりました。</p>
+
+<p><img src="/blog/images/2014-01-04-introduction-to-uitableview-in-ios/05-uitableview-demo.png"></p>
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="https://bitbucket.org/seijimomoto/ios-libsqlitedemo">bitbucket.org/seijimomoto iOS &ndash; libsqlDemo</a></li>
+<li><a href="https://developer.apple.com/jp/devcenter/ios/library/documentation/TableView_iPhone.pdf">developer.apple.com iOS Table View プログラミングガイド</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

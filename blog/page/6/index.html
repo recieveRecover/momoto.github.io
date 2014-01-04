@@ -62,6 +62,40 @@
 
   
 
+<time datetime="2013-03-03T23:38:00+09:00" pubdate data-updated="true" class="updated">Mar 3<span>rd</span>, 2013</time></p>
+  <h3 class="entry-title">FuelPHP Restコントローラの使い方</h3>
+
+  <section class="entry-summary"><p>　FuelPHPのRestコントローラを試用してみます。クラスファイルは、通常のコントローラと同様に<code>fuel/app/classes/controller</code>へ設置して使用します。まずは次のような内容でapi.phpを作成し、ブラウザから出力を確認してみます。Restコントローラを使用する場合、継承するクラスはControllerではなく<code>Controller_Rest</code>になります。</p>
+
+<pre><code>&lt;?php
+class Controller_Api extends Controller_Rest {
+  public function action_range() {
+    $this-&gt;response(array(1,2,3));
+  }
+}
+</code></pre>
+
+</section>
+
+  <footer><a rel="full-article" href="/blog/2013/03/03/tutorial-for-using-rest-controller-with-fuelphp/" class="btn btn-default">Read on &rarr;</a></footer>
+
+</article>
+
+
+<article class="hentry">
+
+  <p class="text-muted text-right">
+
+
+
+
+
+
+  
+
+
+  
+
 <time datetime="2013-02-24T14:44:00+09:00" pubdate data-updated="true" class="updated">Feb 24<span>th</span>, 2013</time></p>
   <h3 class="entry-title">Arch Linux Extra/emacs 24.2-4で日本語を入力する</h3>
 
@@ -151,35 +185,6 @@
 </section>
 
   <footer><a rel="full-article" href="/blog/2012/11/30/install-iis-7-dot-5-on-windows-7/" class="btn btn-default">Read on &rarr;</a></footer>
-
-</article>
-
-
-<article class="hentry">
-
-  <p class="text-muted text-right">
-
-
-
-
-
-
-  
-
-
-  
-
-<time datetime="2012-11-23T20:23:00+09:00" pubdate data-updated="true" class="updated">Nov 23<span>rd</span>, 2012</time></p>
-  <h3 class="entry-title">Ubuntu 12.10にrbenvとruby-buildをインストール</h3>
-
-  <section class="entry-summary"><p>rbenvとruby-buildを使用して、Ubuntu 12.10にRuby 1.9.3をインストールしたときの記録です。
-rbenvとruby-buildはディストリビューションが配布するパッケージに含まれているため、Ubuntuのバージョン管理システム（APT）からインストールすることもできますが、次の記録はgithub.comからクローンする方法によるものです。</p>
-
-<p>(* <em><a href="http://packages.ubuntu.com/quantal/rbenv" title="Ubuntu -- quantal の rbenv パッケージに関する詳細">rbenv</a>はprecise (12.04)以降、<a href="http://packages.ubuntu.com/quantal/ruby-build" title="Ubuntu -- quantal の ruby-build パッケージに関する詳細">ruby-build</a>はquantal (12.10)以降にuniverseに追加されたようです</em> )</p>
-
-</section>
-
-  <footer><a rel="full-article" href="/blog/2012/11/23/install-rbenv-and-ruby-build-on-ubuntu-12-dot-10/" class="btn btn-default">Read on &rarr;</a></footer>
 
 </article>
 

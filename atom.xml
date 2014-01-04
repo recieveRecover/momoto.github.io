@@ -4,7 +4,7 @@
   <title><![CDATA[momoto.github.io]]></title>
   <link href="http://momoto.github.io/atom.xml" rel="self"/>
   <link href="http://momoto.github.io/"/>
-  <updated>2013-12-15T07:00:11+09:00</updated>
+  <updated>2014-01-05T07:52:49+09:00</updated>
   <id>http://momoto.github.io/</id>
   <author>
     <name><![CDATA[Seiji Momoto]]></name>
@@ -12,6 +12,222 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOS UITableViewをつかってリストを表現する]]></title>
+    <link href="http://momoto.github.io/blog/2014/01/04/introduction-to-uitableview-in-ios/"/>
+    <updated>2014-01-04T22:27:02+09:00</updated>
+    <id>http://momoto.github.io/blog/2014/01/04/introduction-to-uitableview-in-ios</id>
+    <content type="html"><![CDATA[<p>　iOS UITableViewをつかってリストを表現してみます。iOSは7.0.3、IDEにはXcode 5.0.2を使用しています。
+この記事では、次のスクリーンショットのような簡単なアプリを動作させることを目的とします。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2014-01-04-introduction-to-uitableview-in-ios/01-uitableview-demo.png" title="&#34;iOS - libsqliteDemo スクリーンショット&#34;" alt="&#34;iOS - libsqliteDemo スクリーンショット&#34;"></p>
+
+<!-- more -->
+
+
+<p>　まず、リストを表示させたい画面のView Controllerに、UITableViewのインスタンスを作成します。
+インスタンスの作成には、ストーリーボードを使用する方法とView Controllerだけで記述する方法とがありますが、
+ここではストーリーボードを使用する方法でインスタンスを作成していきます。</p>
+
+<p>　ストーリーボードを使用する場合は、
+(1) オブジェクトライブラリからTable Viewをえらんで、対象のシーン（View Controller）の中に追加
+(2) 追加したTable Viewのオブジェクトを、View Controllerのアウトレットプロパティとして接続、までの操作をXcodeのGUIですすめていきます。
+オブジェクトライブラリにはTable View Controllerというオブジェクトも用意されていますが、
+既存のコントローラの中にTable Viewを組込むのであればTable View Controllerは使用しません（コントローラが増えてしまうので）。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2014-01-04-introduction-to-uitableview-in-ios/02-mainstoryboard.png" title="ストーリーボードのコネクションズインスペクタ画面" ></p>
+
+<p>　次に、View Controllerの定義部（.h）にうつって、View ControllerはUITableViewDataSourceプロトコルを採用するように、親クラス名の後に<code>&lt;UITableViewDataSource&gt;</code>を加えます。
+また、ストーリーボードで接続したTable Viewがプロパティとして定義されているかどうかを確かめておきます。ここでは、TableViewオブジェクトのプロパティ名を<code>tv</code>としました。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#import &lt;UIKit/UIKit.h&gt;
+</span><span class='line'>
+</span><span class='line'>@interface ViewController : UIViewController &lt;UITableViewDataSource&gt;
+</span><span class='line'>
+</span><span class='line'>@property (weak, nonatomic) IBOutlet UITableView *tv;
+</span><span class='line'>
+</span><span class='line'>@end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　プロトコルの採用に伴って、View Controllerの実装部（.m）には<code>numberOfRowsInSection</code>と<code>cellForRowAtIndexPath</code>のふたつのメソッドの実装が必要になります。
+このメソッドが実装されていない間は、<code>Method 'メソッド名' in protocol not implemented</code>というSemantic Issueが現れているはずなので、
+ひとまず次のようにメソッドを実装して、<code>viewDidLoad</code>などには<code>self.tv.dataSource = self;</code>の１行を加えておきます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (void)viewDidLoad
+</span><span class='line'>{
+</span><span class='line'>    [super viewDidLoad];
+</span><span class='line'>    // Do any additional setup after loading the view.
+</span><span class='line'>
+</span><span class='line'>    // Table ViewのデータソースにView Controller自身を設定する
+</span><span class='line'>    self.tv.dataSource = self;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+</span><span class='line'>{
+</span><span class='line'>    // Table Viewの行数を返す
+</span><span class='line'>    return 5;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+</span><span class='line'>{
+</span><span class='line'>    UITableViewCell *tvcell = [tableView dequeueReusableCellWithIdentifier: @"cid"];
+</span><span class='line'>    if (tvcell == nil) {
+</span><span class='line'>        tvcell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+</span><span class='line'>                                        reuseIdentifier: @"cid"];
+</span><span class='line'>    }
+</span><span class='line'>    // Table Viewの各行の情報を、UITableViewCellのオブジェクトとして返す
+</span><span class='line'>    tvcell.textLabel.text = [[NSString alloc] initWithFormat:@"%d行目のセル", indexPath.row + 1];
+</span><span class='line'>    return tvcell;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　この状態でビルドしてみると、５行のリストを表現できるようになりました。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2014-01-04-introduction-to-uitableview-in-ios/03-uitableview-demo.png"></p>
+
+<p>　ここまでのコードを基に、セルの情報を配列に格納し、セルの挿入と削除ができるボタンを加えてみます。
+再びストーリーボードに戻り、セル操作のイベントハンドラになるボタンをView Controllerに追加します。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2014-01-04-introduction-to-uitableview-in-ios/04-mainstoryboard.png"></p>
+
+<p>　View Controllerの定義部では、セル情報を格納する配列<code>cells</code>というプロパティを新たに定義します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#import &lt;UIKit/UIKit.h&gt;
+</span><span class='line'>
+</span><span class='line'>@interface SampleController : UIViewController &lt;UITableViewDataSource&gt;
+</span><span class='line'>
+</span><span class='line'>@property (weak, nonatomic) IBOutlet UITableView *tv;
+</span><span class='line'>@property NSMutableArray *cells;
+</span><span class='line'>
+</span><span class='line'>- (IBAction)insertCell:(id)sender;
+</span><span class='line'>- (IBAction)deleteAll:(id)sender;
+</span><span class='line'>
+</span><span class='line'>@end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　View Controllerの実装部では、それぞれのメソッドを次のように変更します。
+<code>insertCell</code>と<code>deleteAll</code>のメソッドでは、配列操作のあとに<code>[selv.tv reloadData]</code>でTable Viewをリロードするように指示しています。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (void)viewDidLoad {
+</span><span class='line'>    [super viewDidLoad];
+</span><span class='line'>    self.cells = [NSMutableArray array];
+</span><span class='line'>    self.tv.dataSource = self;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>- (IBAction)insertCell:(id)sender {
+</span><span class='line'>    [self.cells addObject: [[NSString alloc] initWithFormat:
+</span><span class='line'>                            @"%d行目のセル", [self.cells count] + 1]];
+</span><span class='line'>    [self.tv reloadData];
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>- (IBAction)deleteAll:(id)sender {
+</span><span class='line'>    self.cells = [NSMutableArray array];
+</span><span class='line'>    [self.tv reloadData];
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+</span><span class='line'>    return [self.cells count];
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+</span><span class='line'>    UITableViewCell *tvcell = [tableView dequeueReusableCellWithIdentifier: @"cid"];
+</span><span class='line'>    if (tvcell == nil) {
+</span><span class='line'>        tvcell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+</span><span class='line'>                                        reuseIdentifier: @"cid"];
+</span><span class='line'>    }
+</span><span class='line'>    tvcell.textLabel.text = [self.cells objectAtIndex: indexPath.row];
+</span><span class='line'>    return tvcell;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>　セル情報を配列に格納することで、アプリの中でセルの追加/削除を操作できるようになりました。</p>
+
+<p><img src="http://momoto.github.io/blog/images/2014-01-04-introduction-to-uitableview-in-ios/05-uitableview-demo.png"></p>
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="https://bitbucket.org/seijimomoto/ios-libsqlitedemo">bitbucket.org/seijimomoto iOS &ndash; libsqlDemo</a></li>
+<li><a href="https://developer.apple.com/jp/devcenter/ios/library/documentation/TableView_iPhone.pdf">developer.apple.com iOS Table View プログラミングガイド</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Postfix 2.6.6をCentOS 6にインストールする]]></title>
@@ -3604,265 +3820,6 @@ Ubuntuのドキュメントには、インストールイメージのDVDへの�
 <li><a href="http://momoto.github.io/blog/2013/04/06/install-centos-6-dot-4-i386-netinstall/">CentOS 6.4をインストールする</a></li>
 <li><a href="http://momoto.github.io/blog/2013/03/16/install-x86-minimal-20121213/">Gentoo Linuxをインストールする</a></li>
 <li><a href="http://momoto.github.io/blog/2013/01/05/install-arch-linux/">Arch Linux 2012.12.01をインストールする</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[HerokuにRedmine 2.3.1を展開する]]></title>
-    <link href="http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku/"/>
-    <updated>2013-05-31T23:19:00+09:00</updated>
-    <id>http://momoto.github.io/blog/2013/05/31/deploy-redmine-2-dot-3-1-on-heroku</id>
-    <content type="html"><![CDATA[<p>　Herokuが提供するPaaSにプロジェクト管理ソフトウェア Redmine 2.3.1を展開します。
-Redmineのバージョンは2.3.1、Rubyは1.9.2-p320、<a href="https://aur.archlinux.org/packages/heroku-client/">heroku-toolbelt</a>は2.39.4を使用しました。</p>
-
-<!-- more -->
-
-
-<h4>Redmine 2.3.1のダウンロード</h4>
-
-<p>2013.05.31の時点で最新版である2.3.1をGitでクローンします。また、productionというブランチを作成し、チェックアウトします。</p>
-
-<pre><code>$ git clone git://github.com/redmine/redmine.git
-
-  Cloning into 'redmine'...
-  remote: Counting objects: 101645, done.
-  remote: Compressing objects: 100% (23821/23821), done.
-  remote: Total 101645 (delta 79311), reused 98395 (delta 76195)
-  Receiving objects: 100% (101645/101645), 25.39 MiB | 256.00 KiB/s, done.
-  Resolving deltas: 100% (79311/79311), done.
-
-$ cd redmine
-$ git checkout -b production
-
-  Switched to a new branch 'production'
-</code></pre>
-
-<h4>Rubyの確認</h4>
-
-<p>ここではRubyのバージョン管理にrbenvを使用しています。また、インストールの過程でBundlerが必要になります。</p>
-
-<pre><code>$ rbenv local 1.9.2-p320
-$ ruby --version
-
-  ruby 1.9.2p320 (2012-04-20 revision 35421) [x86_64-linux]
-
-$ gem install bundler
-
-  Successfully installed bundler-1.3.5
-  1 gem installed
-  Installing ri documentation for bundler-1.3.5...
-  Building YARD (yri) index for bundler-1.3.5...
-  Installing RDoc documentation for bundler-1.3.5...
-</code></pre>
-
-<h4>.gitignoreの編集</h4>
-
-<p>次の記述を削除します。</p>
-
-<pre><code>-/config/configuration.yml
--/config/email.yml
--/config/initializers/session_store.rb
--/config/initializers/secret_token.r
-
--/public/plugin_assets
-
--/Gemfile.lock
--/Gemfile.local
-</code></pre>
-
-<h4>Gemfileの編集</h4>
-
-<p>次のように書き換えました。</p>
-
-<pre><code>source 'https://rubygems.org'
-
-gem "rails", "3.2.13"
-gem "jquery-rails", "~&gt; 2.0.2"
-gem "i18n", "~&gt; 0.6.0"
-gem "coderay", "~&gt; 1.0.6"
-gem "fastercsv", "~&gt; 1.5.0", :platforms =&gt; [:mri_18, :mingw_18, :jruby]
-gem "builder", "3.0.0"
-
-group :ldap do
-  gem "net-ldap", "~&gt; 0.3.1"
-end
-
-group :openid do
-  gem "ruby-openid", "~&gt; 2.1.4", :require =&gt; "openid"
-  gem "rack-openid"
-end
-
-platforms :mri, :mingw do
-  group :rmagick do
-    gem "rmagick", "&gt;= 2.0.0"
-  end
-end
-
-platforms :mri, :mingw do  
-  group :postgresql do  
-    gem "pg", "&gt;= 0.11.0"  
-  end  
-end  
-
-platforms :jruby do  
-  gem "jruby-openssl"  
-
-  group :postgresql do  
-    gem "activerecord-jdbcpostgresql-adapter"  
-  end  
-end
-
-group :development do
-  gem "rdoc", "&gt;= 2.4.2"
-  gem "yard"
-end
-
-group :test do
-  gem "shoulda", "~&gt; 3.3.2"
-  gem "mocha", "&gt;= 0.14", :require =&gt; 'mocha/api'
-  if RUBY_VERSION &gt;= '1.9.3'
-    gem "capybara", "~&gt; 2.1.0"
-    gem "selenium-webdriver"
-  end
-end
-
-local_gemfile = File.join(File.dirname(__FILE__), "Gemfile.local")
-if File.exists?(local_gemfile)
-  puts "Loading Gemfile.local ..." if $DEBUG # `ruby -d` or `bundle -v`
-  instance_eval File.read(local_gemfile)
-end
-
-# Load plugins' Gemfiles
-Dir.glob File.expand_path("../plugins/*/Gemfile", __FILE__) do |file|
-  puts "Loading #{file} ..." if $DEBUG # `ruby -d` or `bundle -v`
-  #TODO: switch to "eval_gemfile file" when bundler &gt;= 1.2.0 will be required (rails 4)
-  instance_eval File.read(file), file
-end
-</code></pre>
-
-<h4>config/application.rbの編集</h4>
-
-<p>次の記述を追記しました。</p>
-
-<pre><code>+    config.assets.initialize_on_precompile = false
-</code></pre>
-
-<h4>config/environment.rbの編集</h4>
-
-<p>次の記述をコメントアウトします。</p>
-
-<pre><code>-vendor_plugins_dir = File.join(Rails.root, "vendor", "plugins")
--if Dir.glob(File.join(vendor_plugins_dir, "*")).any?
--  $stderr.puts "Plugins in vendor/plugins (#{vendor_plugins_dir}) are no longer allowed. " +
--    "Please, put your Redmine plugins in the `plugins` directory at the root of your " +
--    "Redmine directory (#{File.join(Rails.root, "plugins")})"
--  exit 1
--end
-+#vendor_plugins_dir = File.join(Rails.root, "vendor", "plugins")
-+#if Dir.glob(File.join(vendor_plugins_dir, "*")).any?
-+#  $stderr.puts "Plugins in vendor/plugins (#{vendor_plugins_dir}) are no longer allowed. " +
-+#    "Please, put your Redmine plugins in the `plugins` directory at the root of your " +
-+#    "Redmine directory (#{File.join(Rails.root, "plugins")})"
-+#  exit 1
-+#end
-</code></pre>
-
-<h4>Gemパッケージのインストール</h4>
-
-<p>必要なGemパッケージをインストールします。config/database.ymlの設定を促されていますが、現時点では設定しません。</p>
-
-<pre><code>$ bundle install
-
-  Please configure your config/database.yml first
-  Fetching gem metadata from https://rubygems.org/.........
-  Resolving dependencies...
-  ...
-  Your bundle is complete!
-</code></pre>
-
-<p>セッションストアを生成します。</p>
-
-<pre><code>$ bundle exec rake generate_secret_token
-
-  Please configure your config/database.yml first
-  Please configure your config/database.yml first
-</code></pre>
-
-<h4>アプリケーションの作成</h4>
-
-<p>Herokuツールベルトを使用して、アプリケーションを作成します。ツールベルトと同様に、Herokuアカウントの登録が必要です。</p>
-
-<pre><code>$ heroku login
-
-  Enter your Heroku credentials.
-  Email: ********
-  Password (typing will be hidden): 
-  Authentication successful.
-
-$ heroku create [NAME]
-
-  Creating [NAME]... done, stack is cedar
-  http://[NAME].herokuapp.com/ | git@heroku.com:[NAME].git
-  Git remote heroku added
-</code></pre>
-
-<h4>Herokuへ配置</h4>
-
-<p>Gitを使用します。Pushの時点でconfig/database.ymlが自動的に作られるようです。</p>
-
-<pre><code>$ git add .
-$ git commit -m "init"
-$ git push heroku production:master
-
-  -----&gt; Ruby/Rails app detected
-  -----&gt; Installing dependencies using Bundler version 1.3.2
-  -----&gt; Writing config/database.yml to read from DATABASE_URL
-  -----&gt; Preparing app for Rails asset pipeline
-
-  -----&gt; Launching... done, v8
-</code></pre>
-
-<h4>テーブルやデフォルトデータの用意</h4>
-
-<p>言語を選択するプロンプトが現れます。</p>
-
-<pre><code>$ heroku run rake db:migrate
-
-  Connecting to database specified by DATABASE_URL
-  Creating scope :system. Overwriting existing method Enumeration.system.
-  ...
-
-$ heroku run rake redmine:load_default_data
-
-  Connecting to database specified by DATABASE_URL
-  Creating scope :system. Overwriting existing method Enumeration.system.
-
-  Select language: ar, az, bg, bs, ca, cs, da, de, el, en, en-GB, es, et, eu, fa, fi, fr, gl, he, hr, hu, id, it, ja, ko, lt, lv, mk, mn, nl, no, pl, pt, pt-BR, ro, ru, sk, sl, sq, sr, sr-YU, sv, th, tr, uk, vi, zh, zh-TW [en] ja
-  ====================================
-  Default configuration data loaded.
-</code></pre>
-
-<h4>動作確認</h4>
-
-<p>HerokuのアプリケーションURLへアクセスして、動作を確認します。</p>
-
-<p><img src="http://momoto.github.io/blog/images/2013-05-31-deploy-redmine-2-dot-3-1-on-heroku/01.png" width="500"></p>
-
-<h4>参考</h4>
-
-<ul>
-<li><a href="https://github.com/redmine/redmine">Redmine</a></li>
-<li><a href="http://redmine.jp/guide/RedmineInstall/">Redmineのインストール &mdash; Redmine Guide 日本語訳</a></li>
-<li><a href="https://devcenter.heroku.com/articles/rails3">Getting Started with Rails 3.x on Heroku | Heroku Dev Center</a></li>
-</ul>
-
-
-<h4>関連記事</h4>
-
-<ul>
-<li><a href="http://momoto.github.io/blog/2013/08/24/deploying-redmine-2-dot-0-on-openshift/">Red Hat OpenShiftにRedmine 2.0を展開する</a></li>
 </ul>
 
 ]]></content>
